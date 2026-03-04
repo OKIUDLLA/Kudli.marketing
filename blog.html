@@ -11,6 +11,17 @@
     <meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://kudlimarketing.cz/blog.html">
+    <link rel="canonical" href="https://www.kudlimarketing.cz/blog.html">
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  "name": "Blog — Kudli. marketing",
+  "url": "https://www.kudlimarketing.cz/blog.html",
+  "description": "Články o webovém vývoji, AI a automatizaci",
+  "author": { "@type": "Person", "name": "Ondřej Kudlička" }
+}
+</script>
     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -780,14 +791,14 @@
     <!-- HEADER & NAV -->
     <header>
         <nav>
-            <a href="/" class="logo">Kudli<span>.</span> marketing</a>
+            <a href="index.html" class="logo">Kudli<span>.</span> marketing</a>
             <ul id="nav-menu">
                 <li><a href="index.html">← Zpět</a></li>
-                <li><a href="#services">Služby</a></li>
-                <li><a href="#portfolio">Portfolio</a></li>
-                <li><a href="/blog.html">Blog</a></li>
-                <li><a href="#pricing">Ceník</a></li>
-                <li><a href="#contact">Kontakt</a></li>
+                <li><a href="index.html#sluzby">Služby</a></li>
+                <li><a href="index.html#portfolio">Portfolio</a></li>
+                <li><a href="blog.html" class="active">Blog</a></li>
+                <li><a href="index.html#cenik">Ceník</a></li>
+                <li><a href="kontakty.html">Kontakt</a></li>
             </ul>
             <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
         </nav>
@@ -1619,5 +1630,8 @@
         });
     </script>
 
+<footer style="text-align:center;padding:20px;font-size:12px;color:#666;border-top:1px solid #eee;margin-top:40px;">
+  © 2026 <a href="index.html" style="color:#666;">Kudli. marketing</a>
+</footer>
 </body>
 </html>

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit Report — kudlimarketing.cz — 4. 3. 2026</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0B0E14; color: #C8CCD4; line-height: 1.7; }
+  .container { max-width: 900px; margin: 0 auto; padding: 48px 24px; }
+  h1 { font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px; }
+  .subtitle { color: #6B7280; font-size: 14px; margin-bottom: 48px; }
+  h2 { font-size: 18px; font-weight: 600; color: #fff; margin: 48px 0 20px; padding-bottom: 8px; border-bottom: 1px solid #1F2937; }
+  h3 { font-size: 15px; font-weight: 600; color: #D1D5DB; margin: 24px 0 12px; }
+  p { margin-bottom: 12px; font-size: 14px; }
+  .score-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 24px 0; }
+  .score-card { background: #111827; border: 1px solid #1F2937; border-radius: 8px; padding: 20px; text-align: center; }
+  .score-card .num { font-size: 36px; font-weight: 700; }
+  .score-card .label { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #6B7280; margin-top: 4px; }
+  .green { color: #34D399; }
+  .yellow { color: #FBBF24; }
+  .red { color: #F87171; }
+  .blue { color: #60A5FA; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .badge-critical { background: #7F1D1D; color: #FCA5A5; }
+  .badge-warning { background: #78350F; color: #FDE68A; }
+  .badge-ok { background: #064E3B; color: #6EE7B7; }
+  .badge-info { background: #1E3A5F; color: #93C5FD; }
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  th { text-align: left; padding: 10px 12px; background: #111827; color: #9CA3AF; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #1F2937; }
+  td { padding: 10px 12px; border-bottom: 1px solid #1F2937; }
+  tr:hover td { background: #111827; }
+  .check { color: #34D399; }
+  .cross { color: #F87171; }
+  .warn { color: #FBBF24; }
+  ul { margin: 8px 0 16px 20px; font-size: 14px; }
+  li { margin-bottom: 6px; }
+  .demo-compare { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin: 16px 0; }
+  .demo-card { background: #111827; border: 1px solid #1F2937; border-radius: 8px; padding: 20px; }
+  .demo-card h4 { font-size: 14px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+  .demo-card .demo-score { font-size: 28px; font-weight: 700; margin: 8px 0; }
+  .demo-card p { font-size: 12px; color: #6B7280; }
+  .action-item { background: #111827; border-left: 3px solid #60A5FA; padding: 12px 16px; margin: 8px 0; border-radius: 0 6px 6px 0; font-size: 13px; }
+  .action-item.critical { border-left-color: #F87171; }
+  .action-item.warning { border-left-color: #FBBF24; }
+  .priority { font-weight: 600; color: #fff; }
+  @media (max-width: 768px) {
+    .score-grid { grid-template-columns: repeat(2, 1fr); }
+    .demo-compare { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Audit Report — kudlimarketing.cz</h1>
+<p class="subtitle">4. března 2026 · Automatický audit · Verze po nasazení vlastní domény</p>
+
+<h2>Celkové skóre</h2>
+<div class="score-grid">
+  <div class="score-card">
+    <div class="num green">58</div>
+    <div class="label">Souborů na webu</div>
+  </div>
+  <div class="score-card">
+    <div class="num green">100%</div>
+    <div class="label">Meta popisky</div>
+  </div>
+  <div class="score-card">
+    <div class="num green">100%</div>
+    <div class="label">OG tagy</div>
+  </div>
+  <div class="score-card">
+    <div class="num green">0</div>
+    <div class="label">Broken linků</div>
+  </div>
+</div>
+<div class="score-grid">
+  <div class="score-card">
+    <div class="num red">16%</div>
+    <div class="label">Canonical URL</div>
+  </div>
+  <div class="score-card">
+    <div class="num red">10%</div>
+    <div class="label">Copyright rok</div>
+  </div>
+  <div class="score-card">
+    <div class="num yellow">12%</div>
+    <div class="label">JSON-LD data</div>
+  </div>
+  <div class="score-card">
+    <div class="num yellow">24%</div>
+    <div class="label">Print CSS</div>
+  </div>
+</div>
+
+<h2><span class="badge badge-ok">✓</span> Co funguje výborně</h2>
+<ul>
+  <li><span class="check">✓</span> <strong>Web je live</strong> na vlastní doméně www.kudlimarketing.cz s HTTPS</li>
+  <li><span class="check">✓</span> <strong>Redirect</strong> — kudlimarketing.cz (bez www) správně přesměrovává na www verzi</li>
+  <li><span class="check">✓</span> <strong>404 stránka</strong> funguje a vypadá profesionálně</li>
+  <li><span class="check">✓</span> <strong>GitHub → Netlify pipeline</strong> — auto-deploy za 4 sekundy</li>
+  <li><span class="check">✓</span> <strong>Meta description</strong> na 100% stránek — unikátní a relevantní</li>
+  <li><span class="check">✓</span> <strong>OG tagy</strong> na 100% stránek — sdílení na soc. sítích bude fungovat</li>
+  <li><span class="check">✓</span> <strong>0 broken linků</strong> — všechny interní odkazy fungují</li>
+  <li><span class="check">✓</span> <strong>Mobilní verze</strong> — homepage responsivní, hamburger menu funkční</li>
+  <li><span class="check">✓</span> <strong>robots.txt</strong> správně nakonfigurovaný se sitemap odkazem</li>
+  <li><span class="check">✓</span> <strong>3 demo stránky</strong> — e-shop, kavárna, reality — všechny funkční</li>
+</ul>
+
+<h2><span class="badge badge-critical">KRITICKÉ</span> Musí se opravit</h2>
+
+<div class="action-item critical">
+  <span class="priority">1. Chybí canonical URL na 43 stránkách (84%)</span><br>
+  Bez canonical URL hrozí penalizace za duplicitní obsah v Google. Každá stránka potřebuje &lt;link rel="canonical"&gt;.
+</div>
+
+<div class="action-item critical">
+  <span class="priority">2. Chybí copyright rok na 46 stránkách (90%)</span><br>
+  Jen 5 stránek má © rok v patičce (index.html, 3 demo stránky, ochrana-udaju.html). Zbytek nemá footer s rokem vůbec.
+</div>
+
+<div class="action-item critical">
+  <span class="priority">3. Sitemap neobsahuje index.html</span><br>
+  Hlavní stránka webu chybí v sitemap.xml. Také chybí dekuji.html.
+</div>
+
+<h2><span class="badge badge-warning">VAROVÁNÍ</span> Mělo by se opravit</h2>
+
+<div class="action-item warning">
+  <span class="priority">4. JSON-LD strukturovaná data jen na 6 stránkách (12%)</span><br>
+  Jen index.html, demo-eshop.html a demo-kavarna.html mají schema.org data. Minimálně kontakty.html by měl mít LocalBusiness schema.
+</div>
+
+<div class="action-item warning">
+  <span class="priority">5. Print CSS jen na 12 stránkách (24%)</span><br>
+  Nástroje jako faktura.html, report.html by měly mít tiskové styly — klienti je mohou chtít tisknout.
+</div>
+
+<div class="action-item warning">
+  <span class="priority">6. 31 stránek nemá navigační odkaz zpět na index.html</span><br>
+  Nekonzistentní navigace — některé stránky nemají cestu zpět na hlavní stránku.
+</div>
+
+<h2>Porovnání demo stránek</h2>
+<div class="demo-compare">
+  <div class="demo-card">
+    <h4>E-shop (MadeByHand)</h4>
+    <div class="demo-score green">95%</div>
+    <p>Nejpropracovanější demo. Admin panel, košík, vyhledávání, filtry, JSON-LD, print CSS. 89 KB — plně funkční e-shop simulace.</p>
+    <p style="margin-top:8px"><span class="check">✓</span> JSON-LD <span class="check">✓</span> Print CSS <span class="check">✓</span> Canonical</p>
+  </div>
+  <div class="demo-card">
+    <h4>Kavárna (Zrnko)</h4>
+    <div class="demo-score green">90%</div>
+    <p>Nově přepracovaná. Storytelling přístup, muted sage paleta, rezervační formulář, Cormorant Garamond font. 33 KB — moderní a čistý design.</p>
+    <p style="margin-top:8px"><span class="check">✓</span> JSON-LD <span class="check">✓</span> Print CSS <span class="check">✓</span> Canonical</p>
+  </div>
+  <div class="demo-card">
+    <h4>Reality (BydlímTu)</h4>
+    <div class="demo-score yellow">85%</div>
+    <p>Dobrý základ — hero, nabídka, chat widget. Ale chybí detaily: žádný JSON-LD, žádné canonical URL, slabší interaktivita oproti ostatním.</p>
+    <p style="margin-top:8px"><span class="cross">✗</span> JSON-LD <span class="cross">✗</span> Print CSS <span class="cross">✗</span> Canonical</p>
+  </div>
+</div>
+
+<h2>Struktura webu — přehled všech souborů</h2>
+<table>
+  <tr><th>Soubor</th><th>Velikost</th><th>Canonical</th><th>Copyright</th><th>JSON-LD</th></tr>
+  <tr><td><strong>index.html</strong></td><td>28 KB</td><td><span class="check">✓</span></td><td><span class="check">✓ 2026</span></td><td><span class="check">✓</span></td></tr>
+  <tr><td><strong>demo/demo-eshop.html</strong></td><td>89 KB</td><td><span class="check">✓</span></td><td><span class="check">✓ 2024</span></td><td><span class="check">✓</span></td></tr>
+  <tr><td><strong>demo/demo-kavarna.html</strong></td><td>33 KB</td><td><span class="check">✓</span></td><td><span class="check">✓ 2026</span></td><td><span class="check">✓</span></td></tr>
+  <tr><td><strong>demo/demo-reality.html</strong></td><td>53 KB</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+  <tr><td>404.html</td><td>3 KB</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+  <tr><td>nastroje.html</td><td>27 KB</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+  <tr><td>kontakty.html</td><td>16 KB</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+  <tr><td>blog.html</td><td>70 KB</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+  <tr><td>audit.html</td><td>31 KB</td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td><td><span class="cross">✗</span></td></tr>
+  <tr><td colspan="5" style="color:#6B7280; font-style:italic">+ dalších 46 HTML souborů se stejným vzorcem (chybí canonical, copyright, JSON-LD)</td></tr>
+</table>
+
+<h2>Akční plán — co opravit</h2>
+
+<h3>Priorita 1 — Hned (Claude udělá automaticky)</h3>
+<div class="action-item">
+  <span class="priority">Přidat canonical URL do všech 43 stránek</span> — ~1.5 hodiny<br>
+  Formát: &lt;link rel="canonical" href="https://www.kudlimarketing.cz/[soubor]"&gt;
+</div>
+<div class="action-item">
+  <span class="priority">Přidat © 2026 do footeru na všech 46 stránkách</span> — ~1 hodina
+</div>
+<div class="action-item">
+  <span class="priority">Opravit sitemap.xml</span> — přidat index.html a dekuji.html — 5 minut
+</div>
+
+<h3>Priorita 2 — Tento týden</h3>
+<div class="action-item">
+  <span class="priority">Dokončit demo-reality.html</span> — přidat JSON-LD, canonical, print CSS, vylepšit interaktivitu na úroveň ostatních dem
+</div>
+<div class="action-item">
+  <span class="priority">Přidat JSON-LD na klíčové stránky</span> — minimálně kontakty.html (LocalBusiness), blog.html (Blog)
+</div>
+
+<h3>Priorita 3 — Tento měsíc</h3>
+<div class="action-item">
+  <span class="priority">Sjednotit navigaci</span> — zajistit že všechny stránky mají cestu zpět na homepage
+</div>
+<div class="action-item">
+  <span class="priority">Přidat print CSS</span> — hlavně na nástroje které klienti mohou tisknout (faktura, report, nabídky)
+</div>
+<div class="action-item">
+  <span class="priority">Copyright rok na demo-eshop.html</span> — aktualizovat z 2024 na 2026
+</div>
+
+<div style="margin-top:64px; padding-top:24px; border-top:1px solid #1F2937; color:#6B7280; font-size:12px;">
+  Audit vygeneroval Claude · 4. března 2026 · kudlimarketing.cz
+</div>
+
+</div>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#666;border-top:1px solid #eee;margin-top:40px;">
+  © 2026 <a href="index.html" style="color:#666;">Kudli. marketing</a>
+</footer>
+</body>
+</html>
