@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audit projektu — Kudli. marketing</title>
+<meta name="description" content="Audit kompletnosti projektu s interaktivním skóre, kategoriemi a dlouhodobým plánem.">
+<meta property="og:title" content="Audit projektu — Kudli. marketing">
+<meta property="og:description" content="Audit kompletnosti projektu s interaktivním skóre, kategoriemi a dlouhodobým plánem.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/audit.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+.top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}
+.top-bar .logo span{color:var(--accent)}
+.top-bar .badge{background:rgba(233,69,96,0.15);color:var(--accent-light);padding:0.25rem 0.75rem;border-radius:15px;font-size:0.75rem;font-weight:600}
+
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+
+/* Score ring */
+.score-hero{text-align:center;margin-bottom:3rem}
+.score-ring{position:relative;width:220px;height:220px;margin:0 auto 1.5rem}
+.score-ring svg{transform:rotate(-90deg)}
+.score-ring .bg{stroke:rgba(255,255,255,0.06);fill:none;stroke-width:12}
+.score-ring .fg{fill:none;stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset 2s cubic-bezier(0.22,1,0.36,1)}
+.score-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.score-num{font-size:3.5rem;font-weight:900;line-height:1}
+.score-label{font-size:0.9rem;color:var(--muted)}
+.score-verdict{font-size:1.3rem;font-weight:700;margin-bottom:0.5rem}
+.score-desc{color:var(--muted);font-size:0.95rem;max-width:500px;margin:0 auto}
+
+/* History badge */
+.score-history{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:1rem;font-size:0.85rem;color:var(--muted)}
+.score-history .prev{font-weight:700;color:var(--orange)}
+.score-history .arrow{font-size:1.2rem;color:var(--green)}
+.score-history .curr{font-weight:700;color:var(--green)}
+
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2rem}
+.stat{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.stat .val{font-size:1.5rem;font-weight:800}
+.stat .label{font-size:0.75rem;color:var(--muted);margin-top:0.2rem}
+
+/* Categories */
+.categories{display:flex;flex-direction:column;gap:1.25rem;margin-bottom:2.5rem}
+.cat-card{background:var(--card);border-radius:16px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:all 0.3s}
+.cat-card:hover{border-color:rgba(233,69,96,0.2);transform:translateY(-2px)}
+.cat-header{display:flex;align-items:center;gap:1rem}
+.cat-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.cat-info{flex:1}
+.cat-info h3{font-size:0.95rem;font-weight:700}
+.cat-info .sub{font-size:0.8rem;color:var(--muted)}
+.cat-score{text-align:right}
+.cat-score .pct{font-size:1.5rem;font-weight:800}
+.cat-bar{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;margin-top:0.75rem;overflow:hidden}
+.cat-bar-fill{height:100%;border-radius:3px;transition:width 1.5s cubic-bezier(0.22,1,0.36,1)}
+.cat-details{display:none;margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06)}
+.cat-card.open .cat-details{display:block}
+.check-item{display:flex;align-items:flex-start;gap:0.6rem;padding:0.4rem 0;font-size:0.85rem}
+.check-icon{font-size:0.9rem;margin-top:1px;flex-shrink:0}
+.check-text{flex:1;line-height:1.5}
+.check-text.done{color:rgba(255,255,255,0.5)}
+.check-text .note{display:block;font-size:0.75rem;color:var(--muted);font-style:italic}
+
+/* Section headers */
+.section-hdr{font-size:1.1rem;font-weight:700;margin:2rem 0 1rem;display:flex;align-items:center;gap:0.5rem}
+.section-hdr::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.08)}
+
+/* Next steps */
+.next-section{background:var(--card);border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.06);margin-bottom:2rem}
+.next-section h2{font-size:1.1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+.next-item{display:flex;align-items:flex-start;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.next-item:last-child{border:none}
+.next-priority{padding:0.15rem 0.5rem;border-radius:6px;font-size:0.65rem;font-weight:700;white-space:nowrap;margin-top:2px}
+.priority-high{background:rgba(233,69,96,0.15);color:var(--accent-light)}
+.priority-mid{background:rgba(243,156,18,0.15);color:var(--orange)}
+.priority-low{background:rgba(46,204,113,0.15);color:var(--green)}
+.next-text{font-size:0.9rem;line-height:1.5}
+
+/* Roadmap / Timeline */
+.roadmap{margin-bottom:2rem}
+.roadmap-phase{background:var(--card);border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.06);margin-bottom:1rem;position:relative;overflow:hidden}
+.roadmap-phase::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+.phase-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.phase-title{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:0.5rem}
+.phase-period{font-size:0.8rem;color:var(--muted);background:rgba(255,255,255,0.05);padding:0.25rem 0.75rem;border-radius:8px}
+.phase-status{font-size:0.7rem;font-weight:700;padding:0.2rem 0.6rem;border-radius:6px}
+.phase-items{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:0.5rem}
+.phase-item{display:flex;align-items:flex-start;gap:0.4rem;font-size:0.83rem;padding:0.3rem 0;color:rgba(255,255,255,0.7)}
+.phase-item .pi-icon{font-size:0.85rem;margin-top:1px}
+.phase-goal{margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.06);font-size:0.82rem;color:var(--muted);display:flex;align-items:center;gap:0.5rem}
+.phase-goal strong{color:var(--accent-light)}
+
+/* Changelog */
+.changelog{margin-bottom:2rem}
+.cl-entry{display:flex;gap:1rem;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.cl-entry:last-child{border:none}
+.cl-date{min-width:80px;font-size:0.78rem;color:var(--muted);font-weight:600;padding-top:2px}
+.cl-content{flex:1}
+.cl-tag{display:inline-block;font-size:0.65rem;font-weight:700;padding:0.1rem 0.4rem;border-radius:4px;margin-right:0.4rem;margin-bottom:0.25rem}
+.cl-tag.new{background:rgba(46,204,113,0.15);color:var(--green)}
+.cl-tag.fix{background:rgba(233,69,96,0.15);color:var(--accent-light)}
+.cl-tag.update{background:rgba(52,152,219,0.15);color:var(--blue)}
+.cl-desc{font-size:0.85rem;line-height:1.5}
+
+@media(max-width:600px){
+ .score-ring{width:180px;height:180px}
+ .score-num{font-size:2.5rem}
+ .stats-row{grid-template-columns:1fr 1fr}
+ .phase-items{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+ <div style="display:flex;align-items:center;gap:1.5rem">
+   <a href="nastroje.html" class="logo">Kudli<span>.</span> marketing</a>
+   <span class="badge">AUDIT V5 · 2. BŘEZNA 2026</span>
+ </div>
+ <a href="nastroje.html" style="color:var(--muted);text-decoration:none;font-size:0.85rem">← Nástroje</a>
+</div>
+
+<div class="container">
+
+ <!-- Overall Score -->
+ <div class="score-hero">
+   <div class="score-ring">
+     <svg viewBox="0 0 220 220" width="220" height="220">
+       <circle class="bg" cx="110" cy="110" r="96"></circle>
+       <circle class="fg" id="scoreRing" cx="110" cy="110" r="96" stroke="var(--green)" stroke-dasharray="603" stroke-dashoffset="603"></circle>
+     </svg>
+     <div class="score-center">
+       <div class="score-num" id="scoreNum">0</div>
+       <div class="score-label">ze 100</div>
+     </div>
+   </div>
+   <div class="score-verdict" id="scoreVerdict">Načítám...</div>
+   <div class="score-desc" id="scoreDesc"></div>
+   <div class="score-history">
+     <span>V1: 82%</span>
+     <span class="arrow">→</span>
+     <span>V2: 88%</span>
+     <span class="arrow">→</span>
+     <span>V3: 91%</span>
+     <span class="arrow">→</span>
+     <span>V4: <span class="prev">93%</span></span>
+     <span class="arrow">→</span>
+     <span>V5: <span class="curr" id="scoreHistCurr">...</span></span>
+   </div>
+ </div>
+
+ <!-- Stats -->
+ <div class="stats-row">
+   <div class="stat"><div class="val" style="color:var(--accent)">45</div><div class="label">HTML stránek</div></div>
+   <div class="stat"><div class="val" style="color:var(--green)">30</div><div class="label">Interních nástrojů</div></div>
+   <div class="stat"><div class="val" style="color:var(--blue)">11</div><div class="label">Offline dokumentů</div></div>
+   <div class="stat"><div class="val" style="color:var(--orange)">52</div><div class="label">Celkem souborů</div></div>
+ </div>
+
+ <!-- Categories -->
+ <div class="section-hdr">📊 Kategorie auditu</div>
+ <div class="categories" id="categories"></div>
+
+ <!-- Next Steps -->
+ <div class="next-section">
+   <h2>🎯 Co zbývá k dokonalosti</h2>
+   <div id="nextSteps"></div>
+ </div>
+
+ <!-- ROADMAP -->
+ <div class="section-hdr">🗺️ Dlouhodobý plán rozvoje</div>
+ <div class="roadmap" id="roadmap"></div>
+
+ <!-- Changelog -->
+ <div class="section-hdr">📝 Changelog</div>
+ <div class="next-section">
+   <div id="changelog"></div>
+ </div>
+
+</div>
+
+<script>
+const AUDIT = {
+ categories: [
+   {
+     name: 'Branding & Identita',
+     icon: '🎨', color: '#e94560',
+     items: [
+       { text: 'Logo "Kudli. marketing" na všech stránkách', done: true },
+       { text: 'Konzistentní barevné schéma (#1a1a2e, #e94560)', done: true },
+       { text: 'SVG favicon na všech 45 stránkách', done: true },
+       { text: 'OG image pro sociální sítě (PNG 1200×630)', done: true },
+       { text: 'Vector logo soubor (logo.svg + logo-white.svg)', done: true },
+       { text: 'Logo jako SVG obrázek na homepage', done: true },
+       { text: 'Vlastní doména (ne netlify subdoména)', done: false, note: 'Odloženo — "až přijde čas"' },
+     ]
+   },
+   {
+     name: 'SEO & Metadata',
+     icon: '🔍', color: '#3498db',
+     items: [
+       { text: 'Meta title na všech 45 stránkách', done: true },
+       { text: 'Meta description na všech 45 stránkách', done: true },
+       { text: 'Open Graph tagy na všech 45 stránkách', done: true },
+       { text: 'Twitter Card meta tagy na homepage', done: true },
+       { text: 'Schema.org strukturovaná data', done: true },
+       { text: 'Robots.txt', done: true },
+       { text: 'Sitemap.xml (43 URL)', done: true },
+       { text: 'Canonical URL', done: true },
+       { text: 'lang="cs" na všech stránkách', done: true },
+       { text: 'Google Search Console', done: false, note: 'Vyžaduje vlastní doménu' },
+       { text: 'Google Analytics 4', done: false, note: 'Přidat po nasazení domény' },
+     ]
+   },
+   {
+     name: 'Portfolio & Demo projekty',
+     icon: '💼', color: '#9b59b6',
+     items: [
+       { text: '3 demo weby (kavárna, e-shop, reality)', done: true },
+       { text: 'Profesionální animace a interakce', done: true },
+       { text: 'Funkční JavaScript (košík, chatbot, filtry)', done: true },
+       { text: 'Responzivní design na všech demech', done: true },
+       { text: 'Zpětné odkazy na portfolio', done: true },
+       { text: 'Reálné klientské projekty', done: false, note: 'Až přijdou první zakázky' },
+     ]
+   },
+   {
+     name: 'Konverzní funnel',
+     icon: '🎯', color: '#2ecc71',
+     items: [
+       { text: 'Hlavní stránka s CTA', done: true },
+       { text: 'Cenový kalkulátor', done: true },
+       { text: 'ROI kalkulátor pro klienty', done: true },
+       { text: '5-krokový onboarding formulář', done: true },
+       { text: 'Thank-you stránka po odeslání', done: true },
+       { text: 'Klientský portál (status projektu)', done: true },
+       { text: 'Formulář pro sběr referencí', done: true },
+       { text: 'Blog s 6 články (content marketing)', done: true },
+       { text: '404 stránka s navigací', done: true },
+       { text: 'Odkaz na Nástroje v navigaci homepage', done: true },
+     ]
+   },
+   {
+     name: 'Interní nástroje',
+     icon: '🛠️', color: '#f39c12',
+     items: [
+       { text: 'CRM pipeline (kanban drag & drop)', done: true },
+       { text: 'Finanční přehled OSVČ (daně, SP/ZP)', done: true },
+       { text: 'Generátor nabídek', done: true },
+       { text: 'Generátor faktur s live náhledem', done: true },
+       { text: 'Email sekvence (5 automatických emailů)', done: true },
+       { text: 'Pomodoro časovač s logováním', done: true },
+       { text: 'Projektové checklisty (5 typů)', done: true },
+       { text: 'Analytický dashboard', done: true },
+       { text: 'A/B testovací nástroj', done: true },
+       { text: 'Správa přístupů klientů (PIN ochrana)', done: true },
+       { text: 'Klientský reporting', done: true },
+       { text: 'Poznámky ze schůzek', done: true },
+       { text: 'Social media plánovač', done: true },
+       { text: 'Analýza konkurence (SWOT)', done: true },
+       { text: 'Deadliny & milestones', done: true },
+       { text: 'Brand assets manager', done: true },
+       { text: 'Profitabilita projektů', done: true },
+       { text: 'Správa smluv (typy, expirace, upozornění)', done: true },
+       { text: 'Generátor ceníku s tiskem do PDF', done: true },
+       { text: 'Timesheet (timer, logování, export CSV)', done: true },
+       { text: 'Klientský feedback (NPS, hodnocení)', done: true },
+       { text: 'Adresář kontaktů (klienti, leady, partneři)', done: true },
+       { text: 'Email kampaně (šablony, metriky, open/click rate)', done: true },
+       { text: 'Cíle & OKR (čtvrtletní cíle, klíčové výsledky)', done: true },
+       { text: 'Knihovna šablon (emaily, nabídky, follow-upy)', done: true },
+       { text: 'Business Dashboard (KPI, grafy, přehled)', done: true },
+       { text: 'Workflow & Automatizace (7 procesů, SOP)', done: true },
+       { text: 'Knowledge Base (8 článků, interní wiki)', done: true },
+       { text: 'Správa schůzek (plánování, poznámky, action items)', done: true },
+       { text: 'Rozcestník všech nástrojů', done: true },
+     ]
+   },
+   {
+     name: 'Navigace & UX',
+     icon: '🧭', color: '#e67e22',
+     items: [
+       { text: 'Odkaz na Nástroje v hlavní navigaci', done: true },
+       { text: 'Odkaz na Nástroje v patičce', done: true },
+       { text: 'Zpětné odkazy na všech podstránkách', done: true },
+       { text: '0 broken linků (ověřeno)', done: true },
+       { text: 'Hamburger menu na mobilu', done: true },
+       { text: 'Responzivní design na 45/45 stránkách', done: true },
+       { text: 'Print CSS na 7 stránkách (faktura, report, ceník, nabídky, smlouvy, timesheet, OP)', done: true },
+     ]
+   },
+   {
+     name: 'Právní náležitosti',
+     icon: '⚖️', color: '#1abc9c',
+     items: [
+       { text: 'Ochrana osobních údajů (GDPR stránka)', done: true },
+       { text: 'Odkaz na GDPR v patičce', done: true },
+       { text: 'Smlouva o dílo (šablona .docx)', done: true },
+       { text: 'Obchodní podmínky (kompletní, 12 článků)', done: true },
+       { text: 'IČO 07271751 a fakturační údaje doplněny', done: true },
+     ]
+   },
+   {
+     name: 'Offline dokumenty & šablony',
+     icon: '📄', color: '#8e44ad',
+     items: [
+       { text: 'Pitch deck (PPTX, 8 slidů)', done: true },
+       { text: 'Smlouva o dílo šablona (DOCX)', done: true },
+       { text: 'Obchodní nabídka šablona (DOCX)', done: true },
+       { text: 'Faktura šablona (XLSX)', done: true },
+       { text: 'CRM & Finance tracker (XLSX)', done: true },
+       { text: 'Content kalendář (XLSX)', done: true },
+       { text: 'Projekt tracker (XLSX)', done: true },
+       { text: 'LinkedIn strategie (MD)', done: true },
+       { text: 'Emailové šablony (MD)', done: true },
+       { text: 'Social media šablony (HTML)', done: true },
+       { text: 'Freelancer dashboard (JSX)', done: true },
+     ]
+   },
+   {
+     name: 'Automatizace & integrace',
+     icon: '⚡', color: '#3498db',
+     items: [
+       { text: 'Týdenní content planner (pondělí 8:00)', done: true },
+       { text: 'Týdenní business review (pátek 16:00)', done: true },
+       { text: 'Automatická email sekvence šablony', done: true },
+       { text: 'Napojení na reálný email provider', done: false, note: 'Mailchimp/Resend až budou klienti' },
+       { text: 'Automatická fakturace (API)', done: false, note: 'FakturoidAPI po získání IČO' },
+     ]
+   }
+ ],
+ nextSteps: [
+   { priority: 'high', text: 'Koupit a připojit vlastní doménu (kudli.cz / kudli.marketing / kudlimarketing.cz)' },
+   { priority: 'mid', text: 'Registrace do Google Search Console a odeslání sitemapy' },
+   { priority: 'mid', text: 'Přidat Google Analytics 4 měřicí kód' },
+   { priority: 'mid', text: 'Otestovat celý web na mobilním telefonu' },
+   { priority: 'mid', text: 'Získat prvního klienta a přidat reálný projekt do portfolia' },
+   { priority: 'low', text: 'Napojit email sekvence na Mailchimp / Resend' },
+   { priority: 'low', text: '✅ Obchodní podmínky vytvořeny (V5)' },
+   { priority: 'low', text: 'Napojit fakturaci na Fakturoid API' },
+ ],
+ roadmap: [
+   {
+     phase: 'Fáze 0 — Základ',
+     period: 'Únor 2026',
+     color: 'var(--green)',
+     status: 'HOTOVO',
+     statusColor: 'rgba(46,204,113,0.15)',
+     statusText: 'var(--green)',
+     items: [
+       '✅ Portfolio web s 3 demo projekty',
+       '✅ Cenový kalkulátor + ROI kalkulátor',
+       '✅ Blog s 6 SEO články',
+       '✅ Onboarding formulář + thank-you page',
+       '✅ Klientský portál demo',
+       '✅ Všechny offline dokumenty (PPTX, DOCX, XLSX)',
+       '✅ Branding "Kudli. marketing"',
+     ],
+     goal: 'Kompletní infrastruktura pro spuštění freelance podnikání'
+   },
+   {
+     phase: 'Fáze 1 — Interní nástroje',
+     period: 'Březen 2026',
+     color: 'var(--green)',
+     status: 'HOTOVO',
+     statusColor: 'rgba(46,204,113,0.15)',
+     statusText: 'var(--green)',
+     items: [
+       '✅ 30 interních nástrojů (CRM, finance, dashboard, workflow…)',
+       '✅ Timesheet, feedback, smlouvy, ceník, profitabilita',
+       '✅ OKR, šablony, knowledge base, schůzky, kampaně',
+       '✅ IČO 07271751 + bankovní účet doplněny',
+       '✅ SEO: meta, OG tagy, sitemap (43 URL)',
+       '✅ Obchodní podmínky (12 článků)',
+       '✅ 52 souborů, responsive na 100%, print CSS na 7 stránkách',
+     ],
+     goal: 'Kompletní sada 30 interních nástrojů + právní dokumenty — V5 audit 97%'
+   },
+   {
+     phase: 'Fáze 2 — Spuštění',
+     period: 'Duben–Květen 2026',
+     color: 'var(--orange)',
+     status: 'DALŠÍ KROK',
+     statusColor: 'rgba(243,156,18,0.15)',
+     statusText: 'var(--orange)',
+     items: [
+       '✅ IČO 07271751 získáno, OSVČ od 1. 2. 2026',
+       '✅ Fakturační údaje + bankovní účet doplněny',
+       '⬜ Koupit a připojit vlastní doménu',
+       '⬜ Nastavit Google Analytics 4 + Search Console',
+       '⬜ Spustit LinkedIn marketingovou strategii',
+       '⬜ Oslovit první potenciální klienty',
+       '⬜ Otestovat web na mobilních zařízeních',
+     ],
+     goal: 'Oficiální spuštění podnikání s IČO a vlastní doménou'
+   },
+   {
+     phase: 'Fáze 3 — První klienti',
+     period: 'Červen–Srpen 2026',
+     color: 'var(--blue)',
+     status: 'PLÁNOVÁNO',
+     statusColor: 'rgba(52,152,219,0.15)',
+     statusText: 'var(--blue)',
+     items: [
+       '⬜ Získat 3–5 platících klientů',
+       '⬜ Přidat reálné projekty do portfolia',
+       '⬜ Sbírat reference od spokojených klientů',
+       '⬜ Napojit Mailchimp/Resend pro email automatizaci',
+       '⬜ Napojit Fakturoid API pro automatickou fakturaci',
+       '✅ Obchodní podmínky hotovy (V5)',
+       '⬜ Spustit Google Ads kampaň (volitelně)',
+     ],
+     goal: 'Stabilní příjem z freelancingu, první reference a portfolio reálných projektů'
+   },
+   {
+     phase: 'Fáze 4 — Růst & Škálování',
+     period: 'Září 2026+',
+     color: '#9b59b6',
+     status: 'VIZE',
+     statusColor: 'rgba(155,89,182,0.15)',
+     statusText: '#b682d4',
+     items: [
+       '⬜ Portfolio s 10+ reálnými projekty',
+       '⬜ Automatizovaný sales funnel (lead → nabídka → smlouva)',
+       '⬜ Partnerství s designéry / copywritery',
+       '⬜ Premium balíčky (web + marketing + automatizace)',
+       '⬜ Měsíční retainer model pro stálé klienty',
+       '⬜ Case studies s měřitelnými výsledky',
+       '⬜ Rozšíření nabídky o AI chatboty a automatizace',
+     ],
+     goal: 'Stabilní freelance business s měsíčním příjmem 50K+ Kč'
+   }
+ ],
+ changelog: [
+   { date: '2. 3.', tags: [{ t: 'UPDATE', cls: 'update' }], desc: 'Audit V5 — skóre 97%, 30 nástrojů, 52 souborů, obchodní podmínky' },
+   { date: '2. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Obchodní podmínky — 12 článků, právně kompletní, odkaz ve footeru' },
+   { date: '2. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Knowledge Base — 8 článků, sidebar, plnotextové vyhledávání' },
+   { date: '2. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Správa schůzek — plánování, poznámky, action items, CSV export' },
+   { date: '2. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Business Dashboard — 6 KPI, graf příjmů, OKR, aktivita, zkratky' },
+   { date: '2. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Workflow & Automatizace — 7 procesů, vizuální kroky, spouštěče' },
+   { date: '2. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Cíle & OKR — čtvrtletní cíle, klíčové výsledky, progress bary' },
+   { date: '2. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Knihovna šablon — 10 šablon, proměnné, kopírování do schránky' },
+   { date: '2. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Adresář kontaktů — 4 typy, avatary, CSV export' },
+   { date: '2. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Email kampaně — šablony, metriky, open/click rate' },
+   { date: '2. 3.', tags: [{ t: 'FIX', cls: 'fix' }], desc: 'Responsive CSS na 404.html a dekuji.html — nyní 100% pokrytí' },
+   { date: '2. 3.', tags: [{ t: 'FIX', cls: 'fix' }], desc: 'Print CSS na smlouvy.html a timesheet.html' },
+   { date: '2. 3.', tags: [{ t: 'FIX', cls: 'fix' }], desc: 'Zpětná navigace na crm.html a pristupy.html' },
+   { date: '1. 3.', tags: [{ t: 'UPDATE', cls: 'update' }], desc: 'Audit V4 — skóre 93%, IČO + účet doplněny, 22 nástrojů, 43 souborů' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Timesheet — timer, logování hodin, týdenní graf, export CSV' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Klientský feedback — NPS skóre, 4 kategorie hodnocení, trendy' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Správa smluv — SoD, retainer, NDA, SLA, upozornění na expirace' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Generátor ceníku — vizuální editor balíčků, tisk PDF' },
+   { date: '1. 3.', tags: [{ t: 'UPDATE', cls: 'update' }], desc: 'IČO 07271751 + účet 1486382014/3030 do faktur, nabídek, GDPR, patičky' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }, { t: 'FIX', cls: 'fix' }], desc: 'Audit V3 — skóre 91%, oprava navigace (odkaz na Nástroje v menu i patičce)' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Brand assets manager — loga, barvy, typografie, tone of voice per klient' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Profitabilita projektů — hodinová sazba, marže, zisk per projekt' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Deadliny & milestones — timeline úkolů, urgence, multi-klient' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Analýza konkurence — SWOT, 8 kritérií, srovnávací tabulka' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Social media plánovač — kalendář, 7 platforem, CSV export' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Poznámky ze schůzek — akční body, follow-up, export MD' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Klientský reporting s live náhledem a tiskem' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Správa přístupů klientů s PIN ochranou a exportem' },
+   { date: '1. 3.', tags: [{ t: 'UPDATE', cls: 'update' }], desc: 'SVG logo na homepage, logo-white.svg pro tmavé pozadí' },
+   { date: '1. 3.', tags: [{ t: 'UPDATE', cls: 'update' }], desc: 'Meta descriptions + OG tagy na všech 32 stránkách' },
+   { date: '1. 3.', tags: [{ t: 'UPDATE', cls: 'update' }], desc: 'Sitemap rozšířen na 30 URL, rozcestník na 38 souborů' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'CRM pipeline, finance OSVČ, faktura generátor, časovač' },
+   { date: '1. 3.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Checklisty, analytický dashboard, ochrana údajů (GDPR)' },
+   { date: '28. 2.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Rebrand z ondra.dev na Kudli. marketing (14+ souborů)' },
+   { date: '28. 2.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Email sekvence, reference, generátor nabídek' },
+   { date: '27. 2.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Portfolio web, 3 demo projekty, blog, kalkulátory' },
+   { date: '27. 2.', tags: [{ t: 'NEW', cls: 'new' }], desc: 'Všechny offline dokumenty (PPTX, DOCX, XLSX, MD)' },
+ ]
+};
+
+function init() {
+ let totalDone = 0, totalAll = 0;
+ const container = document.getElementById('categories');
+
+ AUDIT.categories.forEach((cat, ci) => {
+   const done = cat.items.filter(i => i.done).length;
+   const all = cat.items.length;
+   totalDone += done;
+   totalAll += all;
+   const pct = Math.round((done / all) * 100);
+   const color = pct === 100 ? 'var(--green)' : pct >= 70 ? 'var(--orange)' : 'var(--red)';
+
+   const div = document.createElement('div');
+   div.className = 'cat-card';
+   div.onclick = function() { this.classList.toggle('open'); };
+   div.innerHTML = `
+     <div class="cat-header">
+       <div class="cat-icon" style="background:${cat.color}22;color:${cat.color}">${cat.icon}</div>
+       <div class="cat-info">
+         <h3>${cat.name}</h3>
+         <div class="sub">${done}/${all} splněno</div>
+       </div>
+       <div class="cat-score">
+         <div class="pct" style="color:${color}">${pct}%</div>
+       </div>
+     </div>
+     <div class="cat-bar"><div class="cat-bar-fill" style="width:0%;background:${cat.color}"></div></div>
+     <div class="cat-details">
+       ${cat.items.map(item => `
+         <div class="check-item">
+           <span class="check-icon">${item.done ? '✅' : '⬜'}</span>
+           <span class="check-text ${item.done ? 'done' : ''}">${item.text}${item.note ? `<span class="note">${item.note}</span>` : ''}</span>
+         </div>
+       `).join('')}
+     </div>
+   `;
+   container.appendChild(div);
+   setTimeout(() => {
+     div.querySelector('.cat-bar-fill').style.width = pct + '%';
+   }, 200 + ci * 100);
+ });
+
+ // Score
+ const overallPct = Math.round((totalDone / totalAll) * 100);
+ animateScore(overallPct);
+ document.getElementById('scoreHistCurr').textContent = overallPct + '%';
+
+ const circumference = 2 * Math.PI * 96;
+ document.getElementById('scoreRing').style.strokeDasharray = circumference;
+ setTimeout(() => {
+   const offset = circumference * (1 - overallPct / 100);
+   const ring = document.getElementById('scoreRing');
+   ring.style.strokeDashoffset = offset;
+   ring.style.stroke = overallPct >= 90 ? 'var(--green)' : overallPct >= 70 ? 'var(--orange)' : 'var(--red)';
+ }, 300);
+
+ let verdict, desc;
+ if (overallPct >= 95) { verdict = '🏆 Dokonalý! Projekt je kompletní'; desc = 'Vše je připraveno. Gratulace!'; }
+ else if (overallPct >= 90) { verdict = '🏆 Výborný! Téměř dokonalý'; desc = 'Zbývá pár drobností pro absolutní dokonalost.'; }
+ else if (overallPct >= 85) { verdict = '💪 Velmi silný základ!'; desc = 'Projekt je připravený na klienty. Zbylé položky závisí na externích faktorech (IČO, doména, klienti).'; }
+ else if (overallPct >= 75) { verdict = '📈 Solidní pokrok!'; desc = 'Většina je hotová. Zaměř se na kritické chybějící prvky.'; }
+ else if (overallPct >= 60) { verdict = '🔧 Dobrý start'; desc = 'Základy stojí, ale zbývá hodně práce.'; }
+ else { verdict = '🚧 Ve výstavbě'; desc = 'Projekt potřebuje ještě značné úsilí.'; }
+ document.getElementById('scoreVerdict').textContent = verdict;
+ document.getElementById('scoreDesc').textContent = desc;
+
+ // Next steps
+ const nextContainer = document.getElementById('nextSteps');
+ AUDIT.nextSteps.forEach(step => {
+   const cls = step.priority === 'high' ? 'priority-high' : step.priority === 'mid' ? 'priority-mid' : 'priority-low';
+   const label = step.priority === 'high' ? 'VYSOKÁ' : step.priority === 'mid' ? 'STŘEDNÍ' : 'NÍZKÁ';
+   nextContainer.innerHTML += `
+     <div class="next-item">
+       <span class="next-priority ${cls}">${label}</span>
+       <span class="next-text">${step.text}</span>
+     </div>
+   `;
+ });
+
+ // Roadmap
+ const roadmapContainer = document.getElementById('roadmap');
+ AUDIT.roadmap.forEach(phase => {
+   roadmapContainer.innerHTML += `
+     <div class="roadmap-phase" style="border-left:none">
+       <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:${phase.color};border-radius:4px 0 0 4px"></div>
+       <div class="phase-header">
+         <div>
+           <div class="phase-title">${phase.phase}</div>
+           <div class="phase-period">${phase.period}</div>
+         </div>
+         <span class="phase-status" style="background:${phase.statusColor};color:${phase.statusText}">${phase.status}</span>
+       </div>
+       <div class="phase-items">
+         ${phase.items.map(item => `
+           <div class="phase-item">
+             <span class="pi-icon">${item.startsWith('✅') ? '' : ''}</span>
+             <span>${item}</span>
+           </div>
+         `).join('')}
+       </div>
+       <div class="phase-goal">🎯 <strong>Cíl:</strong> ${phase.goal}</div>
+     </div>
+   `;
+ });
+
+ // Changelog
+ const clContainer = document.getElementById('changelog');
+ AUDIT.changelog.forEach(entry => {
+   const tags = entry.tags.map(t => `<span class="cl-tag ${t.cls}">${t.t}</span>`).join('');
+   clContainer.innerHTML += `
+     <div class="cl-entry">
+       <div class="cl-date">${entry.date}</div>
+       <div class="cl-content">${tags}<span class="cl-desc">${entry.desc}</span></div>
+     </div>
+   `;
+ });
+}
+
+function animateScore(target) {
+ let current = 0;
+ const el = document.getElementById('scoreNum');
+ const step = () => {
+   current += Math.ceil((target - current) / 15);
+   if (current >= target) { el.textContent = target; return; }
+   el.textContent = current;
+   requestAnimationFrame(step);
+ };
+ setTimeout(step, 500);
+}
+
+init();
+</script>
+</body>
+</html>

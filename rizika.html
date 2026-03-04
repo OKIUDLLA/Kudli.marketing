@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Risk Management — Kudli. marketing</title>
+<meta name="description" content="Identifikace a sledování rizik u projektů. Matice dopadu a pravděpodobnosti.">
+<meta property="og:title" content="Risk Management — Kudli. marketing">
+<meta property="og:description" content="Sledování projektových rizik s maticí dopadu a pravděpodobnosti.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/rizika.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+.top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
+.top-bar a:hover{color:var(--text)}
+
+.container{max-width:1000px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.8rem;font-weight:800;margin-bottom:0.3rem}
+h1 em{color:var(--accent);font-style:normal}
+.sub{color:var(--muted);margin-bottom:2rem;font-size:0.95rem}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.75rem;margin-bottom:2rem}
+.stat{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.stat .num{font-size:1.5rem;font-weight:800}
+.stat .lbl{font-size:0.7rem;color:var(--muted);margin-top:0.2rem}
+
+/* Risk Matrix */
+.matrix-section{margin-bottom:2rem}
+.matrix-section h3{font-size:1rem;font-weight:700;margin-bottom:0.75rem;color:var(--muted)}
+.matrix{display:grid;grid-template-columns:auto repeat(5,1fr);grid-template-rows:repeat(5,1fr) auto;gap:2px;background:rgba(255,255,255,0.05);border-radius:12px;overflow:hidden;padding:0.5rem}
+.matrix-cell{display:flex;align-items:center;justify-content:center;min-height:50px;border-radius:6px;font-size:0.7rem;font-weight:600;position:relative;transition:all 0.2s}
+.matrix-cell.green{background:rgba(46,204,113,0.15);color:var(--green)}
+.matrix-cell.yellow{background:rgba(243,156,18,0.12);color:var(--orange)}
+.matrix-cell.orange{background:rgba(230,126,34,0.18);color:#e67e22}
+.matrix-cell.red{background:rgba(231,76,60,0.2);color:var(--red)}
+.matrix-label{font-size:0.65rem;color:var(--muted);display:flex;align-items:center;justify-content:center;padding:0.3rem}
+.matrix-dot{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:800;color:#fff;cursor:pointer;position:relative;z-index:2}
+
+/* Filters */
+.filters{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.filter-btn{padding:0.35rem 0.75rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--muted);cursor:pointer;font-size:0.8rem;transition:all 0.2s}
+.filter-btn:hover,.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Risk list */
+.risk-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:2rem}
+
+.risk-item{background:var(--card);border-radius:12px;padding:1rem 1.25rem;border:1px solid rgba(255,255,255,0.06);display:grid;grid-template-columns:auto 1fr auto auto;gap:1rem;align-items:center;transition:all 0.2s}
+.risk-item:hover{border-color:rgba(233,69,96,0.3);transform:translateX(3px)}
+.risk-item.mitigated{opacity:0.5}
+
+.risk-level{width:12px;height:40px;border-radius:6px;flex-shrink:0}
+.level-critical{background:var(--red)}
+.level-high{background:#e67e22}
+.level-medium{background:var(--orange)}
+.level-low{background:var(--green)}
+
+.risk-info{min-width:0}
+.risk-name{font-weight:700;font-size:0.95rem;margin-bottom:0.15rem}
+.risk-desc{font-size:0.8rem;color:var(--muted);line-height:1.4;margin-bottom:0.3rem}
+.risk-tags{display:flex;gap:0.4rem;flex-wrap:wrap}
+.risk-tag{font-size:0.65rem;padding:0.15rem 0.45rem;border-radius:4px;background:rgba(255,255,255,0.08);color:var(--muted)}
+.risk-tag.cat{background:rgba(155,89,182,0.15);color:var(--purple)}
+
+.risk-scores{text-align:center}
+.risk-scores .score-label{font-size:0.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+.risk-scores .score-val{font-size:1.2rem;font-weight:800}
+
+.risk-actions{display:flex;flex-direction:column;gap:0.3rem}
+.risk-actions button{background:rgba(255,255,255,0.08);border:none;color:var(--text);padding:0.3rem 0.5rem;border-radius:6px;cursor:pointer;font-size:0.7rem;transition:all 0.2s;white-space:nowrap}
+.risk-actions button:hover{background:var(--accent)}
+
+/* Add form */
+.add-section{background:var(--card);border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.06)}
+.add-section h3{font-size:1rem;margin-bottom:1rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem}
+.form-row.full{grid-template-columns:1fr}
+.form-row.triple{grid-template-columns:1fr 1fr 1fr}
+input,select,textarea{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.55rem 0.75rem;border-radius:8px;font-size:0.85rem;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical;min-height:60px}
+label{font-size:0.75rem;color:var(--muted);display:block;margin-bottom:0.2rem}
+.btn{padding:0.55rem 1.25rem;border-radius:8px;border:none;cursor:pointer;font-weight:700;font-size:0.85rem;transition:all 0.2s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-secondary{background:rgba(255,255,255,0.1);color:var(--text)}
+.btn-secondary:hover{background:rgba(255,255,255,0.15)}
+.btn-row{display:flex;gap:0.5rem;margin-top:0.75rem}
+
+/* Responsive */
+@media(max-width:768px){
+ .container{padding:1.5rem 1rem}
+ h1{font-size:1.4rem}
+ .risk-item{grid-template-columns:auto 1fr;gap:0.75rem}
+ .risk-scores,.risk-actions{display:none}
+ .form-row,.form-row.triple{grid-template-columns:1fr}
+ .matrix{display:none}
+ .stats{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+ .filters{gap:0.3rem}
+}
+
+/* Print */
+@media print{
+ body{background:#fff;color:#000}
+ .top-bar,.add-section,.btn,.risk-actions,.filters,.matrix-section{display:none!important}
+ .container{max-width:100%;padding:0}
+ .risk-item{border:1px solid #ccc;background:#fff;color:#000;break-inside:avoid}
+ .risk-item *{color:#000!important}
+ .stat{border:1px solid #ccc;background:#fff}
+ .stat *{color:#000!important}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+ <a href="nastroje.html">&larr; Zpět na nástroje</a>
+ <span style="font-size:0.8rem;color:var(--muted)">Risk Management</span>
+</div>
+
+<div class="container">
+
+<h1>Risk <em>Management</em></h1>
+<p class="sub">Identifikuj, ohodnoť a spravuj rizika u svých projektů</p>
+
+<div class="stats">
+ <div class="stat"><div class="num" style="color:var(--accent)" id="statTotal">0</div><div class="lbl">Aktivních rizik</div></div>
+ <div class="stat"><div class="num" style="color:var(--red)" id="statCritical">0</div><div class="lbl">Kritických</div></div>
+ <div class="stat"><div class="num" style="color:var(--green)" id="statMitigated">0</div><div class="lbl">Ošetřených</div></div>
+ <div class="stat"><div class="num" style="color:var(--orange)" id="statAvgScore">0</div><div class="lbl">Průměr. skóre rizika</div></div>
+</div>
+
+<div class="matrix-section">
+ <h3>Matice rizik (Dopad × Pravděpodobnost)</h3>
+ <div class="matrix" id="riskMatrix"></div>
+</div>
+
+<div class="filters">
+ <button class="filter-btn active" onclick="setFilter('all')">Vše</button>
+ <button class="filter-btn" onclick="setFilter('critical')">Kritická</button>
+ <button class="filter-btn" onclick="setFilter('high')">Vysoká</button>
+ <button class="filter-btn" onclick="setFilter('medium')">Střední</button>
+ <button class="filter-btn" onclick="setFilter('low')">Nízká</button>
+ <button class="filter-btn" onclick="setFilter('mitigated')">Ošetřená</button>
+</div>
+
+<div class="risk-list" id="riskList"></div>
+
+<div class="add-section">
+ <h3>+ Nové riziko</h3>
+ <div class="form-row">
+  <div><label>Název rizika</label><input type="text" id="newName" placeholder="Např. Klient neplatí včas"></div>
+  <div><label>Projekt / Kategorie</label><input type="text" id="newProject" placeholder="Obecné / Název projektu"></div>
+ </div>
+ <div class="form-row full">
+  <div><label>Popis</label><textarea id="newDesc" placeholder="Detail rizika a jeho kontext..."></textarea></div>
+ </div>
+ <div class="form-row triple">
+  <div><label>Pravděpodobnost (1–5)</label><select id="newProb"><option value="1">1 — Velmi nízká</option><option value="2">2 — Nízká</option><option value="3" selected>3 — Střední</option><option value="4">4 — Vysoká</option><option value="5">5 — Téměř jistá</option></select></div>
+  <div><label>Dopad (1–5)</label><select id="newImpact"><option value="1">1 — Zanedbatelný</option><option value="2">2 — Malý</option><option value="3" selected>3 — Střední</option><option value="4">4 — Velký</option><option value="5">5 — Katastrofický</option></select></div>
+  <div><label>Strategie</label><select id="newStrategy"><option value="avoid">Vyhnout se</option><option value="mitigate" selected>Zmírnit</option><option value="transfer">Přenést</option><option value="accept">Akceptovat</option></select></div>
+ </div>
+ <div class="form-row full">
+  <div><label>Opatření</label><input type="text" id="newMitigation" placeholder="Jak riziko ošetřit?"></div>
+ </div>
+ <div class="btn-row">
+  <button class="btn btn-primary" onclick="addRisk()">Přidat riziko</button>
+  <button class="btn btn-secondary" onclick="exportCSV()">Export CSV</button>
+ </div>
+</div>
+
+</div>
+
+<script>
+const KEY = 'kudli_risks';
+let activeFilter = 'all';
+
+const strategyLabels = {avoid:'Vyhnout se',mitigate:'Zmírnit',transfer:'Přenést',accept:'Akceptovat'};
+
+function load(){
+ const s = sessionStorage.getItem(KEY);
+ if(s) return JSON.parse(s);
+ const demo = [
+  {id:1,name:'Klient neplatí včas',project:'Obecné',desc:'Klient překročí splatnost faktury o více než 14 dní. Ohrožuje cash flow.',prob:4,impact:4,strategy:'mitigate',mitigation:'Záloha 50 % předem, upomínkový systém, smluvní penále 0.05 %/den.',mitigated:false},
+  {id:2,name:'Scope creep',project:'Obecné',desc:'Klient přidává požadavky nad rámec smlouvy bez change requestu.',prob:4,impact:3,strategy:'avoid',mitigation:'Jasná specifikace ve smlouvě, change request formulář, odmítnutí bez schválení.',mitigated:false},
+  {id:3,name:'Výpadek zdraví / nemoc',project:'Obecné',desc:'OSVČ = single point of failure. Nemoc zastaví veškerou práci.',prob:2,impact:5,strategy:'mitigate',mitigation:'Finanční polštář na 3 měsíce, síť subdodavatelů, důchodové pojištění.',mitigated:false},
+  {id:4,name:'Ztráta klíčového klienta',project:'Obecné',desc:'Klient s >30 % příjmů ukončí spolupráci.',prob:2,impact:4,strategy:'mitigate',mitigation:'Diverzifikace — žádný klient >25 % příjmů. Aktivní akvizice nových.',mitigated:false},
+  {id:5,name:'Technologická změna',project:'Web projekty',desc:'Framework nebo platforma, kterou používám, zastará.',prob:3,impact:2,strategy:'accept',mitigation:'Sledovat trendy, vzdělávat se, používat stabilní technologie.',mitigated:false},
+  {id:6,name:'Pozdní dodání podkladů',project:'Kavárna Zrnko',desc:'Klient nedodá texty, fotky nebo logo včas.',prob:5,impact:3,strategy:'mitigate',mitigation:'Deadline na podklady ve smlouvě, automatický reminder 7 dní předem.',mitigated:true},
+  {id:7,name:'GDPR porušení',project:'Obecné',desc:'Neúmyslné porušení GDPR při práci s klientskými daty.',prob:1,impact:5,strategy:'avoid',mitigation:'Šifrování dat, DPA smlouvy, minimalizace zpracování osobních údajů.',mitigated:false},
+  {id:8,name:'Konkurenční cenový tlak',project:'Obecné',desc:'Konkurence nabízí stejné služby za výrazně nižší ceny.',prob:3,impact:3,strategy:'accept',mitigation:'Diferenciace kvalitou, rychlostí a osobním přístupem. Nekonkurovat cenou.',mitigated:false}
+ ];
+ sessionStorage.setItem(KEY, JSON.stringify(demo));
+ return demo;
+}
+
+function save(data){ sessionStorage.setItem(KEY, JSON.stringify(data)); }
+
+function riskScore(r){ return r.prob * r.impact; }
+
+function riskLevel(score){
+ if(score >= 16) return 'critical';
+ if(score >= 10) return 'high';
+ if(score >= 5) return 'medium';
+ return 'low';
+}
+
+function levelLabel(level){
+ return {critical:'Kritická',high:'Vysoká',medium:'Střední',low:'Nízká'}[level];
+}
+
+function levelColor(level){
+ return {critical:'var(--red)',high:'#e67e22',medium:'var(--orange)',low:'var(--green)'}[level];
+}
+
+function setFilter(f){
+ activeFilter = f;
+ document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+ event.target.classList.add('active');
+ render();
+}
+
+function toggleMitigated(id){
+ const data = load();
+ const r = data.find(x => x.id === id);
+ if(r){ r.mitigated = !r.mitigated; save(data); render(); }
+}
+
+function deleteRisk(id){
+ let data = load();
+ data = data.filter(x => x.id !== id);
+ save(data);
+ render();
+}
+
+function renderMatrix(){
+ const risks = load().filter(r => !r.mitigated);
+ // Build 5x5 grid
+ const cellColors = [
+  ['green','green','yellow','yellow','orange'],
+  ['green','yellow','yellow','orange','orange'],
+  ['yellow','yellow','orange','orange','red'],
+  ['yellow','orange','orange','red','red'],
+  ['orange','orange','red','red','red']
+ ];
+
+ let html = '';
+ // Y-axis labels (impact 5→1, top to bottom)
+ for(let impact = 5; impact >= 1; impact--){
+  html += `<div class="matrix-label" style="font-size:0.6rem">Dopad ${impact}</div>`;
+  for(let prob = 1; prob <= 5; prob++){
+   const color = cellColors[5-impact][prob-1];
+   const matching = risks.filter(r => r.prob === prob && r.impact === impact);
+   const dots = matching.map(r => {
+    const bg = levelColor(riskLevel(riskScore(r)));
+    return `<div class="matrix-dot" style="background:${bg}" title="${r.name} (${riskScore(r)})">${riskScore(r)}</div>`;
+   }).join('');
+   html += `<div class="matrix-cell ${color}">${dots || ''}</div>`;
+  }
+ }
+ // X-axis labels
+ html += '<div></div>';
+ for(let i = 1; i <= 5; i++){
+  html += `<div class="matrix-label">Prav. ${i}</div>`;
+ }
+
+ document.getElementById('riskMatrix').innerHTML = html;
+}
+
+function render(){
+ const risks = load();
+ const active = risks.filter(r => !r.mitigated);
+ const mitigated = risks.filter(r => r.mitigated);
+
+ // Stats
+ document.getElementById('statTotal').textContent = active.length;
+ document.getElementById('statCritical').textContent = active.filter(r => riskLevel(riskScore(r)) === 'critical').length;
+ document.getElementById('statMitigated').textContent = mitigated.length;
+ const avgScore = active.length ? (active.reduce((s,r) => s+riskScore(r), 0) / active.length).toFixed(1) : '0';
+ document.getElementById('statAvgScore').textContent = avgScore;
+
+ // Filter
+ let filtered = risks;
+ if(activeFilter === 'mitigated') filtered = mitigated;
+ else if(activeFilter !== 'all') filtered = active.filter(r => riskLevel(riskScore(r)) === activeFilter);
+
+ // Sort by score desc
+ filtered.sort((a,b) => riskScore(b) - riskScore(a));
+
+ let html = '';
+ filtered.forEach(r => {
+  const score = riskScore(r);
+  const level = riskLevel(score);
+  html += `<div class="risk-item ${r.mitigated?'mitigated':''}">
+   <div class="risk-level level-${r.mitigated?'low':level}"></div>
+   <div class="risk-info">
+    <div class="risk-name">${r.mitigated?'✅ ':''}${r.name}</div>
+    <div class="risk-desc">${r.desc}</div>
+    <div class="risk-tags">
+     <span class="risk-tag cat">${r.project}</span>
+     <span class="risk-tag" style="background:rgba(233,69,96,0.1);color:var(--accent)">${strategyLabels[r.strategy]}</span>
+     ${r.mitigation ? `<span class="risk-tag">🛡️ ${r.mitigation.substring(0,60)}${r.mitigation.length>60?'...':''}</span>` : ''}
+    </div>
+   </div>
+   <div class="risk-scores">
+    <div class="score-label">Skóre</div>
+    <div class="score-val" style="color:${levelColor(level)}">${score}</div>
+    <div style="font-size:0.6rem;color:var(--muted)">${r.prob}×${r.impact}</div>
+    <div style="font-size:0.65rem;color:${levelColor(level)};margin-top:0.15rem">${levelLabel(level)}</div>
+   </div>
+   <div class="risk-actions">
+    <button onclick="toggleMitigated(${r.id})">${r.mitigated?'🔄 Obnovit':'✅ Ošetřeno'}</button>
+    <button onclick="deleteRisk(${r.id})">🗑️</button>
+   </div>
+  </div>`;
+ });
+
+ if(!html) html = '<p style="color:var(--muted);text-align:center;padding:2rem">Žádná rizika odpovídající filtru.</p>';
+ document.getElementById('riskList').innerHTML = html;
+
+ renderMatrix();
+}
+
+function addRisk(){
+ const name = document.getElementById('newName').value.trim();
+ const project = document.getElementById('newProject').value.trim() || 'Obecné';
+ const desc = document.getElementById('newDesc').value.trim();
+ const prob = parseInt(document.getElementById('newProb').value);
+ const impact = parseInt(document.getElementById('newImpact').value);
+ const strategy = document.getElementById('newStrategy').value;
+ const mitigation = document.getElementById('newMitigation').value.trim();
+
+ if(!name) return alert('Vyplň název rizika.');
+
+ const data = load();
+ const id = data.length ? Math.max(...data.map(r=>r.id))+1 : 1;
+ data.push({id, name, project, desc, prob, impact, strategy, mitigation, mitigated:false});
+ save(data);
+
+ document.getElementById('newName').value = '';
+ document.getElementById('newProject').value = '';
+ document.getElementById('newDesc').value = '';
+ document.getElementById('newMitigation').value = '';
+ render();
+}
+
+function exportCSV(){
+ const data = load();
+ let csv = 'Riziko;Projekt;Popis;Pravděpodobnost;Dopad;Skóre;Úroveň;Strategie;Opatření;Ošetřeno\n';
+ data.forEach(r => {
+  const s = riskScore(r);
+  csv += `"${r.name}";"${r.project}";"${r.desc}";${r.prob};${r.impact};${s};"${levelLabel(riskLevel(s))}";"${strategyLabels[r.strategy]}";"${r.mitigation}";"${r.mitigated?'Ano':'Ne'}"\n`;
+ });
+ const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+ const a = document.createElement('a');
+ a.href = URL.createObjectURL(blob);
+ a.download = 'rizika.csv';
+ a.click();
+}
+
+render();
+</script>
+</body>
+</html>

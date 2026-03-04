@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 160">
+  <!-- Kudli. marketing logo -->
+  <text x="20" y="100" font-family="'Arial Black',Impact,system-ui,sans-serif" font-weight="900" font-size="88" fill="#1a1a1a" letter-spacing="-3">Kudli</text>
+  <!-- Dot after Kudli -->
+  <circle cx="310" cy="92" r="10" fill="#1a1a1a"/>
+  <!-- Second decorative dot (above, like the uploaded logo) -->
+  <circle cx="310" cy="52" r="10" fill="#1a1a1a"/>
+  <!-- marketing text -->
+  <text x="118" y="140" font-family="Arial,Helvetica,system-ui,sans-serif" font-weight="400" font-size="36" fill="#1a1a1a" letter-spacing="8">marketing</text>
+</svg>

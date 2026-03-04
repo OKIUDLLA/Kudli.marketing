@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Děkuji za poptávku — Kudli. marketing</title>
+<meta name="description" content="Děkujeme za poptávku — brzy se ozveme.">
+<meta property="og:title" content="Děkuji za poptávku — Kudli. marketing">
+<meta property="og:description" content="Děkujeme za poptávku — brzy se ozveme.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/dekuji.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center}
+.container{text-align:center;padding:2rem;max-width:600px}
+.check{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#2ecc71,#27ae60);margin:0 auto 2rem;display:flex;align-items:center;justify-content:center;animation:pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.check svg{width:50px;height:50px;animation:draw 0.6s ease 0.3s both}
+@keyframes draw{from{stroke-dashoffset:50}to{stroke-dashoffset:0}}
+.check svg path{stroke-dasharray:50;stroke-dashoffset:50}
+h1{font-size:2.5rem;font-weight:800;margin-bottom:0.75rem}
+h1 span{color:#e94560}
+p{color:rgba(255,255,255,0.6);font-size:1.1rem;margin-bottom:0.5rem;line-height:1.6}
+.highlight{color:rgba(255,255,255,0.9);font-weight:600;font-size:1.15rem;margin:1.5rem 0}
+.timeline{text-align:left;margin:2rem auto;max-width:400px}
+.timeline-item{display:flex;gap:1rem;margin-bottom:1.25rem;align-items:flex-start}
+.timeline-dot{width:12px;height:12px;border-radius:50%;background:#e94560;flex-shrink:0;margin-top:6px}
+.timeline-text h4{font-size:0.95rem;color:#fff;margin-bottom:0.1rem}
+.timeline-text p{font-size:0.85rem;color:rgba(255,255,255,0.5);margin:0}
+.btn{display:inline-block;padding:0.85rem 2.5rem;background:#e94560;color:#fff;text-decoration:none;border-radius:10px;font-weight:600;margin-top:2rem;transition:all 0.3s}
+.btn:hover{background:#ff6b81;transform:translateY(-3px);box-shadow:0 10px 30px rgba(233,69,96,0.3)}
+.note{margin-top:2rem;font-size:0.85rem;color:rgba(255,255,255,0.3)}
+@media(max-width:768px){h1{font-size:1.5rem}.icon{font-size:3rem}}
+@media(max-width:480px){.btn{width:100%;text-align:center;padding:0.75rem 1.5rem}}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="check">
+    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+  </div>
+  <h1>Děkuji za <span>poptávku!</span></h1>
+  <p>Vaše poptávka byla úspěšně odeslána.</p>
+  <p class="highlight">Ozvu se vám do 24 hodin.</p>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-text"><h4>Do 24 hodin</h4><p>Potvrdím přijetí a případně se zeptám na doplňující info</p></div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-text"><h4>Do 48 hodin</h4><p>Zašlu přesnou cenovou nabídku s harmonogramem</p></div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot"></div>
+      <div class="timeline-text"><h4>15min hovor</h4><p>Probereme vše osobně a domluvíme se na dalším postupu</p></div>
+    </div>
+  </div>
+
+  <a href="index.html" class="btn">Zpět na hlavní stránku</a>
+  <p class="note">— Ondra Kudlička, Kudli. marketing | o.kudlicka@gmail.com</p>
+</div>
+</body>
+</html>

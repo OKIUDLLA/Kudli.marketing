@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sledování pohledávek — Kudli. marketing</title>
+<meta name="description" content="Přehled nezaplacených faktur, splatnosti a upomínek. Správa pohledávek pro OSVČ.">
+<meta property="og:title" content="Sledování pohledávek — Kudli. marketing">
+<meta property="og:description" content="Přehled nezaplacených faktur, splatnosti a upomínek pro OSVČ.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/pohledavky.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+.top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
+.top-bar a:hover{color:var(--text)}
+
+.container{max-width:1000px;margin:0 auto;padding:2rem 1.5rem}
+
+h1{font-size:1.8rem;font-weight:800;margin-bottom:0.3rem}
+h1 em{color:var(--accent);font-style:normal}
+.sub{color:var(--muted);margin-bottom:2rem;font-size:0.95rem}
+
+/* KPI Cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.75rem;margin-bottom:2rem}
+.kpi{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.kpi .val{font-size:1.6rem;font-weight:800}
+.kpi .lbl{font-size:0.7rem;color:var(--muted);margin-top:0.2rem}
+.kpi .bar{height:4px;border-radius:2px;background:rgba(255,255,255,0.1);margin-top:0.5rem;overflow:hidden}
+.kpi .bar-fill{height:100%;border-radius:2px;transition:width 0.5s}
+
+/* Filters */
+.filters{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
+.filter-btn{padding:0.35rem 0.75rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--muted);cursor:pointer;font-size:0.8rem;transition:all 0.2s}
+.filter-btn:hover,.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.search-input{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.4rem 0.75rem;border-radius:8px;font-size:0.8rem;margin-left:auto;width:200px}
+.search-input:focus{outline:none;border-color:var(--accent)}
+
+/* Invoice list */
+.invoice-list{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:2rem}
+
+.invoice{background:var(--card);border-radius:12px;padding:1rem 1.25rem;border:1px solid rgba(255,255,255,0.06);display:grid;grid-template-columns:auto 1fr auto auto;gap:1rem;align-items:center;transition:all 0.2s}
+.invoice:hover{border-color:rgba(233,69,96,0.3);transform:translateX(3px)}
+
+.inv-status{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.status-paid{background:var(--green)}
+.status-pending{background:var(--orange)}
+.status-overdue{background:var(--red)}
+.status-sent{background:var(--blue)}
+
+.inv-info{min-width:0}
+.inv-number{font-weight:700;font-size:0.95rem}
+.inv-client{font-size:0.8rem;color:var(--muted)}
+.inv-dates{font-size:0.75rem;color:var(--muted);margin-top:0.15rem}
+.inv-dates span{margin-right:0.75rem}
+
+.inv-amount{font-weight:800;font-size:1.1rem;text-align:right;white-space:nowrap}
+
+.inv-actions{display:flex;gap:0.3rem}
+.inv-actions button{background:rgba(255,255,255,0.08);border:none;color:var(--text);padding:0.3rem 0.5rem;border-radius:6px;cursor:pointer;font-size:0.75rem;transition:all 0.2s}
+.inv-actions button:hover{background:var(--accent)}
+
+/* Overdue highlight */
+.invoice.overdue-row{border-left:3px solid var(--red)}
+.invoice.paid-row{opacity:0.6}
+
+/* Add form */
+.add-section{background:var(--card);border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.06)}
+.add-section h3{font-size:1rem;margin-bottom:1rem}
+.form-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:0.75rem}
+input,select{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.55rem 0.75rem;border-radius:8px;font-size:0.85rem;font-family:inherit}
+input:focus,select:focus{outline:none;border-color:var(--accent)}
+.btn{padding:0.55rem 1.25rem;border-radius:8px;border:none;cursor:pointer;font-weight:700;font-size:0.85rem;transition:all 0.2s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-secondary{background:rgba(255,255,255,0.1);color:var(--text)}
+.btn-secondary:hover{background:rgba(255,255,255,0.15)}
+.btn-row{display:flex;gap:0.5rem;margin-top:0.5rem}
+
+/* Reminder modal */
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:16px;padding:2rem;max-width:450px;width:90%;border:1px solid rgba(255,255,255,0.1)}
+.modal h3{margin-bottom:1rem}
+.modal textarea{width:100%;min-height:120px;margin-bottom:1rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.75rem;border-radius:8px;font-family:inherit;font-size:0.85rem;resize:vertical}
+
+/* Responsive */
+@media(max-width:768px){
+ .container{padding:1.5rem 1rem}
+ h1{font-size:1.4rem}
+ .invoice{grid-template-columns:auto 1fr auto;gap:0.75rem}
+ .inv-actions{display:none}
+ .form-grid{grid-template-columns:1fr 1fr}
+ .kpi-grid{grid-template-columns:1fr 1fr}
+ .search-input{width:100%;margin-left:0;margin-top:0.5rem}
+}
+@media(max-width:480px){
+ .invoice{grid-template-columns:1fr;gap:0.5rem}
+ .inv-amount{text-align:left}
+ .form-grid{grid-template-columns:1fr}
+}
+
+/* Print */
+@media print{
+ body{background:#fff;color:#000}
+ .top-bar,.add-section,.filters,.btn,.inv-actions,.modal-overlay,.search-input{display:none!important}
+ .container{max-width:100%;padding:0}
+ .invoice{border:1px solid #ccc;background:#fff;color:#000;break-inside:avoid}
+ .invoice *{color:#000!important}
+ .kpi{border:1px solid #ccc;background:#fff;color:#000}
+ .kpi *{color:#000!important}
+ .invoice.paid-row{opacity:0.4}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+ <a href="nastroje.html">&larr; Zpět na nástroje</a>
+ <span style="font-size:0.8rem;color:var(--muted)">Sledování pohledávek</span>
+</div>
+
+<div class="container">
+
+<h1>Sledování <em>pohledávek</em></h1>
+<p class="sub">Přehled faktur, splatností a plateb — kdo dluží a kolik</p>
+
+<div class="kpi-grid">
+ <div class="kpi"><div class="val" style="color:var(--accent)" id="kpiTotal">0 Kč</div><div class="lbl">Celkem pohledávky</div></div>
+ <div class="kpi"><div class="val" style="color:var(--green)" id="kpiPaid">0 Kč</div><div class="lbl">Zaplaceno</div>
+  <div class="bar"><div class="bar-fill" id="paidBar" style="width:0%;background:var(--green)"></div></div>
+ </div>
+ <div class="kpi"><div class="val" style="color:var(--orange)" id="kpiPending">0 Kč</div><div class="lbl">Čeká na platbu</div></div>
+ <div class="kpi"><div class="val" style="color:var(--red)" id="kpiOverdue">0 Kč</div><div class="lbl">Po splatnosti</div></div>
+</div>
+
+<div class="filters">
+ <button class="filter-btn active" onclick="setFilter('all')">Vše</button>
+ <button class="filter-btn" onclick="setFilter('overdue')">Po splatnosti</button>
+ <button class="filter-btn" onclick="setFilter('pending')">Čeká</button>
+ <button class="filter-btn" onclick="setFilter('paid')">Zaplaceno</button>
+ <input type="text" class="search-input" placeholder="Hledat klienta..." oninput="searchFilter(this.value)">
+</div>
+
+<div class="invoice-list" id="invoiceList"></div>
+
+<div class="add-section">
+ <h3>+ Nová pohledávka</h3>
+ <div class="form-grid">
+  <input type="text" id="newNumber" placeholder="Číslo faktury (např. 2026001)">
+  <input type="text" id="newClient" placeholder="Klient">
+  <input type="number" id="newAmount" placeholder="Částka (Kč)">
+ </div>
+ <div class="form-grid">
+  <input type="date" id="newIssued" title="Datum vystavení">
+  <input type="date" id="newDue" title="Datum splatnosti">
+  <select id="newStatus">
+   <option value="sent">Odesláno</option>
+   <option value="pending">Čeká na platbu</option>
+   <option value="overdue">Po splatnosti</option>
+   <option value="paid">Zaplaceno</option>
+  </select>
+ </div>
+ <div class="btn-row">
+  <button class="btn btn-primary" onclick="addInvoice()">Přidat</button>
+  <button class="btn btn-secondary" onclick="exportCSV()">Export CSV</button>
+ </div>
+</div>
+
+</div>
+
+<!-- Reminder Modal -->
+<div class="modal-overlay" id="reminderModal">
+ <div class="modal">
+  <h3>📧 Upomínka</h3>
+  <textarea id="reminderText" readonly></textarea>
+  <div class="btn-row">
+   <button class="btn btn-primary" onclick="copyReminder()">Kopírovat</button>
+   <button class="btn btn-secondary" onclick="closeModal()">Zavřít</button>
+  </div>
+ </div>
+</div>
+
+<script>
+const STORE_KEY = 'kudli_invoices';
+let currentFilter = 'all';
+let searchTerm = '';
+
+const statusLabels = {paid:'Zaplaceno',pending:'Čeká',overdue:'Po splatnosti',sent:'Odesláno'};
+
+function loadInvoices(){
+ const saved = sessionStorage.getItem(STORE_KEY);
+ if(saved) return JSON.parse(saved);
+ const demo = [
+  {id:1,number:'2026001',client:'Kavárna Zrnko s.r.o.',amount:18500,issued:'2026-01-15',due:'2026-02-14',status:'paid',reminders:0},
+  {id:2,number:'2026002',client:'FitLife Academy',amount:32000,issued:'2026-01-20',due:'2026-02-19',status:'paid',reminders:0},
+  {id:3,number:'2026003',client:'TechStart s.r.o.',amount:45000,issued:'2026-02-01',due:'2026-03-03',status:'pending',reminders:0},
+  {id:4,number:'2026004',client:'Restaurace U Jelena',amount:12500,issued:'2026-02-05',due:'2026-02-20',status:'overdue',reminders:1},
+  {id:5,number:'2026005',client:'BeautyBox e-shop',amount:28000,issued:'2026-02-10',due:'2026-03-12',status:'pending',reminders:0},
+  {id:6,number:'2026006',client:'Advokátní kancelář Nový',amount:55000,issued:'2026-02-15',due:'2026-03-17',status:'sent',reminders:0},
+  {id:7,number:'2026007',client:'GreenGarden s.r.o.',amount:15000,issued:'2026-01-10',due:'2026-02-09',status:'overdue',reminders:2},
+  {id:8,number:'2026008',client:'MadeByHand.cz',amount:38000,issued:'2026-02-20',due:'2026-03-22',status:'sent',reminders:0}
+ ];
+ sessionStorage.setItem(STORE_KEY, JSON.stringify(demo));
+ return demo;
+}
+
+function save(invoices){
+ sessionStorage.setItem(STORE_KEY, JSON.stringify(invoices));
+}
+
+function fmt(n){
+ return new Intl.NumberFormat('cs-CZ').format(n)+' Kč';
+}
+
+function fmtDate(d){
+ if(!d) return '—';
+ const p = d.split('-');
+ return p[2]+'. '+parseInt(p[1])+'. '+p[0];
+}
+
+function daysUntil(dateStr){
+ const now = new Date(); now.setHours(0,0,0,0);
+ const d = new Date(dateStr+'T00:00:00');
+ return Math.ceil((d - now)/(1000*60*60*24));
+}
+
+function setFilter(f){
+ currentFilter = f;
+ document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+ event.target.classList.add('active');
+ render();
+}
+
+function searchFilter(val){
+ searchTerm = val.toLowerCase();
+ render();
+}
+
+function markPaid(id){
+ const invoices = loadInvoices();
+ const inv = invoices.find(i => i.id === id);
+ if(inv){ inv.status = 'paid'; save(invoices); render(); }
+}
+
+function deleteInvoice(id){
+ let invoices = loadInvoices();
+ invoices = invoices.filter(i => i.id !== id);
+ save(invoices);
+ render();
+}
+
+function showReminder(id){
+ const invoices = loadInvoices();
+ const inv = invoices.find(i => i.id === id);
+ if(!inv) return;
+
+ const days = Math.abs(daysUntil(inv.due));
+ const text = `Dobrý den,
+
+dovoluji si Vás upozornit na nezaplacenou fakturu č. ${inv.number} ze dne ${fmtDate(inv.issued)} ve výši ${fmt(inv.amount)}.
+
+Datum splatnosti: ${fmtDate(inv.due)} (${days} dní po splatnosti)
+
+Prosím o úhradu na účet: 1486382014/3030
+Variabilní symbol: ${inv.number}
+
+V případě, že platba již byla odeslána, považujte tuto zprávu za bezpředmětnou.
+
+Děkuji za spolupráci.
+
+S pozdravem,
+Ondřej Kudlička
+Kudli. marketing
+IČO: 07271751`;
+
+ document.getElementById('reminderText').value = text;
+ document.getElementById('reminderModal').classList.add('show');
+
+ // Increment reminder count
+ inv.reminders = (inv.reminders||0) + 1;
+ save(invoices);
+}
+
+function copyReminder(){
+ const text = document.getElementById('reminderText').value;
+ navigator.clipboard.writeText(text);
+ closeModal();
+}
+
+function closeModal(){
+ document.getElementById('reminderModal').classList.remove('show');
+}
+
+function render(){
+ const invoices = loadInvoices();
+
+ // Auto-update overdue status
+ invoices.forEach(inv => {
+  if(inv.status !== 'paid' && daysUntil(inv.due) < 0){
+   inv.status = 'overdue';
+  }
+ });
+ save(invoices);
+
+ // Filter
+ let filtered = invoices;
+ if(currentFilter !== 'all') filtered = filtered.filter(i => i.status === currentFilter);
+ if(searchTerm) filtered = filtered.filter(i => i.client.toLowerCase().includes(searchTerm) || i.number.includes(searchTerm));
+
+ // Sort: overdue first, then by due date
+ filtered.sort((a,b) => {
+  const order = {overdue:0,pending:1,sent:2,paid:3};
+  if(order[a.status] !== order[b.status]) return order[a.status] - order[b.status];
+  return a.due.localeCompare(b.due);
+ });
+
+ // KPIs
+ const total = invoices.reduce((s,i) => s+i.amount, 0);
+ const paid = invoices.filter(i => i.status==='paid').reduce((s,i) => s+i.amount, 0);
+ const pending = invoices.filter(i => i.status==='pending'||i.status==='sent').reduce((s,i) => s+i.amount, 0);
+ const overdue = invoices.filter(i => i.status==='overdue').reduce((s,i) => s+i.amount, 0);
+
+ document.getElementById('kpiTotal').textContent = fmt(total);
+ document.getElementById('kpiPaid').textContent = fmt(paid);
+ document.getElementById('kpiPending').textContent = fmt(pending);
+ document.getElementById('kpiOverdue').textContent = fmt(overdue);
+ document.getElementById('paidBar').style.width = (total ? (paid/total*100) : 0)+'%';
+
+ // List
+ let html = '';
+ filtered.forEach(inv => {
+  const rowClass = inv.status==='overdue' ? 'overdue-row' : (inv.status==='paid' ? 'paid-row' : '');
+  const statusDot = inv.status==='paid' ? 'status-paid' : (inv.status==='overdue' ? 'status-overdue' : (inv.status==='pending' ? 'status-pending' : 'status-sent'));
+  const days = daysUntil(inv.due);
+  let dueLabel = '';
+  if(inv.status==='paid') dueLabel = '✓ Zaplaceno';
+  else if(days < 0) dueLabel = `⚠️ ${Math.abs(days)} dní po splatnosti`;
+  else if(days === 0) dueLabel = '⏰ Dnes!';
+  else if(days <= 7) dueLabel = `📅 Za ${days} dní`;
+  else dueLabel = `📅 Za ${days} dní`;
+
+  html += `<div class="invoice ${rowClass}">
+   <div class="inv-status ${statusDot}" title="${statusLabels[inv.status]}"></div>
+   <div class="inv-info">
+    <div class="inv-number">Faktura ${inv.number}</div>
+    <div class="inv-client">${inv.client}</div>
+    <div class="inv-dates">
+     <span>Vystavena: ${fmtDate(inv.issued)}</span>
+     <span>Splatnost: ${fmtDate(inv.due)}</span>
+     <span style="color:${days<0?'var(--red)':days<=7?'var(--orange)':'var(--muted)'}">${dueLabel}</span>
+     ${inv.reminders ? `<span style="color:var(--orange)">📧 ${inv.reminders}× upomínka</span>` : ''}
+    </div>
+   </div>
+   <div class="inv-amount" style="color:${inv.status==='paid'?'var(--green)':inv.status==='overdue'?'var(--red)':'var(--text)'}">${fmt(inv.amount)}</div>
+   <div class="inv-actions">
+    ${inv.status!=='paid' ? `<button onclick="markPaid(${inv.id})" title="Označit jako zaplaceno">✓</button>` : ''}
+    ${inv.status==='overdue' ? `<button onclick="showReminder(${inv.id})" title="Generovat upomínku">📧</button>` : ''}
+    <button onclick="deleteInvoice(${inv.id})" title="Smazat">🗑️</button>
+   </div>
+  </div>`;
+ });
+
+ if(!html) html = '<p style="color:var(--muted);text-align:center;padding:2rem">Žádné pohledávky odpovídající filtru.</p>';
+ document.getElementById('invoiceList').innerHTML = html;
+}
+
+function addInvoice(){
+ const number = document.getElementById('newNumber').value.trim();
+ const client = document.getElementById('newClient').value.trim();
+ const amount = parseFloat(document.getElementById('newAmount').value);
+ const issued = document.getElementById('newIssued').value;
+ const due = document.getElementById('newDue').value;
+ const status = document.getElementById('newStatus').value;
+ if(!number || !client || !amount || !issued || !due) return alert('Vyplň všechna povinná pole.');
+
+ const invoices = loadInvoices();
+ const id = invoices.length ? Math.max(...invoices.map(i=>i.id))+1 : 1;
+ invoices.push({id, number, client, amount, issued, due, status, reminders:0});
+ save(invoices);
+
+ document.getElementById('newNumber').value = '';
+ document.getElementById('newClient').value = '';
+ document.getElementById('newAmount').value = '';
+ document.getElementById('newIssued').value = '';
+ document.getElementById('newDue').value = '';
+ render();
+}
+
+function exportCSV(){
+ const invoices = loadInvoices();
+ let csv = 'Číslo;Klient;Částka;Vystavena;Splatnost;Status;Upomínky\n';
+ invoices.forEach(i => {
+  csv += `"${i.number}";"${i.client}";${i.amount};"${i.issued}";"${i.due}";"${statusLabels[i.status]}";${i.reminders}\n`;
+ });
+ const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+ const a = document.createElement('a');
+ a.href = URL.createObjectURL(blob);
+ a.download = 'pohledavky.csv';
+ a.click();
+}
+
+render();
+</script>
+</body>
+</html>

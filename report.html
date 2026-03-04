@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klientský report — Kudli. marketing</title>
+<meta name="description" content="Generátor měsíčních reportů pro klienty s přehledem výkonnosti a doporučeními.">
+<meta property="og:title" content="Klientský report — Kudli. marketing">
+<meta property="og:description" content="Generátor měsíčních reportů pro klienty s přehledem výkonnosti a doporučeními.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/report.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--text:#fff;--muted:rgba(255,255,255,0.5);--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:var(--accent-light);text-decoration:none}
+
+.header{background:var(--card);border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.header-left{display:flex;align-items:center;gap:1rem}
+.header h1{font-size:1.3rem;font-weight:700}
+.header h1 span{color:var(--accent)}
+.back-link{color:var(--muted);font-size:0.85rem;transition:color 0.3s}
+.back-link:hover{color:var(--accent)}
+
+.container{max-width:1200px;margin:0 auto;padding:2rem}
+.layout{display:grid;grid-template-columns:380px 1fr;gap:2rem;align-items:start}
+
+/* Sidebar form */
+.sidebar{display:flex;flex-direction:column;gap:1rem}
+.form-card{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06)}
+.form-card h3{font-size:0.95rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+.form-card h3 .icon{font-size:1.1rem}
+.form-group{margin-bottom:0.85rem}
+.form-group label{display:block;font-size:0.78rem;color:var(--muted);margin-bottom:0.3rem;font-weight:600}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.55rem 0.8rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--accent)}
+.form-group textarea{min-height:60px;resize:vertical}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem}
+
+/* KPI input row */
+.kpi-row{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem;margin-bottom:0.6rem}
+.kpi-input{display:flex;flex-direction:column}
+.kpi-input label{font-size:0.72rem;color:var(--muted);margin-bottom:0.2rem}
+.kpi-input input{padding:0.45rem 0.6rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#fff;font-size:0.85rem;text-align:right}
+.kpi-input input:focus{outline:none;border-color:var(--accent)}
+
+/* Task list */
+.task-list{display:flex;flex-direction:column;gap:0.4rem}
+.task-item{display:flex;align-items:center;gap:0.5rem;padding:0.4rem 0}
+.task-item input[type=text]{flex:1;padding:0.4rem 0.6rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#fff;font-size:0.82rem}
+.task-item input[type=text]:focus{outline:none;border-color:var(--accent)}
+.task-item .remove{background:none;border:none;color:var(--red);cursor:pointer;font-size:0.85rem;opacity:0.5;transition:opacity 0.3s}
+.task-item .remove:hover{opacity:1}
+.add-task{background:none;border:1px dashed rgba(255,255,255,0.15);border-radius:6px;color:var(--muted);padding:0.4rem;cursor:pointer;font-size:0.8rem;text-align:center;transition:all 0.3s}
+.add-task:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Buttons */
+.btn{padding:0.6rem 1.2rem;border:none;border-radius:10px;font-size:0.85rem;cursor:pointer;font-weight:600;transition:all 0.3s;display:inline-flex;align-items:center;gap:0.4rem}
+.btn-primary{background:var(--accent);color:#fff;width:100%}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-secondary{background:rgba(255,255,255,0.06);color:var(--text);border:1px solid rgba(255,255,255,0.1)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Report preview */
+.report-preview{background:#fff;border-radius:14px;color:#1a1a2e;overflow:hidden;box-shadow:0 4px 30px rgba(0,0,0,0.3)}
+.report-header{background:linear-gradient(135deg,#1a1a2e,#16213e);color:#fff;padding:2.5rem 2rem;position:relative;overflow:hidden}
+.report-header::after{content:'';position:absolute;top:-40px;right:-40px;width:200px;height:200px;border-radius:50%;background:rgba(233,69,96,0.08)}
+.report-logo{font-size:1.6rem;font-weight:900;margin-bottom:0.25rem}
+.report-logo span{color:var(--accent)}
+.report-subtitle{font-size:0.85rem;color:rgba(255,255,255,0.5)}
+.report-title{font-size:1.8rem;font-weight:800;margin-top:1.5rem}
+.report-meta{display:flex;gap:2rem;margin-top:0.75rem;font-size:0.85rem;color:rgba(255,255,255,0.6)}
+
+.report-body{padding:2rem}
+.report-section{margin-bottom:2rem}
+.report-section h2{font-size:1.15rem;font-weight:700;color:#1a1a2e;margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid #e94560;display:flex;align-items:center;gap:0.5rem}
+
+/* KPI cards in report */
+.report-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:0.5rem}
+.report-kpi{background:#f8f9fa;border-radius:10px;padding:1rem;text-align:center;border-left:3px solid var(--accent)}
+.report-kpi .value{font-size:1.6rem;font-weight:800;color:#1a1a2e}
+.report-kpi .label{font-size:0.75rem;color:#666;margin-top:0.2rem}
+.report-kpi .change{font-size:0.8rem;margin-top:0.3rem;font-weight:600}
+.report-kpi .change.up{color:#2ecc71}
+.report-kpi .change.down{color:#e74c3c}
+.report-kpi .change.neutral{color:#666}
+
+/* Chart area */
+.report-chart{background:#f8f9fa;border-radius:10px;padding:1.5rem;margin-bottom:1rem}
+.chart-bars{display:flex;align-items:flex-end;gap:4px;height:120px;margin-top:0.5rem}
+.chart-bar{flex:1;background:linear-gradient(to top,#e94560,#ff6b81);border-radius:4px 4px 0 0;min-height:4px;transition:height 0.5s;position:relative}
+.chart-bar:hover::after{content:attr(data-val);position:absolute;top:-22px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#fff;font-size:0.65rem;padding:2px 6px;border-radius:4px;white-space:nowrap}
+.chart-labels{display:flex;gap:4px;margin-top:0.4rem}
+.chart-labels span{flex:1;text-align:center;font-size:0.6rem;color:#999}
+
+/* Task list in report */
+.report-tasks{list-style:none}
+.report-tasks li{padding:0.5rem 0;border-bottom:1px solid #eee;display:flex;align-items:flex-start;gap:0.5rem;font-size:0.9rem;color:#333}
+.report-tasks li::before{content:'✅';font-size:0.85rem}
+
+/* Recommendation */
+.report-recs{display:flex;flex-direction:column;gap:0.75rem}
+.report-rec{background:#f8f9fa;border-radius:10px;padding:1rem;border-left:3px solid #3498db;font-size:0.88rem;color:#333}
+.report-rec .priority{font-size:0.7rem;font-weight:700;padding:0.15rem 0.4rem;border-radius:4px;margin-right:0.5rem;display:inline-block}
+.report-rec .priority.high{background:rgba(231,76,60,0.1);color:#e74c3c}
+.report-rec .priority.mid{background:rgba(243,156,18,0.1);color:#f39c12}
+.report-rec .priority.low{background:rgba(52,152,219,0.1);color:#3498db}
+
+/* Report footer */
+.report-footer{border-top:2px solid #eee;padding:1.5rem 2rem;display:flex;align-items:center;justify-content:space-between;font-size:0.8rem;color:#999}
+.report-footer .brand{font-weight:800;color:#1a1a2e;font-size:0.9rem}
+.report-footer .brand span{color:#e94560}
+
+/* Print */
+@media print{
+  body{background:#fff !important}
+  .header,.sidebar{display:none !important}
+  .layout{grid-template-columns:1fr !important}
+  .report-preview{box-shadow:none !important;border-radius:0 !important}
+  .report-header{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+@media(max-width:900px){
+  .layout{grid-template-columns:1fr}
+  .report-kpis{grid-template-columns:1fr}
+  .container{padding:1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <a href="nastroje.html" class="back-link">← Nástroje</a>
+    <h1>📊 Klientský <span>report</span></h1>
+  </div>
+  <div style="display:flex;gap:0.75rem">
+    <button class="btn btn-secondary" onclick="loadDemo()" style="font-size:0.8rem">🎯 Demo data</button>
+    <button class="btn btn-secondary" onclick="window.print()" style="font-size:0.8rem">🖨️ Tisk / PDF</button>
+  </div>
+</div>
+
+<div class="container">
+<div class="layout">
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="form-card">
+    <h3><span class="icon">📋</span> Základní údaje</h3>
+    <div class="form-group">
+      <label>Název klienta</label>
+      <input type="text" id="rClient" placeholder="Firma s.r.o." oninput="updatePreview()">
+    </div>
+    <div class="form-group">
+      <label>Název projektu</label>
+      <input type="text" id="rProject" placeholder="Redesign webu" oninput="updatePreview()">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Měsíc</label>
+        <select id="rMonth" onchange="updatePreview()">
+          <option value="Leden">Leden</option><option value="Únor">Únor</option>
+          <option value="Březen" selected>Březen</option><option value="Duben">Duben</option>
+          <option value="Květen">Květen</option><option value="Červen">Červen</option>
+          <option value="Červenec">Červenec</option><option value="Srpen">Srpen</option>
+          <option value="Září">Září</option><option value="Říjen">Říjen</option>
+          <option value="Listopad">Listopad</option><option value="Prosinec">Prosinec</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Rok</label>
+        <input type="number" id="rYear" value="2026" oninput="updatePreview()">
+      </div>
+    </div>
+  </div>
+
+  <div class="form-card">
+    <h3><span class="icon">📈</span> KPI — Výkonnost</h3>
+    <div class="kpi-row">
+      <div class="kpi-input">
+        <label>Návštěvy</label>
+        <input type="number" id="kVisits" value="0" oninput="updatePreview()">
+      </div>
+      <div class="kpi-input">
+        <label>Změna (%)</label>
+        <input type="number" id="kVisitsChange" value="0" oninput="updatePreview()">
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-input">
+        <label>Poptávky / leady</label>
+        <input type="number" id="kLeads" value="0" oninput="updatePreview()">
+      </div>
+      <div class="kpi-input">
+        <label>Změna (%)</label>
+        <input type="number" id="kLeadsChange" value="0" oninput="updatePreview()">
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-input">
+        <label>Konverzní poměr (%)</label>
+        <input type="number" id="kConversion" value="0" step="0.1" oninput="updatePreview()">
+      </div>
+      <div class="kpi-input">
+        <label>Změna (%)</label>
+        <input type="number" id="kConvChange" value="0" oninput="updatePreview()">
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-input">
+        <label>Tržby (Kč)</label>
+        <input type="number" id="kRevenue" value="0" oninput="updatePreview()">
+      </div>
+      <div class="kpi-input">
+        <label>Změna (%)</label>
+        <input type="number" id="kRevChange" value="0" oninput="updatePreview()">
+      </div>
+    </div>
+    <div class="kpi-row">
+      <div class="kpi-input">
+        <label>Prům. čas na stránce (s)</label>
+        <input type="number" id="kTime" value="0" oninput="updatePreview()">
+      </div>
+      <div class="kpi-input">
+        <label>Bounce rate (%)</label>
+        <input type="number" id="kBounce" value="0" step="0.1" oninput="updatePreview()">
+      </div>
+    </div>
+
+    <h3 style="margin-top:1rem"><span class="icon">📊</span> Denní návštěvy (graf)</h3>
+    <div class="form-group">
+      <label>Zadejte čárkou oddělené hodnoty (max 31 dní)</label>
+      <input type="text" id="kDailyVisits" placeholder="45,52,38,67,72,55,49,61,58,43,39,68,74,80,65,71,56,48,44,59,63,77,82,69,53,47,41,60,66,73,78" oninput="updatePreview()">
+    </div>
+  </div>
+
+  <div class="form-card">
+    <h3><span class="icon">✅</span> Provedené práce</h3>
+    <div class="task-list" id="taskList">
+      <div class="task-item">
+        <input type="text" placeholder="Co bylo uděláno..." oninput="updatePreview()">
+        <button class="remove" onclick="removeTask(this)">✕</button>
+      </div>
+    </div>
+    <button class="add-task" onclick="addTask()">+ Přidat položku</button>
+  </div>
+
+  <div class="form-card">
+    <h3><span class="icon">💡</span> Doporučení</h3>
+    <div id="recList">
+      <div class="form-group" style="margin-bottom:0.5rem">
+        <div style="display:flex;gap:0.5rem;margin-bottom:0.3rem">
+          <select class="rec-priority" style="width:100px;padding:0.3rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#fff;font-size:0.78rem" onchange="updatePreview()">
+            <option value="high">🔴 Vysoká</option>
+            <option value="mid">🟡 Střední</option>
+            <option value="low">🔵 Nízká</option>
+          </select>
+          <button class="remove" onclick="removeRec(this)" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:0.85rem;opacity:0.5">✕</button>
+        </div>
+        <input type="text" class="rec-text" placeholder="Doporučení pro klienta..." oninput="updatePreview()" style="width:100%;padding:0.4rem 0.6rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#fff;font-size:0.82rem">
+      </div>
+    </div>
+    <button class="add-task" onclick="addRec()">+ Přidat doporučení</button>
+  </div>
+
+  <div class="form-card">
+    <h3><span class="icon">💬</span> Shrnutí</h3>
+    <div class="form-group">
+      <textarea id="rSummary" rows="4" placeholder="Volný text shrnutí měsíce pro klienta..." oninput="updatePreview()"></textarea>
+    </div>
+  </div>
+
+  <button class="btn btn-primary" onclick="window.print()">🖨️ Exportovat report (Tisk / PDF)</button>
+</div>
+
+<!-- Report Preview -->
+<div class="report-preview" id="reportPreview">
+  <div class="report-header">
+    <div class="report-logo">Kudli<span>.</span> marketing</div>
+    <div class="report-subtitle">Měsíční report výkonnosti</div>
+    <div class="report-title" id="prevTitle">Měsíční report</div>
+    <div class="report-meta">
+      <span id="prevClient">Klient</span>
+      <span id="prevPeriod">Březen 2026</span>
+    </div>
+  </div>
+  <div class="report-body">
+
+    <div class="report-section">
+      <h2>📈 Klíčové metriky</h2>
+      <div class="report-kpis" id="prevKPIs">
+        <!-- KPI cards rendered by JS -->
+      </div>
+    </div>
+
+    <div class="report-section" id="chartSection" style="display:none">
+      <h2>📊 Denní návštěvnost</h2>
+      <div class="report-chart">
+        <div class="chart-bars" id="prevChart"></div>
+        <div class="chart-labels" id="prevChartLabels"></div>
+      </div>
+    </div>
+
+    <div class="report-section" id="taskSection" style="display:none">
+      <h2>✅ Provedené práce</h2>
+      <ul class="report-tasks" id="prevTasks"></ul>
+    </div>
+
+    <div class="report-section" id="recSection" style="display:none">
+      <h2>💡 Doporučení pro další měsíc</h2>
+      <div class="report-recs" id="prevRecs"></div>
+    </div>
+
+    <div class="report-section" id="summarySection" style="display:none">
+      <h2>💬 Shrnutí</h2>
+      <p id="prevSummary" style="font-size:0.92rem;color:#333;line-height:1.7"></p>
+    </div>
+
+  </div>
+  <div class="report-footer">
+    <div class="brand">Kudli<span>.</span> marketing</div>
+    <div>Vygenerováno: <span id="prevDate"></span></div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<script>
+function updatePreview() {
+  // Title & meta
+  const client = document.getElementById('rClient').value || 'Klient';
+  const project = document.getElementById('rProject').value || '';
+  const month = document.getElementById('rMonth').value;
+  const year = document.getElementById('rYear').value;
+
+  document.getElementById('prevTitle').textContent = project ? `${project} — Report` : 'Měsíční report';
+  document.getElementById('prevClient').textContent = client;
+  document.getElementById('prevPeriod').textContent = `${month} ${year}`;
+  document.getElementById('prevDate').textContent = new Date().toLocaleDateString('cs');
+
+  // KPIs
+  const kpis = [
+    { label: 'Návštěvy', value: fmt(document.getElementById('kVisits').value), change: document.getElementById('kVisitsChange').value },
+    { label: 'Poptávky', value: fmt(document.getElementById('kLeads').value), change: document.getElementById('kLeadsChange').value },
+    { label: 'Konverze', value: document.getElementById('kConversion').value + '%', change: document.getElementById('kConvChange').value },
+    { label: 'Tržby', value: fmtCZK(document.getElementById('kRevenue').value), change: document.getElementById('kRevChange').value },
+    { label: 'Prům. čas', value: document.getElementById('kTime').value + 's', change: null },
+    { label: 'Bounce rate', value: document.getElementById('kBounce').value + '%', change: null }
+  ];
+
+  document.getElementById('prevKPIs').innerHTML = kpis.map(k => {
+    let changeHTML = '';
+    if (k.change !== null && k.change !== '') {
+      const v = parseFloat(k.change);
+      const cls = v > 0 ? 'up' : v < 0 ? 'down' : 'neutral';
+      const arrow = v > 0 ? '↑' : v < 0 ? '↓' : '→';
+      changeHTML = `<div class="change ${cls}">${arrow} ${Math.abs(v)}%</div>`;
+    }
+    return `<div class="report-kpi"><div class="value">${k.value}</div><div class="label">${k.label}</div>${changeHTML}</div>`;
+  }).join('');
+
+  // Chart
+  const dailyStr = document.getElementById('kDailyVisits').value.trim();
+  const chartSection = document.getElementById('chartSection');
+  if (dailyStr) {
+    const vals = dailyStr.split(',').map(v => parseInt(v.trim())).filter(v => !isNaN(v));
+    if (vals.length > 0) {
+      const max = Math.max(...vals);
+      chartSection.style.display = 'block';
+      document.getElementById('prevChart').innerHTML = vals.map((v, i) =>
+        `<div class="chart-bar" style="height:${max > 0 ? (v / max * 100) : 0}%" data-val="${v}"></div>`
+      ).join('');
+      document.getElementById('prevChartLabels').innerHTML = vals.map((_, i) =>
+        `<span>${i + 1}</span>`
+      ).join('');
+    } else {
+      chartSection.style.display = 'none';
+    }
+  } else {
+    chartSection.style.display = 'none';
+  }
+
+  // Tasks
+  const tasks = [...document.querySelectorAll('#taskList input[type=text]')]
+    .map(i => i.value.trim()).filter(Boolean);
+  const taskSection = document.getElementById('taskSection');
+  if (tasks.length > 0) {
+    taskSection.style.display = 'block';
+    document.getElementById('prevTasks').innerHTML = tasks.map(t => `<li>${t}</li>`).join('');
+  } else {
+    taskSection.style.display = 'none';
+  }
+
+  // Recommendations
+  const recs = [];
+  document.querySelectorAll('#recList .form-group').forEach(g => {
+    const priority = g.querySelector('.rec-priority').value;
+    const text = g.querySelector('.rec-text').value.trim();
+    if (text) recs.push({ priority, text });
+  });
+  const recSection = document.getElementById('recSection');
+  if (recs.length > 0) {
+    recSection.style.display = 'block';
+    document.getElementById('prevRecs').innerHTML = recs.map(r => {
+      const labels = { high: 'VYSOKÁ', mid: 'STŘEDNÍ', low: 'NÍZKÁ' };
+      return `<div class="report-rec"><span class="priority ${r.priority}">${labels[r.priority]}</span>${r.text}</div>`;
+    }).join('');
+  } else {
+    recSection.style.display = 'none';
+  }
+
+  // Summary
+  const summary = document.getElementById('rSummary').value.trim();
+  const summarySection = document.getElementById('summarySection');
+  if (summary) {
+    summarySection.style.display = 'block';
+    document.getElementById('prevSummary').textContent = summary;
+  } else {
+    summarySection.style.display = 'none';
+  }
+}
+
+function fmt(v) { return parseInt(v || 0).toLocaleString('cs'); }
+function fmtCZK(v) { return parseInt(v || 0).toLocaleString('cs') + ' Kč'; }
+
+function addTask() {
+  const list = document.getElementById('taskList');
+  const div = document.createElement('div');
+  div.className = 'task-item';
+  div.innerHTML = `<input type="text" placeholder="Co bylo uděláno..." oninput="updatePreview()"><button class="remove" onclick="removeTask(this)">✕</button>`;
+  list.appendChild(div);
+  div.querySelector('input').focus();
+}
+
+function removeTask(btn) {
+  btn.parentElement.remove();
+  updatePreview();
+}
+
+function addRec() {
+  const list = document.getElementById('recList');
+  const div = document.createElement('div');
+  div.className = 'form-group';
+  div.style.marginBottom = '0.5rem';
+  div.innerHTML = `
+    <div style="display:flex;gap:0.5rem;margin-bottom:0.3rem">
+      <select class="rec-priority" style="width:100px;padding:0.3rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#fff;font-size:0.78rem" onchange="updatePreview()">
+        <option value="high">🔴 Vysoká</option>
+        <option value="mid" selected>🟡 Střední</option>
+        <option value="low">🔵 Nízká</option>
+      </select>
+      <button class="remove" onclick="removeRec(this)" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:0.85rem;opacity:0.5">✕</button>
+    </div>
+    <input type="text" class="rec-text" placeholder="Doporučení pro klienta..." oninput="updatePreview()" style="width:100%;padding:0.4rem 0.6rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#fff;font-size:0.82rem">`;
+  list.appendChild(div);
+  div.querySelector('.rec-text').focus();
+}
+
+function removeRec(btn) {
+  btn.closest('.form-group').remove();
+  updatePreview();
+}
+
+function loadDemo() {
+  document.getElementById('rClient').value = 'Kavárna U Mlýna';
+  document.getElementById('rProject').value = 'Firemní web + SEO';
+  document.getElementById('rMonth').value = 'Únor';
+  document.getElementById('rYear').value = '2026';
+  document.getElementById('kVisits').value = 1247;
+  document.getElementById('kVisitsChange').value = 23;
+  document.getElementById('kLeads').value = 18;
+  document.getElementById('kLeadsChange').value = 12;
+  document.getElementById('kConversion').value = 1.44;
+  document.getElementById('kConvChange').value = -5;
+  document.getElementById('kRevenue').value = 42000;
+  document.getElementById('kRevChange').value = 15;
+  document.getElementById('kTime').value = 185;
+  document.getElementById('kBounce').value = 38.2;
+  document.getElementById('kDailyVisits').value = '34,41,38,52,58,62,45,36,39,48,55,61,68,72,44,37,42,50,57,63,69,74,47,35,40,53,59,65';
+
+  // Tasks
+  const taskList = document.getElementById('taskList');
+  taskList.innerHTML = '';
+  const tasks = [
+    'Optimalizace meta tagů pro 12 klíčových stránek',
+    'Vytvoření 3 nových blogových článků (káva, snídaně, events)',
+    'Oprava mobilní responsivity menu a patičky',
+    'Nastavení Google Business Profile s aktuální otevírací dobou',
+    'Implementace strukturovaných dat (LocalBusiness schema)',
+    'A/B test hlavního CTA tlačítka (rezervace vs. objednávka)'
+  ];
+  tasks.forEach(t => {
+    const div = document.createElement('div');
+    div.className = 'task-item';
+    div.innerHTML = `<input type="text" value="${t}" oninput="updatePreview()"><button class="remove" onclick="removeTask(this)">✕</button>`;
+    taskList.appendChild(div);
+  });
+
+  // Recommendations
+  const recList = document.getElementById('recList');
+  recList.innerHTML = '';
+  const recs = [
+    { p: 'high', t: 'Spustit Google Ads kampaň na klíčová slova "kavárna + město" — odhadovaný budget 3000 Kč/měsíc' },
+    { p: 'mid', t: 'Přidat fotogalerii interiéru a jídelního lístku pro zvýšení konverzí' },
+    { p: 'low', t: 'Zvážit integraci online rezervačního systému pro snazší booking' }
+  ];
+  recs.forEach(r => {
+    const div = document.createElement('div');
+    div.className = 'form-group';
+    div.style.marginBottom = '0.5rem';
+    div.innerHTML = `
+      <div style="display:flex;gap:0.5rem;margin-bottom:0.3rem">
+        <select class="rec-priority" style="width:100px;padding:0.3rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#fff;font-size:0.78rem" onchange="updatePreview()">
+          <option value="high" ${r.p==='high'?'selected':''}>🔴 Vysoká</option>
+          <option value="mid" ${r.p==='mid'?'selected':''}>🟡 Střední</option>
+          <option value="low" ${r.p==='low'?'selected':''}>🔵 Nízká</option>
+        </select>
+        <button class="remove" onclick="removeRec(this)" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:0.85rem;opacity:0.5">✕</button>
+      </div>
+      <input type="text" class="rec-text" value="${r.t}" oninput="updatePreview()" style="width:100%;padding:0.4rem 0.6rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:#fff;font-size:0.82rem">`;
+    recList.appendChild(div);
+  });
+
+  document.getElementById('rSummary').value = 'Únor byl úspěšný měsíc s rostoucí návštěvností díky optimalizaci SEO a novému obsahu na blogu. Konverzní poměr mírně poklesl kvůli vyššímu podílu organického trafficu z informačních dotazů, ale celkové tržby vzrostly o 15%. Doporučujeme investovat do placené reklamy pro další posílení poptávek.';
+
+  updatePreview();
+}
+
+// Init
+updatePreview();
+</script>
+</body>
+</html>

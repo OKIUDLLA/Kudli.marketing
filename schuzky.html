@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Schůzky | Kudli. marketing</title>
+<meta name="description" content="Správa schůzek, poznámek ze schůzek a follow-upů.">
+<meta property="og:title" content="Schůzky | Kudli. marketing">
+<meta property="og:description" content="Plánování a záznamy ze schůzek s klienty.">
+<meta property="og:image" content="og-image.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.top-bar{background:var(--card);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05)}
+.top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
+.top-bar a:hover{color:var(--accent)}
+.container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.75rem;margin-bottom:0.25rem}
+h1 em{color:var(--accent);font-style:normal}
+.subtitle{color:var(--muted);margin-bottom:2rem}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2rem}
+.stat{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.05)}
+.stat .num{font-size:1.75rem;font-weight:700}
+.stat .lbl{font-size:0.75rem;color:var(--muted);margin-top:0.2rem}
+
+/* Filters */
+.filters{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
+.search{flex:1;min-width:200px;padding:0.6rem 1rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.9rem}
+.filter-btn{padding:0.5rem 1rem;border-radius:8px;background:var(--card);border:1px solid rgba(255,255,255,0.05);cursor:pointer;font-size:0.8rem;color:var(--muted);transition:all 0.2s}
+.filter-btn:hover{border-color:var(--accent)}
+.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Meeting card */
+.meeting-card{background:var(--card);border-radius:14px;padding:1.5rem;margin-bottom:1rem;border:1px solid rgba(255,255,255,0.05);position:relative;border-left:4px solid transparent}
+.meeting-card.upcoming{border-left-color:var(--blue)}
+.meeting-card.completed{border-left-color:var(--green)}
+.meeting-card.cancelled{border-left-color:var(--red);opacity:0.6}
+.m-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem}
+.m-title{font-size:1.05rem;font-weight:600}
+.m-status{padding:0.2rem 0.6rem;border-radius:4px;font-size:0.7rem;font-weight:600}
+.m-meta{display:flex;gap:1.5rem;flex-wrap:wrap;margin-bottom:0.75rem;font-size:0.85rem;color:var(--muted)}
+.m-meta span{display:flex;align-items:center;gap:0.3rem}
+.m-notes{background:rgba(255,255,255,0.03);border-radius:8px;padding:0.75rem;font-size:0.85rem;line-height:1.6;margin-bottom:0.75rem;white-space:pre-wrap}
+.m-actions-list{display:flex;flex-direction:column;gap:0.35rem;margin-bottom:0.75rem}
+.m-action{display:flex;align-items:center;gap:0.5rem;font-size:0.85rem}
+.m-action-check{width:16px;height:16px;border-radius:4px;border:2px solid var(--muted);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.55rem;transition:all 0.2s}
+.m-action-check.done{background:var(--green);border-color:var(--green);color:#fff}
+.m-section-label{font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);margin-bottom:0.35rem;margin-top:0.5rem}
+
+/* Buttons */
+.btn{padding:0.6rem 1.25rem;border-radius:8px;border:none;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.1)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:0.35rem 0.75rem;font-size:0.8rem}
+
+/* Delete */
+.delete-m{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;opacity:0.4;transition:opacity 0.2s}
+.delete-m:hover{opacity:1;color:var(--red)}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:16px;padding:2rem;width:90%;max-width:600px;max-height:85vh;overflow-y:auto}
+.modal h2{font-size:1.25rem;margin-bottom:1.5rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.35rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.9rem;font-family:inherit}
+.form-group textarea{resize:vertical;min-height:80px;line-height:1.5}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.modal-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1.5rem}
+.action-inputs{display:flex;flex-direction:column;gap:0.35rem;margin-top:0.5rem}
+.action-row{display:flex;gap:0.5rem;align-items:center}
+.action-row input{flex:1}
+.remove-action{background:var(--red);color:#fff;border:none;border-radius:6px;width:24px;height:24px;cursor:pointer;font-size:0.8rem}
+
+@media(max-width:768px){
+  .container{padding:1.5rem 0.75rem}
+  h1{font-size:1.4rem}
+  .stats{grid-template-columns:repeat(2,1fr)}
+  .form-row{grid-template-columns:1fr}
+  .m-meta{flex-direction:column;gap:0.35rem}
+}
+@media(max-width:480px){
+  .container{padding:1rem 0.5rem}
+  .btn{width:100%;justify-content:center}
+  .filters{flex-direction:column}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="nastroje.html">← Zpět na nástroje</a>
+  <span style="font-size:0.8rem;color:var(--muted)">Schůzky</span>
+</div>
+
+<div class="container">
+  <h1>📅 Správa <em>schůzek</em></h1>
+  <p class="subtitle">Plánování, poznámky a action items ze schůzek</p>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="filters">
+    <input type="text" class="search" id="search" placeholder="Hledat schůzku..." oninput="render()">
+    <button class="filter-btn active" onclick="setFilter('all',this)">Vše</button>
+    <button class="filter-btn" onclick="setFilter('upcoming',this)">Plánované</button>
+    <button class="filter-btn" onclick="setFilter('completed',this)">Dokončené</button>
+  </div>
+
+  <div style="margin-bottom:1.5rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+    <button class="btn btn-primary" onclick="openModal()">+ Nová schůzka</button>
+    <button class="btn btn-outline" onclick="exportCSV()">📥 Export CSV</button>
+  </div>
+
+  <div id="meetingsList"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">Nová schůzka</h2>
+    <input type="hidden" id="editId">
+    <div class="form-group">
+      <label>Název / Téma</label>
+      <input type="text" id="mTitle" placeholder="Např. Kickoff — Kavárna U Mlýna">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Datum</label>
+        <input type="date" id="mDate">
+      </div>
+      <div class="form-group">
+        <label>Čas</label>
+        <input type="time" id="mTime" value="10:00">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Klient / Účastník</label>
+        <input type="text" id="mClient" placeholder="Název firmy nebo jméno">
+      </div>
+      <div class="form-group">
+        <label>Typ</label>
+        <select id="mType">
+          <option value="discovery">Discovery call</option>
+          <option value="kickoff">Kickoff</option>
+          <option value="review">Měsíční review</option>
+          <option value="followup">Follow-up</option>
+          <option value="internal">Interní</option>
+          <option value="other">Jiné</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Místo / Odkaz</label>
+      <input type="text" id="mLocation" placeholder="Google Meet, kancelář, kavárna...">
+    </div>
+    <div class="form-group">
+      <label>Status</label>
+      <select id="mStatus">
+        <option value="upcoming">Plánovaná</option>
+        <option value="completed">Dokončená</option>
+        <option value="cancelled">Zrušená</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Poznámky ze schůzky</label>
+      <textarea id="mNotes" placeholder="Klíčové body, rozhodnutí, závěry..."></textarea>
+    </div>
+    <div class="form-group">
+      <label>Action items</label>
+      <div class="action-inputs" id="actionInputs"></div>
+      <button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="addActionInput()">+ Přidat úkol</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveMeeting()">Uložit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const TYPE_MAP = {
+  discovery:{label:'Discovery',color:'#9b59b6'},
+  kickoff:{label:'Kickoff',color:'#2ecc71'},
+  review:{label:'Review',color:'#3498db'},
+  followup:{label:'Follow-up',color:'#f39c12'},
+  internal:{label:'Interní',color:'#e94560'},
+  other:{label:'Jiné',color:'#95a5a6'}
+};
+
+function defaultMeetings(){
+  return [
+    {id:1,title:'Kickoff — MadeByHand',date:'2026-03-05',time:'10:00',client:'MadeByHand',type:'kickoff',location:'Google Meet',status:'upcoming',
+      notes:'',actions:[
+        {text:'Připravit prezentaci plánu projektu',done:false},
+        {text:'Odeslat brief dokument předem',done:true},
+        {text:'Nastavit sdílený Google Drive',done:false}
+      ]},
+    {id:2,title:'Měsíční review — BydlímTu',date:'2026-03-07',time:'14:00',client:'BydlímTu',type:'review',location:'Google Meet',status:'upcoming',
+      notes:'',actions:[
+        {text:'Připravit měsíční report za únor',done:false},
+        {text:'Stáhnout data z GA4 a Google Ads',done:true}
+      ]},
+    {id:3,title:'Discovery call — FitLife Studio',date:'2026-03-04',time:'11:00',client:'FitLife Studio',type:'discovery',location:'Telefon',status:'upcoming',
+      notes:'',actions:[
+        {text:'Prostudovat web a sociální sítě FitLife',done:true},
+        {text:'Připravit otázky pro brief',done:false}
+      ]},
+    {id:4,title:'Follow-up — Petr Novák',date:'2026-02-28',time:'15:00',client:'Petr Novák',type:'followup',location:'Google Meet',status:'completed',
+      notes:'Petr má zájem o správu Google Ads pro svůj e-shop.\nRozpočet: 10-15k Kč/měsíc včetně ad spend.\nChce vidět nabídku do konce týdne.\nKonkurence: 3 hlavní hráči v oboru.',
+      actions:[
+        {text:'Připravit nabídku na Google Ads management',done:true},
+        {text:'Analyzovat konkurenční PPC reklamy',done:true},
+        {text:'Odeslat nabídku do pátku',done:false}
+      ]},
+    {id:5,title:'Kickoff — Kavárna U Mlýna',date:'2026-02-20',time:'09:30',client:'Kavárna U Mlýna',type:'kickoff',location:'Na místě — kavárna',status:'completed',
+      notes:'Domluveno na landing page s online objednávkou.\nDesign: moderní, teplé barvy, fotky interiéru.\nDeadline: 14 dní od kickoff.\nKlient dodá fotky a texty do 3 dnů.',
+      actions:[
+        {text:'Vytvořit wireframe landing page',done:true},
+        {text:'Připravit návrh designu',done:true},
+        {text:'Odeslat první draft ke schválení',done:true}
+      ]},
+    {id:6,title:'Interní — Týdenní plánování',date:'2026-02-24',time:'08:00',client:'Interní',type:'internal',location:'—',status:'completed',
+      notes:'Priorita tento týden:\n1. Dokončit landing page Kavárna\n2. Follow-up nabídka Petr Novák\n3. Blog článek o SEO\n4. Aktualizovat portfolio web',
+      actions:[
+        {text:'Dokončit landing page Kavárna',done:true},
+        {text:'Napsat blog článek',done:true},
+        {text:'Aktualizovat portfolio',done:true}
+      ]}
+  ];
+}
+
+let meetings = JSON.parse(sessionStorage.getItem('meetings_data')) || defaultMeetings();
+let nextId = Math.max(...meetings.map(m=>m.id),0)+1;
+let activeFilter = 'all';
+
+function save(){sessionStorage.setItem('meetings_data',JSON.stringify(meetings))}
+
+function renderStats(){
+  const upcoming = meetings.filter(m=>m.status==='upcoming').length;
+  const completed = meetings.filter(m=>m.status==='completed').length;
+  const openActions = meetings.reduce((a,m)=>a+m.actions.filter(x=>!x.done).length,0);
+  const thisWeek = meetings.filter(m=>{
+    const d = new Date(m.date);
+    const now = new Date();
+    const diff = (d-now)/(1000*60*60*24);
+    return diff>=0 && diff<=7 && m.status==='upcoming';
+  }).length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="num" style="color:var(--blue)">${upcoming}</div><div class="lbl">Plánovaných</div></div>
+    <div class="stat"><div class="num" style="color:var(--green)">${completed}</div><div class="lbl">Dokončených</div></div>
+    <div class="stat"><div class="num" style="color:var(--orange)">${openActions}</div><div class="lbl">Otevřených úkolů</div></div>
+    <div class="stat"><div class="num" style="color:var(--accent)">${thisWeek}</div><div class="lbl">Tento týden</div></div>
+  `;
+}
+
+function setFilter(f,btn){
+  activeFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function getFiltered(){
+  let list = meetings;
+  if(activeFilter!=='all') list = list.filter(m=>m.status===activeFilter);
+  const q = document.getElementById('search').value.toLowerCase();
+  if(q) list = list.filter(m=>m.title.toLowerCase().includes(q)||m.client.toLowerCase().includes(q));
+  return list.sort((a,b)=>{
+    if(a.status==='upcoming'&&b.status!=='upcoming') return -1;
+    if(b.status==='upcoming'&&a.status!=='upcoming') return 1;
+    return new Date(b.date)-new Date(a.date);
+  });
+}
+
+function renderList(){
+  const list = getFiltered();
+  if(!list.length){
+    document.getElementById('meetingsList').innerHTML = '<div style="text-align:center;color:var(--muted);padding:3rem">Žádné schůzky nenalezeny.</div>';
+    return;
+  }
+  document.getElementById('meetingsList').innerHTML = list.map(m=>{
+    const t = TYPE_MAP[m.type]||{label:m.type,color:'#999'};
+    const statusLabel = m.status==='upcoming'?'Plánovaná':m.status==='completed'?'Dokončená':'Zrušená';
+    const statusColor = m.status==='upcoming'?'var(--blue)':m.status==='completed'?'var(--green)':'var(--red)';
+    return `
+    <div class="meeting-card ${m.status}">
+      <button class="delete-m" onclick="deleteMeeting(${m.id})" title="Smazat">✕</button>
+      <div class="m-header">
+        <div class="m-title">${m.title}</div>
+        <span class="m-status" style="background:${statusColor}22;color:${statusColor}">${statusLabel}</span>
+      </div>
+      <div class="m-meta">
+        <span>📅 ${formatDate(m.date)} v ${m.time}</span>
+        <span>👤 ${m.client}</span>
+        <span style="background:${t.color}22;color:${t.color};padding:0.15rem 0.5rem;border-radius:4px;font-size:0.75rem">${t.label}</span>
+        <span>📍 ${m.location}</span>
+      </div>
+      ${m.notes?`<div class="m-section-label">Poznámky</div><div class="m-notes">${m.notes}</div>`:''}
+      ${m.actions.length?`
+        <div class="m-section-label">Action items (${m.actions.filter(a=>a.done).length}/${m.actions.length})</div>
+        <div class="m-actions-list">
+          ${m.actions.map((a,i)=>`
+            <div class="m-action">
+              <div class="m-action-check ${a.done?'done':''}" onclick="toggleAction(${m.id},${i})">${a.done?'✓':''}</div>
+              <span style="${a.done?'text-decoration:line-through;opacity:0.5':''}">${a.text}</span>
+            </div>
+          `).join('')}
+        </div>
+      `:''}
+      <div style="display:flex;gap:0.5rem;margin-top:0.5rem">
+        <button class="btn btn-outline btn-sm" onclick="editMeeting(${m.id})">✏️ Upravit</button>
+        ${m.status==='upcoming'?`<button class="btn btn-outline btn-sm" style="color:var(--green)" onclick="completeMeeting(${m.id})">✅ Dokončit</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function formatDate(d){
+  const parts = d.split('-');
+  return `${parts[2]}.${parts[1]}.${parts[0]}`;
+}
+
+function toggleAction(mId,aIdx){
+  const m = meetings.find(x=>x.id===mId);
+  if(!m) return;
+  m.actions[aIdx].done = !m.actions[aIdx].done;
+  save();render();
+}
+
+function completeMeeting(id){
+  const m = meetings.find(x=>x.id===id);
+  if(m) m.status='completed';
+  save();render();
+}
+
+function deleteMeeting(id){
+  if(!confirm('Smazat schůzku?')) return;
+  meetings = meetings.filter(m=>m.id!==id);
+  save();render();
+}
+
+function render(){renderStats();renderList()}
+
+function openModal(id){
+  const m = id ? meetings.find(x=>x.id===id) : null;
+  document.getElementById('editId').value = id||'';
+  document.getElementById('modalTitle').textContent = m ? 'Upravit schůzku' : 'Nová schůzka';
+  document.getElementById('mTitle').value = m ? m.title : '';
+  document.getElementById('mDate').value = m ? m.date : new Date().toISOString().split('T')[0];
+  document.getElementById('mTime').value = m ? m.time : '10:00';
+  document.getElementById('mClient').value = m ? m.client : '';
+  document.getElementById('mType').value = m ? m.type : 'discovery';
+  document.getElementById('mLocation').value = m ? m.location : 'Google Meet';
+  document.getElementById('mStatus').value = m ? m.status : 'upcoming';
+  document.getElementById('mNotes').value = m ? m.notes : '';
+  renderActionInputs(m ? m.actions : [{text:'',done:false}]);
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show')}
+
+function renderActionInputs(actions){
+  document.getElementById('actionInputs').innerHTML = actions.map(a=>`
+    <div class="action-row">
+      <input type="text" placeholder="Úkol po schůzce" value="${a.text}" class="ai-text">
+      <button class="remove-action" onclick="this.parentElement.remove()">✕</button>
+    </div>
+  `).join('');
+}
+
+function addActionInput(){
+  const wrap = document.getElementById('actionInputs');
+  const row = document.createElement('div');
+  row.className = 'action-row';
+  row.innerHTML = `<input type="text" placeholder="Úkol po schůzce" class="ai-text"><button class="remove-action" onclick="this.parentElement.remove()">✕</button>`;
+  wrap.appendChild(row);
+}
+
+function saveMeeting(){
+  const title = document.getElementById('mTitle').value.trim();
+  if(!title) return alert('Vyplňte název');
+  const date = document.getElementById('mDate').value;
+  const time = document.getElementById('mTime').value;
+  const client = document.getElementById('mClient').value.trim();
+  const type = document.getElementById('mType').value;
+  const location = document.getElementById('mLocation').value.trim();
+  const status = document.getElementById('mStatus').value;
+  const notes = document.getElementById('mNotes').value.trim();
+  const rows = document.querySelectorAll('#actionInputs .action-row');
+  const actions = [];
+  rows.forEach(r=>{
+    const t = r.querySelector('.ai-text').value.trim();
+    if(t) actions.push({text:t,done:false});
+  });
+  const editId = document.getElementById('editId').value;
+  if(editId){
+    const m = meetings.find(x=>x.id===parseInt(editId));
+    Object.assign(m,{title,date,time,client,type,location,status,notes,actions});
+  } else {
+    meetings.push({id:nextId++,title,date,time,client,type,location,status,notes,actions});
+  }
+  save();closeModal();render();
+}
+
+function editMeeting(id){openModal(id)}
+
+function exportCSV(){
+  let csv = 'Název,Datum,Čas,Klient,Typ,Místo,Status,Poznámky\n';
+  meetings.forEach(m=>{
+    csv += `"${m.title}","${m.date}","${m.time}","${m.client}","${m.type}","${m.location}","${m.status}","${m.notes.replace(/"/g,'""')}"\n`;
+  });
+  const blob = new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'schuzky-export.csv';
+  a.click();
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Knihovna šablon | Kudli. marketing</title>
+<meta name="description" content="Knihovna šablon pro emaily, nabídky, follow-upy a další opakované texty.">
+<meta property="og:title" content="Knihovna šablon | Kudli. marketing">
+<meta property="og:description" content="Šablony pro efektivní komunikaci s klienty.">
+<meta property="og:image" content="og-image.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.top-bar{background:var(--card);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05)}
+.top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
+.top-bar a:hover{color:var(--accent)}
+.container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.75rem;margin-bottom:0.25rem}
+h1 em{color:var(--accent);font-style:normal}
+.subtitle{color:var(--muted);margin-bottom:2rem}
+
+/* Filters */
+.filters{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
+.search{flex:1;min-width:200px;padding:0.6rem 1rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.9rem}
+.filter-btn{padding:0.5rem 1rem;border-radius:8px;background:var(--card);border:1px solid rgba(255,255,255,0.05);cursor:pointer;font-size:0.8rem;color:var(--muted);transition:all 0.2s}
+.filter-btn:hover{border-color:var(--accent)}
+.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Stats */
+.stats{display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.stat{background:var(--card);border-radius:10px;padding:0.75rem 1.25rem;display:flex;align-items:center;gap:0.75rem;border:1px solid rgba(255,255,255,0.05)}
+.stat .num{font-size:1.5rem;font-weight:700}
+.stat .lbl{font-size:0.75rem;color:var(--muted)}
+
+/* Template cards */
+.templates-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1rem}
+.tpl-card{background:var(--card);border-radius:12px;border:1px solid rgba(255,255,255,0.05);overflow:hidden;transition:transform 0.2s,box-shadow 0.2s;cursor:pointer}
+.tpl-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,0.3)}
+.tpl-header{padding:1.25rem 1.25rem 0.75rem;display:flex;align-items:flex-start;justify-content:space-between}
+.tpl-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.tpl-cat{padding:0.2rem 0.6rem;border-radius:4px;font-size:0.7rem;font-weight:600}
+.tpl-body{padding:0 1.25rem 1rem}
+.tpl-name{font-size:1rem;font-weight:600;margin-bottom:0.25rem}
+.tpl-desc{font-size:0.8rem;color:var(--muted);line-height:1.4}
+.tpl-footer{padding:0.75rem 1.25rem;border-top:1px solid rgba(255,255,255,0.05);display:flex;justify-content:space-between;align-items:center}
+.tpl-uses{font-size:0.75rem;color:var(--muted)}
+.tpl-actions{display:flex;gap:0.35rem}
+
+/* Buttons */
+.btn{padding:0.5rem 1rem;border-radius:8px;border:none;cursor:pointer;font-size:0.8rem;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.3rem}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.1)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:0.3rem 0.65rem;font-size:0.75rem}
+.btn-copy{background:rgba(46,204,113,0.15);color:var(--green);border:none}
+.btn-copy:hover{background:rgba(46,204,113,0.25)}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:16px;padding:2rem;width:90%;max-width:650px;max-height:85vh;overflow-y:auto}
+.modal h2{font-size:1.25rem;margin-bottom:1.5rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.35rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.9rem;font-family:inherit}
+.form-group textarea{resize:vertical;min-height:200px;line-height:1.6}
+.modal-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1.5rem}
+.var-hint{font-size:0.75rem;color:var(--muted);margin-top:0.35rem}
+.var-hint code{background:rgba(255,255,255,0.08);padding:0.1rem 0.35rem;border-radius:4px;font-size:0.7rem}
+
+/* Preview modal */
+.preview-content{background:rgba(255,255,255,0.03);border-radius:8px;padding:1.5rem;white-space:pre-wrap;line-height:1.7;font-size:0.9rem;max-height:60vh;overflow-y:auto;border:1px solid rgba(255,255,255,0.05)}
+
+/* Toast */
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--green);color:#fff;padding:0.75rem 1.25rem;border-radius:10px;font-size:0.85rem;font-weight:600;opacity:0;transform:translateY(10px);transition:all 0.3s;z-index:200;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+
+@media(max-width:768px){
+  .container{padding:1.5rem 0.75rem}
+  h1{font-size:1.4rem}
+  .templates-grid{grid-template-columns:1fr}
+  .stats{flex-direction:column}
+}
+@media(max-width:480px){
+  .container{padding:1rem 0.5rem}
+  .filters{flex-direction:column}
+  .search{min-width:auto}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="nastroje.html">← Zpět na nástroje</a>
+  <span style="font-size:0.8rem;color:var(--muted)">Knihovna šablon</span>
+</div>
+
+<div class="container">
+  <h1>📋 Knihovna <em>šablon</em></h1>
+  <p class="subtitle">Připravené texty pro emaily, nabídky, follow-upy a další komunikaci</p>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="filters">
+    <input type="text" class="search" id="search" placeholder="Hledat šablonu..." oninput="render()">
+    <div id="filterBtns"></div>
+  </div>
+
+  <div style="margin-bottom:1rem">
+    <button class="btn btn-primary" onclick="openModal()">+ Nová šablona</button>
+  </div>
+
+  <div class="templates-grid" id="grid"></div>
+</div>
+
+<!-- Preview Modal -->
+<div class="modal-overlay" id="previewOverlay">
+  <div class="modal">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <h2 id="previewTitle" style="margin:0">Náhled</h2>
+      <button class="btn btn-copy" onclick="copyPreview()">📋 Kopírovat</button>
+    </div>
+    <div class="preview-content" id="previewContent"></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closePreview()">Zavřít</button>
+      <button class="btn btn-primary" onclick="editFromPreview()">✏️ Upravit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Modal -->
+<div class="modal-overlay" id="editOverlay">
+  <div class="modal">
+    <h2 id="editTitle">Nová šablona</h2>
+    <input type="hidden" id="editId">
+    <div class="form-group">
+      <label>Název šablony</label>
+      <input type="text" id="tName" placeholder="Např. Úvodní email novému klientovi">
+    </div>
+    <div class="form-group">
+      <label>Kategorie</label>
+      <select id="tCat">
+        <option value="email">📧 Email</option>
+        <option value="nabidka">📄 Nabídka</option>
+        <option value="followup">🔄 Follow-up</option>
+        <option value="social">📱 Sociální sítě</option>
+        <option value="internal">⚙️ Interní</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Text šablony</label>
+      <textarea id="tBody" placeholder="Text šablony... Použijte {jmeno}, {firma}, {projekt} jako proměnné."></textarea>
+      <div class="var-hint">Proměnné: <code>{jmeno}</code> <code>{firma}</code> <code>{projekt}</code> <code>{cena}</code> <code>{datum}</code></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeEdit()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveTpl()">Uložit</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Zkopírováno do schránky!</div>
+
+<script>
+const CAT_MAP = {
+  email:{label:'Email',icon:'📧',color:'#3498db'},
+  nabidka:{label:'Nabídka',icon:'📄',color:'#2ecc71'},
+  followup:{label:'Follow-up',icon:'🔄',color:'#f39c12'},
+  social:{label:'Sociální sítě',icon:'📱',color:'#9b59b6'},
+  internal:{label:'Interní',icon:'⚙️',color:'#e94560'}
+};
+
+function defaultTemplates(){
+  return [
+    {id:1,name:'Úvodní email novému klientovi',cat:'email',uses:12,body:`Dobrý den {jmeno},
+
+děkuji za Váš zájem o spolupráci s Kudli. marketing.
+
+Rád bych se s Vámi spojil a probral možnosti, jak mohu pomoci firmě {firma} s online marketingem. Na základě naší krátké konverzace vidím několik oblastí, kde bych mohl přinést hodnotu.
+
+Navrhuji krátký 20minutový hovor, kde probereme Vaše cíle a já Vám představím konkrétní návrh. Hodil by se Vám tento týden?
+
+S pozdravem,
+Ondřej Kudlička
+Kudli. marketing
+o.kudlicka@gmail.com`},
+    {id:2,name:'Follow-up po schůzce',cat:'followup',uses:8,body:`Dobrý den {jmeno},
+
+ještě jednou děkuji za dnešní schůzku. Byl to velmi přínosný rozhovor.
+
+Jak jsme se domluvili, posílám shrnutí dalších kroků:
+1. Připravím detailní nabídku pro projekt {projekt}
+2. Nabídku odešlu do {datum}
+3. Poté si domluvíme další schůzku k finalizaci
+
+Pokud máte mezitím jakékoliv dotazy, neváhejte se ozvat.
+
+S pozdravem,
+Ondřej Kudlička`},
+    {id:3,name:'Nabídka služeb — úvod',cat:'nabidka',uses:6,body:`NABÍDKA MARKETINGOVÝCH SLUŽEB
+
+Pro: {firma}
+Kontakt: {jmeno}
+Datum: {datum}
+
+Vážený/á {jmeno},
+
+na základě naší konzultace jsem připravil následující nabídku služeb pro {firma}. Cílem je zvýšit online viditelnost a přivést kvalitní zákazníky prostřednictvím moderního digitálního marketingu.
+
+NAVRHOVANÝ ROZSAH:
+Projekt: {projekt}
+Investice: {cena} Kč
+
+V ceně je zahrnuto kompletní nastavení, optimalizace a měsíční reporting. Detailní rozpis najdete v příloze.`},
+    {id:4,name:'Follow-up po nabídce (3 dny)',cat:'followup',uses:5,body:`Dobrý den {jmeno},
+
+chtěl jsem se zeptat, zda jste měl/a možnost projít nabídku, kterou jsem odeslal minulý týden pro projekt {projekt}.
+
+Rád zodpovím jakékoliv dotazy nebo upravím nabídku podle Vašich potřeb. Jsem flexibilní jak v rozsahu, tak v nastavení spolupráce.
+
+Dáte vědět, kdy by se Vám hodil krátký hovor?
+
+S pozdravem,
+Ondřej Kudlička`},
+    {id:5,name:'Měsíční report — průvodní email',cat:'email',uses:4,body:`Dobrý den {jmeno},
+
+posílám měsíční report za uplynulé období pro {firma}.
+
+Klíčové výsledky:
+• Web: návštěvnost a konverze
+• Kampaně: výkon placené reklamy
+• SEO: pozice na klíčových slovech
+
+Detailní report najdete v příloze. Rád s Vámi výsledky proberu na krátké schůzce.
+
+Navrhoval bych se sejít tento týden — hodí se Vám?
+
+S pozdravem,
+Ondřej Kudlička
+Kudli. marketing`},
+    {id:6,name:'Žádost o referenci',cat:'email',uses:3,body:`Dobrý den {jmeno},
+
+doufám, že jste s dosavadní spoluprací spokojený/á. Vaše firma {firma} je pro mě důležitým klientem.
+
+Chtěl bych Vás poprosit o krátkou referenci, kterou bych mohl sdílet na svém webu. Stačí 2-3 věty o tom, jak Vám spolupráce pomohla.
+
+Pokud byste zároveň věděl/a o někom, komu by moje služby mohly pomoci, budu za doporučení velmi vděčný.
+
+Děkuji předem!
+
+S pozdravem,
+Ondřej Kudlička`},
+    {id:7,name:'LinkedIn post — case study',cat:'social',uses:3,body:`🚀 Nová případová studie: {firma}
+
+Jak jsme za 3 měsíce zvýšili online viditelnost a přivedli nové zákazníky?
+
+📊 Výsledky:
+→ +150% návštěvnost webu
+→ +80% konverzní poměr
+→ ROI 340%
+
+Klíčem bylo zaměření na {projekt} a systematický přístup k datům.
+
+Chcete podobné výsledky? Napište mi do DM nebo na o.kudlicka@gmail.com
+
+#marketing #digitalnimarketing #casestudy #kudlimarketing`},
+    {id:8,name:'Instagram caption — tip',cat:'social',uses:2,body:`💡 Marketingový tip dne:
+
+{projekt}
+
+Většina malých firem dělá chybu v tom, že...
+
+Řešení? Zaměřte se na 3 věci:
+1️⃣ Poznejte svého zákazníka
+2️⃣ Měřte výsledky
+3️⃣ Optimalizujte průběžně
+
+Uložte si tento post pro později! 📌
+
+---
+#marketingovytyp #podnikani #digitalnimarketing #kudlimarketing`},
+    {id:9,name:'Onboarding email — vítejte',cat:'email',uses:4,body:`Dobrý den {jmeno},
+
+vítejte v Kudli. marketing! Jsem rád, že jsme se dohodli na spolupráci.
+
+Co se bude dít dál:
+1. Do 2 pracovních dnů Vám pošlu přístup do klientského portálu
+2. Připravím podrobný plán pro {projekt}
+3. Domluvíme kickoff schůzku
+
+Pro hladký průběh bych potřeboval:
+• Přístupy k Google Analytics (pokud máte)
+• Logo a brandové materiály
+• Kontakt na osobu zodpovědnou za schvalování
+
+Těším se na spolupráci!
+
+Ondřej Kudlička
+Kudli. marketing`},
+    {id:10,name:'Interní checklist — nový projekt',cat:'internal',uses:7,body:`NOVÝ PROJEKT: {projekt}
+Klient: {firma} ({jmeno})
+Zahájení: {datum}
+
+SETUP:
+□ Smlouva podepsána
+□ Faktura vystavena
+□ Klient v CRM
+□ Projekt v kanban boardu
+□ Složka v Google Drive
+
+PŘÍSTUPY:
+□ Google Analytics
+□ Google Search Console
+□ Hosting / FTP
+□ Sociální sítě
+□ Reklamní účty
+
+KICKOFF:
+□ Analýza současného stavu
+□ Definice KPI
+□ Časový plán
+□ Kickoff schůzka s klientem`}
+  ];
+}
+
+let templates = JSON.parse(sessionStorage.getItem('tpl_data')) || defaultTemplates();
+let nextId = Math.max(...templates.map(t=>t.id),0)+1;
+let activeFilter = 'all';
+let previewId = null;
+
+function save(){sessionStorage.setItem('tpl_data',JSON.stringify(templates))}
+
+function renderStats(){
+  const total = templates.length;
+  const totalUses = templates.reduce((a,t)=>a+t.uses,0);
+  const cats = [...new Set(templates.map(t=>t.cat))].length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="num" style="color:var(--accent)">${total}</div><div class="lbl">Šablon</div></div>
+    <div class="stat"><div class="num" style="color:var(--green)">${totalUses}</div><div class="lbl">Celkem použití</div></div>
+    <div class="stat"><div class="num" style="color:var(--blue)">${cats}</div><div class="lbl">Kategorií</div></div>
+  `;
+}
+
+function renderFilters(){
+  const cats = ['all',...Object.keys(CAT_MAP)];
+  document.getElementById('filterBtns').innerHTML = cats.map(c=>
+    `<button class="filter-btn ${activeFilter===c?'active':''}" onclick="setFilter('${c}')">${c==='all'?'Vše':CAT_MAP[c].label}</button>`
+  ).join('');
+}
+
+function setFilter(f){activeFilter=f;render()}
+
+function getFiltered(){
+  let list = templates;
+  if(activeFilter!=='all') list = list.filter(t=>t.cat===activeFilter);
+  const q = document.getElementById('search').value.toLowerCase();
+  if(q) list = list.filter(t=>t.name.toLowerCase().includes(q)||t.body.toLowerCase().includes(q));
+  return list;
+}
+
+function renderGrid(){
+  const list = getFiltered();
+  if(!list.length){
+    document.getElementById('grid').innerHTML = '<div style="text-align:center;color:var(--muted);padding:3rem;grid-column:1/-1">Žádné šablony nenalezeny.</div>';
+    return;
+  }
+  document.getElementById('grid').innerHTML = list.map(t=>{
+    const c = CAT_MAP[t.cat]||{label:t.cat,icon:'📋',color:'#999'};
+    const preview = t.body.substring(0,100).replace(/\n/g,' ')+'...';
+    return `
+    <div class="tpl-card" onclick="openPreview(${t.id})">
+      <div class="tpl-header">
+        <div class="tpl-icon" style="background:${c.color}22;color:${c.color}">${c.icon}</div>
+        <span class="tpl-cat" style="background:${c.color}22;color:${c.color}">${c.label}</span>
+      </div>
+      <div class="tpl-body">
+        <div class="tpl-name">${t.name}</div>
+        <div class="tpl-desc">${preview}</div>
+      </div>
+      <div class="tpl-footer">
+        <span class="tpl-uses">Použito ${t.uses}×</span>
+        <div class="tpl-actions" onclick="event.stopPropagation()">
+          <button class="btn btn-copy btn-sm" onclick="copyTpl(${t.id})">📋</button>
+          <button class="btn btn-outline btn-sm" onclick="openEdit(${t.id})">✏️</button>
+          <button class="btn btn-outline btn-sm" style="color:var(--red);border-color:rgba(231,76,60,0.3)" onclick="deleteTpl(${t.id})">✕</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function render(){renderStats();renderFilters();renderGrid()}
+
+function openPreview(id){
+  const t = templates.find(x=>x.id===id);
+  if(!t) return;
+  previewId = id;
+  document.getElementById('previewTitle').textContent = t.name;
+  document.getElementById('previewContent').textContent = t.body;
+  document.getElementById('previewOverlay').classList.add('show');
+  t.uses++;save();
+}
+
+function closePreview(){document.getElementById('previewOverlay').classList.remove('show');render()}
+
+function editFromPreview(){closePreview();openEdit(previewId)}
+
+function copyPreview(){
+  const t = templates.find(x=>x.id===previewId);
+  if(t) copyToClipboard(t.body);
+}
+
+function copyTpl(id){
+  const t = templates.find(x=>x.id===id);
+  if(!t) return;
+  t.uses++;save();render();
+  copyToClipboard(t.body);
+}
+
+function copyToClipboard(text){
+  navigator.clipboard.writeText(text).then(()=>{
+    const toast = document.getElementById('toast');
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'),2000);
+  });
+}
+
+function openEdit(id){
+  const t = id ? templates.find(x=>x.id===id) : null;
+  document.getElementById('editId').value = id||'';
+  document.getElementById('editTitle').textContent = t ? 'Upravit šablonu' : 'Nová šablona';
+  document.getElementById('tName').value = t ? t.name : '';
+  document.getElementById('tCat').value = t ? t.cat : 'email';
+  document.getElementById('tBody').value = t ? t.body : '';
+  document.getElementById('editOverlay').classList.add('show');
+}
+
+function closeEdit(){document.getElementById('editOverlay').classList.remove('show')}
+function openModal(){openEdit()}
+
+function saveTpl(){
+  const name = document.getElementById('tName').value.trim();
+  const cat = document.getElementById('tCat').value;
+  const body = document.getElementById('tBody').value.trim();
+  if(!name||!body) return alert('Vyplňte název a text šablony');
+  const editId = document.getElementById('editId').value;
+  if(editId){
+    const t = templates.find(x=>x.id===parseInt(editId));
+    t.name=name;t.cat=cat;t.body=body;
+  } else {
+    templates.push({id:nextId++,name,cat,body,uses:0});
+  }
+  save();closeEdit();render();
+}
+
+function deleteTpl(id){
+  if(!confirm('Smazat šablonu?')) return;
+  templates = templates.filter(t=>t.id!==id);
+  save();render();
+}
+
+render();
+</script>
+</body>
+</html>

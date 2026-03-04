@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROI Kalkulátor — Kudli. marketing</title>
+<meta name="description" content="ROI kalkulačka — spočítejte návratnost investice do webu, e-shopu nebo automatizace.">
+<meta property="og:title" content="ROI Kalkulátor — Kudli. marketing">
+<meta property="og:description" content="ROI kalkulačka — spočítejte návratnost investice do webu, e-shopu nebo automatizace.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/roi-kalkulator.html">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--primary:#1a1a2e;--accent:#e94560;--accent-light:#ff6b81;--bg:#f4f6f9;--white:#fff;--text:#2d3748;--gray:#718096;--green:#48bb78;--shadow:0 2px 12px rgba(0,0,0,0.06)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+.container{max-width:820px;margin:0 auto;padding:2rem 1rem}
+h1{font-size:2rem;font-weight:700;color:var(--primary);text-align:center;margin-bottom:0.25rem}
+.subtitle{text-align:center;color:var(--gray);margin-bottom:2rem;font-size:0.95rem}
+
+.card{background:var(--white);border-radius:16px;padding:2rem;box-shadow:var(--shadow);margin-bottom:1.5rem}
+.card h2{font-size:1.15rem;font-weight:700;color:var(--primary);margin-bottom:1.25rem;padding-bottom:0.5rem;border-bottom:2px solid var(--bg)}
+
+/* Tabs */
+.tabs{display:flex;gap:0.5rem;margin-bottom:2rem;justify-content:center;flex-wrap:wrap}
+.tab{padding:0.6rem 1.5rem;border-radius:10px;border:2px solid #e0e0e0;background:var(--white);font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.3s;color:var(--gray)}
+.tab.active{border-color:var(--accent);background:rgba(233,69,96,0.06);color:var(--accent)}
+.tab:hover{border-color:var(--accent)}
+
+/* Sliders */
+.slider-group{margin-bottom:1.25rem}
+.slider-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.35rem}
+.slider-label{font-size:0.85rem;font-weight:600;color:var(--primary)}
+.slider-value{font-size:0.9rem;font-weight:700;color:var(--accent);background:rgba(233,69,96,0.06);padding:0.15rem 0.6rem;border-radius:6px}
+.slider-desc{font-size:0.75rem;color:var(--gray);margin-bottom:0.4rem}
+input[type=range]{width:100%;height:6px;-webkit-appearance:none;background:#edf2f7;border-radius:3px;outline:none}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--accent);border-radius:50%;cursor:pointer}
+
+/* Results */
+.results{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;margin-bottom:1.5rem}
+@media(max-width:600px){.results{grid-template-columns:1fr}}
+.result-box{text-align:center;padding:1.25rem;border-radius:14px;background:var(--bg)}
+.result-box.highlight{background:linear-gradient(135deg,var(--primary),#0f3460);color:white}
+.result-num{font-size:2rem;font-weight:700}
+.result-box.highlight .result-num{color:var(--accent-light)}
+.result-label{font-size:0.75rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px;margin-top:0.25rem}
+.result-box.highlight .result-label{color:rgba(255,255,255,0.6)}
+
+.roi-bar-wrap{background:#edf2f7;border-radius:10px;height:24px;overflow:hidden;position:relative;margin-bottom:0.5rem}
+.roi-bar-fill{height:100%;border-radius:10px;transition:width 0.8s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:0.5rem;font-size:0.7rem;font-weight:700;color:white}
+.roi-positive{background:linear-gradient(90deg,var(--green),#38a169)}
+.roi-negative{background:linear-gradient(90deg,#e53e3e,#c53030)}
+.roi-label{display:flex;justify-content:space-between;font-size:0.75rem;color:var(--gray)}
+
+.verdict{text-align:center;padding:1.5rem;border-radius:14px;margin-top:1rem}
+.verdict.positive{background:rgba(72,187,120,0.08);border:2px solid rgba(72,187,120,0.2)}
+.verdict.negative{background:rgba(229,62,62,0.08);border:2px solid rgba(229,62,62,0.2)}
+.verdict h3{font-size:1.1rem;margin-bottom:0.25rem}
+.verdict.positive h3{color:var(--green)}
+.verdict.negative h3{color:#e53e3e}
+.verdict p{font-size:0.85rem;color:var(--gray)}
+
+.cta-section{text-align:center;padding:2rem;background:var(--primary);border-radius:16px;color:white}
+.cta-section h3{font-size:1.2rem;margin-bottom:0.5rem}
+.cta-section p{color:rgba(255,255,255,0.6);margin-bottom:1rem;font-size:0.9rem}
+.cta-btn{display:inline-block;background:var(--accent);color:white;padding:0.7rem 2rem;border-radius:10px;text-decoration:none;font-weight:600;transition:all 0.3s}
+.cta-btn:hover{background:var(--accent-light);transform:translateY(-2px)}
+.back-link{display:block;text-align:center;margin-top:1.5rem;color:var(--accent);text-decoration:none;font-size:0.9rem}
+.back-link:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>ROI Kalkulátor</h1>
+  <p class="subtitle">Spočítejte si, kolik vám investice do webu nebo automatizace přinese</p>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('web')">Nový web</div>
+    <div class="tab" onclick="switchTab('auto')">Automatizace</div>
+    <div class="tab" onclick="switchTab('eshop')">E-shop</div>
+    <div class="tab" onclick="switchTab('chatbot')">AI Chatbot</div>
+  </div>
+
+  <div class="card">
+    <h2 id="calcTitle">Návratnost investice do nového webu</h2>
+
+    <!-- Web inputs -->
+    <div id="inputs-web">
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Investice do webu</span><span class="slider-value" id="v-web-invest">25 000 Kč</span></div>
+        <div class="slider-desc">Cena za vytvoření nového webu</div>
+        <input type="range" min="8000" max="100000" step="1000" value="25000" oninput="calc()" id="s-web-invest">
+      </div>
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Současní návštěvníci webu / měsíc</span><span class="slider-value" id="v-web-visitors">500</span></div>
+        <input type="range" min="50" max="10000" step="50" value="500" oninput="calc()" id="s-web-visitors">
+      </div>
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Současný konverzní poměr</span><span class="slider-value" id="v-web-conv">1.5%</span></div>
+        <div class="slider-desc">Kolik % návštěvníků se stane zákazníkem</div>
+        <input type="range" min="0.1" max="10" step="0.1" value="1.5" oninput="calc()" id="s-web-conv">
+      </div>
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Průměrná hodnota objednávky</span><span class="slider-value" id="v-web-aov">2 000 Kč</span></div>
+        <input type="range" min="100" max="50000" step="100" value="2000" oninput="calc()" id="s-web-aov">
+      </div>
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Očekávané zlepšení konverze</span><span class="slider-value" id="v-web-improve">40%</span></div>
+        <div class="slider-desc">Nový web typicky zvyšuje konverze o 20-60%</div>
+        <input type="range" min="10" max="100" step="5" value="40" oninput="calc()" id="s-web-improve">
+      </div>
+    </div>
+
+    <!-- Automatizace inputs -->
+    <div id="inputs-auto" style="display:none">
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Investice do automatizace</span><span class="slider-value" id="v-auto-invest">15 000 Kč</span></div>
+        <input type="range" min="5000" max="80000" step="1000" value="15000" oninput="calc()" id="s-auto-invest">
+      </div>
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Hodiny manuální práce / měsíc</span><span class="slider-value" id="v-auto-hours">20</span></div>
+        <div class="slider-desc">Kolik hodin měsíčně trávíte opakujícími se úkoly</div>
+        <input type="range" min="2" max="80" step="1" value="20" oninput="calc()" id="s-auto-hours">
+      </div>
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Hodinová sazba zaměstnance</span><span class="slider-value" id="v-auto-rate">350 Kč</span></div>
+        <input type="range" min="150" max="1000" step="10" value="350" oninput="calc()" id="s-auto-rate">
+      </div>
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Úspora času automatizací</span><span class="slider-value" id="v-auto-save">75%</span></div>
+        <div class="slider-desc">Kolik % času automatizace ušetří</div>
+        <input type="range" min="30" max="95" step="5" value="75" oninput="calc()" id="s-auto-save">
+      </div>
+    </div>
+
+    <!-- E-shop inputs -->
+    <div id="inputs-eshop" style="display:none">
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Investice do e-shopu</span><span class="slider-value" id="v-eshop-invest">45 000 Kč</span></div>
+        <input type="range" min="15000" max="150000" step="1000" value="45000" oninput="calc()" id="s-eshop-invest">
+      </div>
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Očekávané objednávky / měsíc</span><span class="slider-value" id="v-eshop-orders">30</span></div>
+        <input type="range" min="5" max="500" step="5" value="30" oninput="calc()" id="s-eshop-orders">
+      </div>
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Průměrná objednávka</span><span class="slider-value" id="v-eshop-aov">1 200 Kč</span></div>
+        <input type="range" min="200" max="20000" step="100" value="1200" oninput="calc()" id="s-eshop-aov">
+      </div>
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Marže</span><span class="slider-value" id="v-eshop-margin">35%</span></div>
+        <input type="range" min="10" max="80" step="5" value="35" oninput="calc()" id="s-eshop-margin">
+      </div>
+    </div>
+
+    <!-- Chatbot inputs -->
+    <div id="inputs-chatbot" style="display:none">
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Investice do chatbota</span><span class="slider-value" id="v-chat-invest">20 000 Kč</span></div>
+        <input type="range" min="5000" max="80000" step="1000" value="20000" oninput="calc()" id="s-chat-invest">
+      </div>
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Dotazy zákazníků / měsíc</span><span class="slider-value" id="v-chat-queries">200</span></div>
+        <input type="range" min="20" max="2000" step="10" value="200" oninput="calc()" id="s-chat-queries">
+      </div>
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Konverze z dotazů</span><span class="slider-value" id="v-chat-conv">5%</span></div>
+        <input type="range" min="1" max="20" step="0.5" value="5" oninput="calc()" id="s-chat-conv">
+      </div>
+      <div class="slider-group">
+        <div class="slider-header"><span class="slider-label">Hodnota konverze</span><span class="slider-value" id="v-chat-val">3 000 Kč</span></div>
+        <input type="range" min="500" max="50000" step="500" value="3000" oninput="calc()" id="s-chat-val">
+      </div>
+    </div>
+  </div>
+
+  <!-- Results -->
+  <div class="card">
+    <h2>Výsledky</h2>
+    <div class="results">
+      <div class="result-box"><div class="result-num" id="r-monthly">—</div><div class="result-label">Měsíční přínos</div></div>
+      <div class="result-box"><div class="result-num" id="r-payback">—</div><div class="result-label">Návratnost investice</div></div>
+      <div class="result-box highlight"><div class="result-num" id="r-yearly">—</div><div class="result-label">Roční ROI</div></div>
+    </div>
+    <div class="roi-bar-wrap">
+      <div class="roi-bar-fill roi-positive" id="roiBar" style="width:0%"></div>
+    </div>
+    <div class="roi-label"><span>Investice</span><span id="roiPct">0%</span><span>12 měsíců</span></div>
+    <div class="verdict positive" id="verdict">
+      <h3 id="verdictTitle">—</h3>
+      <p id="verdictText">—</p>
+    </div>
+  </div>
+
+  <div class="cta-section">
+    <h3>Chcete přesný výpočet pro váš byznys?</h3>
+    <p>Konzultace zdarma — spočítáme návratnost konkrétně pro vaši situaci.</p>
+    <a href="onboarding.html" class="cta-btn">Nezávazná konzultace →</a>
+  </div>
+
+  <a href="index.html" class="back-link">← Zpět na hlavní stránku</a>
+</div>
+
+<script>
+const fmt=n=>n.toLocaleString('cs-CZ')+' Kč';
+const fmtS=n=>n.toLocaleString('cs-CZ');
+let activeTab='web';
+
+function switchTab(tab){
+  activeTab=tab;
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector(`.tab[onclick="switchTab('${tab}')"]`).classList.add('active');
+  ['web','auto','eshop','chatbot'].forEach(t=>{
+    document.getElementById('inputs-'+t).style.display=t===tab?'block':'none';
+  });
+  const titles={web:'Návratnost investice do nového webu',auto:'Návratnost investice do automatizace',eshop:'Návratnost investice do e-shopu',chatbot:'Návratnost investice do AI chatbota'};
+  document.getElementById('calcTitle').textContent=titles[tab];
+  calc();
+}
+
+function val(id){return parseFloat(document.getElementById(id).value)}
+
+function calc(){
+  let invest,monthly,yearly;
+
+  if(activeTab==='web'){
+    invest=val('s-web-invest');
+    const visitors=val('s-web-visitors'),conv=val('s-web-conv')/100,aov=val('s-web-aov'),improve=val('s-web-improve')/100;
+    const currentRev=visitors*conv*aov;
+    const newRev=visitors*(conv*(1+improve))*aov;
+    monthly=newRev-currentRev;
+    document.getElementById('v-web-invest').textContent=fmt(invest);
+    document.getElementById('v-web-visitors').textContent=fmtS(visitors);
+    document.getElementById('v-web-conv').textContent=conv*100+'%';
+    document.getElementById('v-web-aov').textContent=fmt(aov);
+    document.getElementById('v-web-improve').textContent=improve*100+'%';
+  } else if(activeTab==='auto'){
+    invest=val('s-auto-invest');
+    const hours=val('s-auto-hours'),rate=val('s-auto-rate'),save=val('s-auto-save')/100;
+    monthly=hours*save*rate;
+    document.getElementById('v-auto-invest').textContent=fmt(invest);
+    document.getElementById('v-auto-hours').textContent=hours;
+    document.getElementById('v-auto-rate').textContent=fmt(rate);
+    document.getElementById('v-auto-save').textContent=save*100+'%';
+  } else if(activeTab==='eshop'){
+    invest=val('s-eshop-invest');
+    const orders=val('s-eshop-orders'),aov=val('s-eshop-aov'),margin=val('s-eshop-margin')/100;
+    monthly=orders*aov*margin;
+    document.getElementById('v-eshop-invest').textContent=fmt(invest);
+    document.getElementById('v-eshop-orders').textContent=orders;
+    document.getElementById('v-eshop-aov').textContent=fmt(aov);
+    document.getElementById('v-eshop-margin').textContent=margin*100+'%';
+  } else {
+    invest=val('s-chat-invest');
+    const queries=val('s-chat-queries'),conv=val('s-chat-conv')/100,cval=val('s-chat-val');
+    monthly=queries*conv*cval;
+    document.getElementById('v-chat-invest').textContent=fmt(invest);
+    document.getElementById('v-chat-queries').textContent=queries;
+    document.getElementById('v-chat-conv').textContent=conv*100+'%';
+    document.getElementById('v-chat-val').textContent=fmt(cval);
+  }
+
+  yearly=monthly*12;
+  const roi=((yearly-invest)/invest*100);
+  const paybackMonths=monthly>0?Math.ceil(invest/monthly):99;
+
+  document.getElementById('r-monthly').textContent=fmt(Math.round(monthly));
+  document.getElementById('r-payback').textContent=paybackMonths<=12?paybackMonths+' měs.':'12+ měs.';
+  document.getElementById('r-yearly').textContent=fmt(Math.round(yearly));
+
+  const bar=document.getElementById('roiBar');
+  const pct=Math.min(Math.max(roi,0),500)/5;
+  bar.style.width=pct+'%';
+  bar.className='roi-bar-fill '+(roi>=0?'roi-positive':'roi-negative');
+  bar.textContent=roi>=0?'+'+Math.round(roi)+'%':Math.round(roi)+'%';
+  document.getElementById('roiPct').textContent='ROI: '+(roi>=0?'+':'')+Math.round(roi)+'%';
+
+  const v=document.getElementById('verdict');
+  const vt=document.getElementById('verdictTitle');
+  const vp=document.getElementById('verdictText');
+  if(roi>100){
+    v.className='verdict positive';
+    vt.textContent='Vynikající investice!';
+    vp.textContent=`Investice ${fmt(invest)} se vrátí za ${paybackMonths} měsíc${paybackMonths===1?'':'e'} a za rok přinese ${fmt(Math.round(yearly-invest))} čistého zisku navíc.`;
+  } else if(roi>0){
+    v.className='verdict positive';
+    vt.textContent='Dobrá investice';
+    vp.textContent=`Investice se vrátí za ${paybackMonths} měsíců. Roční návratnost ${Math.round(roi)}%.`;
+  } else {
+    v.className='verdict negative';
+    vt.textContent='Zvažte úpravy';
+    vp.textContent='S těmito parametry se investice nevrátí do 12 měsíců. Pojďme se podívat, co můžeme optimalizovat.';
+  }
+}
+
+calc();
+</script>
+</body>
+</html>

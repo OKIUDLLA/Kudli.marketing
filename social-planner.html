@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Social Media Plánovač — Kudli. marketing</title>
+<meta name="description" content="Vizuální kalendář pro plánování příspěvků na sociální sítě klientů.">
+<meta property="og:title" content="Social Media Plánovač — Kudli. marketing">
+<meta property="og:description" content="Vizuální kalendář pro plánování příspěvků na sociální sítě klientů.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/social-planner.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--text:#fff;--muted:rgba(255,255,255,0.5);--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--ig:#E4405F;--fb:#1877F2;--li:#0A66C2;--tw:#1DA1F2;--yt:#FF0000;--tiktok:#000}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:var(--accent-light);text-decoration:none}
+
+.header{background:var(--card);border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.header-left{display:flex;align-items:center;gap:1rem}
+.header h1{font-size:1.3rem;font-weight:700}
+.header h1 span{color:var(--accent)}
+.back-link{color:var(--muted);font-size:0.85rem}
+.back-link:hover{color:var(--accent)}
+
+.btn{padding:0.55rem 1rem;border:none;border-radius:10px;font-size:0.82rem;cursor:pointer;font-weight:600;transition:all 0.3s;display:inline-flex;align-items:center;gap:0.4rem}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-secondary{background:rgba(255,255,255,0.06);color:var(--text);border:1px solid rgba(255,255,255,0.1)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:0.35rem 0.7rem;font-size:0.78rem}
+
+.main{padding:1.5rem 2rem}
+
+/* Stats row */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.75rem;margin-bottom:1.5rem}
+.stat{background:var(--card);border-radius:12px;padding:0.85rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.stat .val{font-size:1.3rem;font-weight:800}
+.stat .lbl{font-size:0.7rem;color:var(--muted);margin-top:0.15rem}
+
+/* Calendar nav */
+.cal-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.cal-nav h2{font-size:1.2rem;font-weight:700}
+.cal-nav-btns{display:flex;gap:0.5rem}
+.cal-nav-btn{background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text);padding:0.4rem 0.75rem;cursor:pointer;font-size:0.85rem}
+.cal-nav-btn:hover{border-color:var(--accent)}
+
+/* Platform filter */
+.filters{display:flex;gap:0.5rem;margin-bottom:1rem;flex-wrap:wrap}
+.filter-chip{padding:0.35rem 0.75rem;border-radius:20px;font-size:0.78rem;cursor:pointer;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--muted);transition:all 0.3s;font-weight:600}
+.filter-chip:hover{border-color:rgba(255,255,255,0.3)}
+.filter-chip.active{color:#fff}
+
+/* Calendar grid */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;background:rgba(255,255,255,0.03);border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.06)}
+.cal-header-cell{background:var(--card);padding:0.6rem;text-align:center;font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.cal-cell{background:var(--card);min-height:110px;padding:0.5rem;position:relative;cursor:pointer;transition:background 0.3s}
+.cal-cell:hover{background:rgba(255,255,255,0.04)}
+.cal-cell.other-month{opacity:0.3}
+.cal-cell.today{box-shadow:inset 0 0 0 2px var(--accent)}
+.cal-day{font-size:0.8rem;font-weight:700;margin-bottom:0.4rem;color:rgba(255,255,255,0.6)}
+.cal-cell.today .cal-day{color:var(--accent)}
+
+/* Post chips in calendar */
+.cal-post{display:flex;align-items:center;gap:0.25rem;padding:0.2rem 0.4rem;border-radius:4px;font-size:0.65rem;margin-bottom:2px;cursor:pointer;transition:all 0.2s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-post:hover{transform:scale(1.02)}
+.cal-more{font-size:0.65rem;color:var(--muted);padding:0.1rem 0.4rem}
+
+/* Platform colors */
+.platform-ig{background:rgba(228,64,95,0.2);color:#ff6b81}
+.platform-fb{background:rgba(24,119,242,0.2);color:#5dade2}
+.platform-li{background:rgba(10,102,194,0.2);color:#74b9ff}
+.platform-tw{background:rgba(29,161,242,0.2);color:#74dbef}
+.platform-yt{background:rgba(255,0,0,0.15);color:#ff6b6b}
+.platform-tiktok{background:rgba(255,255,255,0.08);color:#fff}
+.platform-blog{background:rgba(46,204,113,0.15);color:var(--green)}
+
+/* Status chips */
+.status-draft{opacity:0.6;border:1px dashed rgba(255,255,255,0.2)}
+.status-scheduled{border-left:2px solid var(--orange)}
+.status-published{border-left:2px solid var(--green)}
+
+/* Modal */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg);border:1px solid rgba(255,255,255,0.1);border-radius:16px;width:100%;max-width:520px;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+.modal-header h3{font-size:1.1rem;font-weight:700}
+.modal-close{background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer}
+.modal-body{padding:1.5rem}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:flex-end;gap:0.75rem}
+.form-group{margin-bottom:0.85rem}
+.form-group label{display:block;font-size:0.78rem;color:var(--muted);margin-bottom:0.3rem;font-weight:600}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.55rem 0.8rem;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--accent)}
+.form-group textarea{min-height:80px;resize:vertical}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+
+/* Platform checkboxes */
+.platform-checks{display:flex;gap:0.5rem;flex-wrap:wrap}
+.platform-check{display:flex;align-items:center;gap:0.3rem;padding:0.3rem 0.6rem;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.1);font-size:0.78rem;transition:all 0.3s}
+.platform-check:hover{border-color:rgba(255,255,255,0.3)}
+.platform-check.selected{border-color:var(--accent);background:rgba(233,69,96,0.1)}
+.platform-check input{display:none}
+
+/* Char counter */
+.char-counter{text-align:right;font-size:0.7rem;color:var(--muted);margin-top:0.2rem}
+.char-counter.warn{color:var(--orange)}
+.char-counter.over{color:var(--red)}
+
+/* Content ideas */
+.ideas{display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.5rem}
+.idea-chip{padding:0.25rem 0.5rem;border-radius:6px;font-size:0.72rem;background:rgba(255,255,255,0.06);color:var(--muted);cursor:pointer;transition:all 0.3s}
+.idea-chip:hover{background:rgba(233,69,96,0.15);color:var(--accent-light)}
+
+@media(max-width:800px){
+  .cal-grid{grid-template-columns:repeat(7,1fr)}
+  .cal-cell{min-height:60px;padding:0.3rem}
+  .cal-post{font-size:0.55rem;padding:0.15rem 0.3rem}
+  .main{padding:1rem}
+  .form-row{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <a href="nastroje.html" class="back-link">← Nástroje</a>
+    <h1>📱 Social <span>Plánovač</span></h1>
+  </div>
+  <div style="display:flex;gap:0.75rem">
+    <button class="btn btn-secondary btn-sm" onclick="loadDemo()">🎯 Demo</button>
+    <button class="btn btn-secondary btn-sm" onclick="exportCSV()">📤 CSV</button>
+    <button class="btn btn-primary" onclick="openAddModal()">+ Nový příspěvek</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="stats" id="stats"></div>
+
+  <div class="cal-nav">
+    <div class="cal-nav-btns">
+      <button class="cal-nav-btn" onclick="changeMonth(-1)">◀</button>
+      <button class="cal-nav-btn" onclick="goToday()">Dnes</button>
+      <button class="cal-nav-btn" onclick="changeMonth(1)">▶</button>
+    </div>
+    <h2 id="calTitle"></h2>
+  </div>
+
+  <div class="filters" id="filters"></div>
+
+  <div class="cal-grid" id="calendar"></div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="postModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Nový příspěvek</h3>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="fId">
+      <div class="form-group">
+        <label>Klient</label>
+        <input type="text" id="fClient" placeholder="Klient" list="clientDL">
+        <datalist id="clientDL"></datalist>
+      </div>
+      <div class="form-group">
+        <label>Platformy</label>
+        <div class="platform-checks" id="fPlatforms"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Datum</label>
+          <input type="date" id="fDate">
+        </div>
+        <div class="form-group">
+          <label>Čas publikace</label>
+          <input type="time" id="fTime" value="10:00">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Typ obsahu</label>
+          <select id="fContentType">
+            <option value="image">🖼️ Obrázek</option>
+            <option value="carousel">🎠 Carousel</option>
+            <option value="video">🎬 Video</option>
+            <option value="reel">📱 Reel / Short</option>
+            <option value="story">⭕ Story</option>
+            <option value="text">📝 Text post</option>
+            <option value="article">📰 Článek</option>
+            <option value="poll">📊 Anketa</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="fStatus">
+            <option value="draft">📝 Návrh</option>
+            <option value="scheduled">📅 Naplánováno</option>
+            <option value="published">✅ Publikováno</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Text příspěvku</label>
+        <textarea id="fContent" rows="4" placeholder="Text příspěvku..." oninput="updateCharCount()"></textarea>
+        <div class="char-counter" id="charCounter">0 znaků</div>
+      </div>
+      <div class="form-group">
+        <label>Hashtagy</label>
+        <input type="text" id="fHashtags" placeholder="#marketing #webdesign #business">
+      </div>
+      <div class="form-group">
+        <label>Poznámka (interní)</label>
+        <input type="text" id="fNote" placeholder="Interní poznámka, link na grafiku...">
+      </div>
+      <div class="form-group">
+        <label>💡 Nápady na obsah</label>
+        <div class="ideas" id="contentIdeas"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Zrušit</button>
+      <button class="btn btn-primary" onclick="savePost()">💾 Uložit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const PLATFORMS = [
+  { id: 'ig', name: 'Instagram', icon: '📸', color: 'var(--ig)', cls: 'platform-ig', charLimit: 2200 },
+  { id: 'fb', name: 'Facebook', icon: '👤', color: 'var(--fb)', cls: 'platform-fb', charLimit: 63206 },
+  { id: 'li', name: 'LinkedIn', icon: '💼', color: 'var(--li)', cls: 'platform-li', charLimit: 3000 },
+  { id: 'tw', name: 'X/Twitter', icon: '🐦', color: 'var(--tw)', cls: 'platform-tw', charLimit: 280 },
+  { id: 'yt', name: 'YouTube', icon: '▶️', color: 'var(--yt)', cls: 'platform-yt', charLimit: 5000 },
+  { id: 'tiktok', name: 'TikTok', icon: '🎵', color: '#fff', cls: 'platform-tiktok', charLimit: 2200 },
+  { id: 'blog', name: 'Blog', icon: '📝', color: 'var(--green)', cls: 'platform-blog', charLimit: 99999 },
+];
+
+const CONTENT_IDEAS = [
+  'Behind the scenes', 'Tip dne', 'Case study', 'Před/Po', 'FAQ odpověď',
+  'Klientská reference', 'Statistika / čísla', 'Mém / humor', 'Anketa',
+  'Tutorial / návod', 'Novinka z oboru', 'Osobní příběh', 'Citát',
+  'Checklist', 'Srovnání nástrojů', 'Kontroverzní názor', 'Carousel tips',
+];
+
+let posts = [];
+let currentMonth = new Date().getMonth();
+let currentYear = new Date().getFullYear();
+let activeFilter = 'all';
+let editingId = null;
+
+function init() {
+  const saved = sessionStorage.getItem('kudli_social');
+  if (saved) {
+    posts = JSON.parse(saved);
+  } else {
+    loadDemo();
+    return;
+  }
+  renderAll();
+}
+
+function save() {
+  sessionStorage.setItem('kudli_social', JSON.stringify(posts));
+}
+
+function renderAll() {
+  renderStats();
+  renderFilters();
+  renderCalendar();
+}
+
+function renderStats() {
+  const thisMonth = posts.filter(p => {
+    const d = new Date(p.date);
+    return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+  });
+  const draft = thisMonth.filter(p => p.status === 'draft').length;
+  const scheduled = thisMonth.filter(p => p.status === 'scheduled').length;
+  const published = thisMonth.filter(p => p.status === 'published').length;
+  const clients = [...new Set(posts.map(p => p.client).filter(Boolean))].length;
+
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="val" style="color:var(--accent)">${thisMonth.length}</div><div class="lbl">Tento měsíc</div></div>
+    <div class="stat"><div class="val" style="color:var(--muted)">${draft}</div><div class="lbl">Návrhy</div></div>
+    <div class="stat"><div class="val" style="color:var(--orange)">${scheduled}</div><div class="lbl">Naplánováno</div></div>
+    <div class="stat"><div class="val" style="color:var(--green)">${published}</div><div class="lbl">Publikováno</div></div>
+    <div class="stat"><div class="val" style="color:var(--blue)">${clients}</div><div class="lbl">Klientů</div></div>
+  `;
+}
+
+function renderFilters() {
+  const html = `<button class="filter-chip ${activeFilter === 'all' ? 'active' : ''}" style="${activeFilter === 'all' ? 'background:var(--accent);border-color:var(--accent);color:#fff' : ''}" onclick="setFilter('all')">Vše</button>` +
+    PLATFORMS.map(p => `
+      <button class="filter-chip ${activeFilter === p.id ? 'active' : ''}"
+        style="${activeFilter === p.id ? `background:${p.color}33;border-color:${p.color};color:${p.color}` : ''}"
+        onclick="setFilter('${p.id}')">${p.icon} ${p.name}</button>
+    `).join('');
+  document.getElementById('filters').innerHTML = html;
+}
+
+function setFilter(f) {
+  activeFilter = f;
+  renderAll();
+}
+
+function renderCalendar() {
+  const months = ['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
+  document.getElementById('calTitle').textContent = `${months[currentMonth]} ${currentYear}`;
+
+  const firstDay = new Date(currentYear, currentMonth, 1);
+  let startDay = firstDay.getDay();
+  if (startDay === 0) startDay = 7;
+  startDay--;
+
+  const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+  const daysInPrev = new Date(currentYear, currentMonth, 0).getDate();
+  const today = new Date();
+
+  let html = ['Po','Út','St','Čt','Pá','So','Ne'].map(d => `<div class="cal-header-cell">${d}</div>`).join('');
+
+  const totalCells = Math.ceil((startDay + daysInMonth) / 7) * 7;
+
+  for (let i = 0; i < totalCells; i++) {
+    let day, month, year, isOther = false;
+    if (i < startDay) {
+      day = daysInPrev - startDay + i + 1;
+      month = currentMonth - 1;
+      year = currentYear;
+      isOther = true;
+    } else if (i >= startDay + daysInMonth) {
+      day = i - startDay - daysInMonth + 1;
+      month = currentMonth + 1;
+      year = currentYear;
+      isOther = true;
+    } else {
+      day = i - startDay + 1;
+      month = currentMonth;
+      year = currentYear;
+    }
+
+    if (month < 0) { month = 11; year--; }
+    if (month > 11) { month = 0; year++; }
+
+    const isToday = day === today.getDate() && month === today.getMonth() && year === today.getFullYear();
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+    let dayPosts = posts.filter(p => p.date === dateStr);
+    if (activeFilter !== 'all') {
+      dayPosts = dayPosts.filter(p => p.platforms && p.platforms.includes(activeFilter));
+    }
+
+    const postsHTML = dayPosts.slice(0, 3).map(p => {
+      const platform = PLATFORMS.find(pl => p.platforms && p.platforms.includes(pl.id)) || PLATFORMS[0];
+      const statusCls = p.status === 'draft' ? 'status-draft' : p.status === 'scheduled' ? 'status-scheduled' : 'status-published';
+      const label = p.content ? p.content.substring(0, 20) + (p.content.length > 20 ? '…' : '') : p.contentType || 'post';
+      return `<div class="cal-post ${platform.cls} ${statusCls}" onclick="event.stopPropagation();editPost(${p.id})" title="${(p.content||'').substring(0,80)}">${platform.icon} ${label}</div>`;
+    }).join('');
+    const moreHTML = dayPosts.length > 3 ? `<div class="cal-more">+${dayPosts.length - 3} další</div>` : '';
+
+    html += `
+      <div class="cal-cell ${isOther ? 'other-month' : ''} ${isToday ? 'today' : ''}" onclick="openAddModal('${dateStr}')">
+        <div class="cal-day">${day}</div>
+        ${postsHTML}${moreHTML}
+      </div>
+    `;
+  }
+
+  document.getElementById('calendar').innerHTML = html;
+}
+
+function changeMonth(delta) {
+  currentMonth += delta;
+  if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+  if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+  renderAll();
+}
+
+function goToday() {
+  currentMonth = new Date().getMonth();
+  currentYear = new Date().getFullYear();
+  renderAll();
+}
+
+// Modal
+function openAddModal(dateStr) {
+  editingId = null;
+  document.getElementById('modalTitle').textContent = 'Nový příspěvek';
+  document.getElementById('fId').value = '';
+  document.getElementById('fClient').value = '';
+  document.getElementById('fDate').value = dateStr || new Date().toISOString().split('T')[0];
+  document.getElementById('fTime').value = '10:00';
+  document.getElementById('fContentType').value = 'image';
+  document.getElementById('fStatus').value = 'draft';
+  document.getElementById('fContent').value = '';
+  document.getElementById('fHashtags').value = '';
+  document.getElementById('fNote').value = '';
+  updateCharCount();
+  renderPlatformChecks([]);
+  renderContentIdeas();
+  updateClientDL();
+  document.getElementById('postModal').classList.add('show');
+}
+
+function editPost(id) {
+  const p = posts.find(x => x.id === id);
+  if (!p) return;
+  editingId = id;
+  document.getElementById('modalTitle').textContent = 'Upravit příspěvek';
+  document.getElementById('fClient').value = p.client || '';
+  document.getElementById('fDate').value = p.date || '';
+  document.getElementById('fTime').value = p.time || '10:00';
+  document.getElementById('fContentType').value = p.contentType || 'image';
+  document.getElementById('fStatus').value = p.status || 'draft';
+  document.getElementById('fContent').value = p.content || '';
+  document.getElementById('fHashtags').value = p.hashtags || '';
+  document.getElementById('fNote').value = p.note || '';
+  updateCharCount();
+  renderPlatformChecks(p.platforms || []);
+  renderContentIdeas();
+  updateClientDL();
+  document.getElementById('postModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('postModal').classList.remove('show');
+}
+
+function renderPlatformChecks(selected) {
+  document.getElementById('fPlatforms').innerHTML = PLATFORMS.map(p => `
+    <label class="platform-check ${selected.includes(p.id) ? 'selected' : ''}" onclick="this.classList.toggle('selected')">
+      <input type="checkbox" value="${p.id}" ${selected.includes(p.id) ? 'checked' : ''}>
+      ${p.icon} ${p.name}
+    </label>
+  `).join('');
+}
+
+function renderContentIdeas() {
+  document.getElementById('contentIdeas').innerHTML = CONTENT_IDEAS.map(idea => `
+    <span class="idea-chip" onclick="document.getElementById('fContent').value+=this.textContent+' ';updateCharCount()">${idea}</span>
+  `).join('');
+}
+
+function updateCharCount() {
+  const len = document.getElementById('fContent').value.length;
+  const el = document.getElementById('charCounter');
+  const selected = [...document.querySelectorAll('#fPlatforms input:checked')].map(i => i.value);
+  let minLimit = 99999;
+  selected.forEach(pid => {
+    const p = PLATFORMS.find(x => x.id === pid);
+    if (p && p.charLimit < minLimit) minLimit = p.charLimit;
+  });
+  if (minLimit < 99999) {
+    el.textContent = `${len} / ${minLimit} znaků`;
+    el.className = 'char-counter' + (len > minLimit ? ' over' : len > minLimit * 0.9 ? ' warn' : '');
+  } else {
+    el.textContent = `${len} znaků`;
+    el.className = 'char-counter';
+  }
+}
+
+function updateClientDL() {
+  const clients = [...new Set(posts.map(p => p.client).filter(Boolean))];
+  document.getElementById('clientDL').innerHTML = clients.map(c => `<option value="${c}">`).join('');
+}
+
+function savePost() {
+  const platforms = [...document.querySelectorAll('#fPlatforms input:checked')].map(i => i.value);
+  const data = {
+    client: document.getElementById('fClient').value.trim(),
+    platforms,
+    date: document.getElementById('fDate').value,
+    time: document.getElementById('fTime').value,
+    contentType: document.getElementById('fContentType').value,
+    status: document.getElementById('fStatus').value,
+    content: document.getElementById('fContent').value,
+    hashtags: document.getElementById('fHashtags').value,
+    note: document.getElementById('fNote').value,
+  };
+
+  if (!data.date) { alert('Vyberte datum'); return; }
+
+  if (editingId) {
+    const idx = posts.findIndex(p => p.id === editingId);
+    if (idx >= 0) posts[idx] = { ...posts[idx], ...data };
+  } else {
+    data.id = Date.now();
+    posts.push(data);
+  }
+
+  save();
+  closeModal();
+  renderAll();
+}
+
+function exportCSV() {
+  let csv = 'Datum,Čas,Klient,Platformy,Typ,Status,Text,Hashtagy,Poznámka\n';
+  posts.sort((a,b) => a.date.localeCompare(b.date)).forEach(p => {
+    csv += `"${p.date}","${p.time || ''}","${p.client || ''}","${(p.platforms||[]).join('; ')}","${p.contentType || ''}","${p.status || ''}","${(p.content||'').replace(/"/g,'""')}","${p.hashtags || ''}","${p.note || ''}"\n`;
+  });
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `social-plan-${currentYear}-${String(currentMonth+1).padStart(2,'0')}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function loadDemo() {
+  const base = '2026-03';
+  posts = [
+    { id:1, client:'Kavárna U Mlýna', platforms:['ig','fb'], date:`${base}-03`, time:'10:00', contentType:'image', status:'scheduled', content:'Nové jarní menu právě dorazilo! 🌸 Přijďte ochutnat naše bezové limonády a matcha latté.', hashtags:'#kavarna #jaro #menu #kava #brno', note:'Fotka nového menu od fotografa' },
+    { id:2, client:'Kavárna U Mlýna', platforms:['ig'], date:`${base}-05`, time:'18:00', contentType:'reel', status:'draft', content:'Behind the scenes: Jak připravujeme naše espresso od zrnka po šálek ☕', hashtags:'#espresso #barista #coffee #behindthescenes', note:'15s reel, natočit ve čtvrtek' },
+    { id:3, client:'E-shop TechGear', platforms:['ig','fb','li'], date:`${base}-04`, time:'09:00', contentType:'carousel', status:'scheduled', content:'5 tipů jak vybrat správný monitor pro home office 🖥️ Swipe pro všech 5 tipů!', hashtags:'#homeoffice #monitor #techgear #tip #setup', note:'5 slidů carousel v Canva' },
+    { id:4, client:'E-shop TechGear', platforms:['yt'], date:`${base}-10`, time:'15:00', contentType:'video', status:'draft', content:'Unboxing a recenze: Nový ultrawide monitor 34" — stojí za to?', hashtags:'#unboxing #monitor #techreview', note:'Délka: 8-10min, thumbnail připravit' },
+    { id:5, client:'Reality Premium', platforms:['fb','ig'], date:`${base}-06`, time:'11:00', contentType:'image', status:'scheduled', content:'🏠 NOVÁ NABÍDKA: Prostorný byt 3+kk v centru Prahy, 85m², balkon s výhledem na Vltavu. Cena: 12.5M Kč.', hashtags:'#reality #praha #byt #prodej #centrum', note:'Profesionální fotky z prohlídky' },
+    { id:6, client:'Reality Premium', platforms:['li'], date:`${base}-08`, time:'08:00', contentType:'article', status:'draft', content:'Trh s nemovitostmi v roce 2026: 5 trendů, které by měl znát každý investor', hashtags:'#nemovitosti #investice #trend2026', note:'LinkedIn article, cca 800 slov' },
+    { id:7, client:'Kudli. marketing', platforms:['li'], date:`${base}-02`, time:'09:00', contentType:'text', status:'published', content:'Proč si myslím, že každý freelancer by měl mít vlastní CRM? Protože Excel nestačí. Tady jsou 3 důvody...', hashtags:'#freelancer #crm #business #marketing', note:'Personal branding post' },
+    { id:8, client:'Kudli. marketing', platforms:['ig','li'], date:`${base}-09`, time:'10:00', contentType:'carousel', status:'draft', content:'Kolik stojí web v roce 2026? Rozebírám reálné ceny a co za ně dostanete. Swipe →', hashtags:'#webdesign #cena #freelancer #webdevelopment', note:'Carousel: 7 slidů s cenami' },
+    { id:9, client:'Kavárna U Mlýna', platforms:['ig','fb'], date:`${base}-12`, time:'17:00', contentType:'story', status:'draft', content:'PÁTEČNÍ KVÍZ: Kolik šálků kávy vypijí Češi ročně? 🇨🇿☕ A) 300  B) 400  C) 500', hashtags:'', note:'Instagram story anketa' },
+    { id:10, client:'E-shop TechGear', platforms:['tw','li'], date:`${base}-07`, time:'12:00', contentType:'text', status:'scheduled', content:'Právě jsme spustili novou sekci příslušenství! 🎉 Kabely, stojany, podložky — vše pro dokonalý home office setup.', hashtags:'#eshop #techgear #homeoffice', note:'Launch announcement' },
+  ];
+  save();
+  renderAll();
+}
+
+init();
+</script>
+</body>
+</html>

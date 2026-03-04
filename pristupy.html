@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Správa přístupů — Kudli. marketing</title>
+<meta name="description" content="Bezpečná správa přihlašovacích údajů a přístupů k projektům klientů.">
+<meta property="og:title" content="Správa přístupů — Kudli. marketing">
+<meta property="og:description" content="Bezpečná správa přihlašovacích údajů a přístupů k projektům klientů.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/pristupy.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--text:#fff;--muted:rgba(255,255,255,0.5);--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:var(--accent-light);text-decoration:none}
+
+/* Header */
+.header{background:var(--card);border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.header-left{display:flex;align-items:center;gap:1rem}
+.header h1{font-size:1.3rem;font-weight:700}
+.header h1 span{color:var(--accent)}
+.back-link{color:var(--muted);font-size:0.85rem;transition:color 0.3s}
+.back-link:hover{color:var(--accent)}
+.header-actions{display:flex;gap:0.75rem;align-items:center}
+
+/* Security banner */
+.security-banner{background:linear-gradient(135deg,rgba(46,204,113,0.1),rgba(52,152,219,0.1));border:1px solid rgba(46,204,113,0.2);border-radius:12px;padding:1rem 1.5rem;margin:1.5rem 2rem 0;display:flex;align-items:center;gap:1rem;font-size:0.85rem;color:rgba(255,255,255,0.7)}
+.security-banner .icon{font-size:1.5rem}
+
+/* Lock screen */
+.lock-screen{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:70vh;text-align:center;padding:2rem}
+.lock-icon{font-size:4rem;margin-bottom:1.5rem}
+.lock-screen h2{font-size:1.6rem;margin-bottom:0.5rem}
+.lock-screen p{color:var(--muted);margin-bottom:2rem;max-width:400px}
+.pin-input-group{display:flex;gap:0.75rem;margin-bottom:1.5rem}
+.pin-digit{width:56px;height:64px;background:var(--card);border:2px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-size:1.8rem;text-align:center;font-weight:700;transition:border-color 0.3s}
+.pin-digit:focus{outline:none;border-color:var(--accent)}
+.pin-digit.filled{border-color:var(--green)}
+.pin-error{color:var(--red);font-size:0.85rem;margin-bottom:1rem;display:none}
+.pin-hint{color:var(--muted);font-size:0.8rem;margin-top:0.5rem}
+
+/* Main layout */
+.main{padding:1.5rem 2rem;display:none}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem}
+.stat-card{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06)}
+.stat-card .val{font-size:1.8rem;font-weight:800}
+.stat-card .label{font-size:0.8rem;color:var(--muted);margin-top:0.25rem}
+
+/* Toolbar */
+.toolbar{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
+.search-box{flex:1;min-width:200px;position:relative}
+.search-box input{width:100%;padding:0.65rem 1rem 0.65rem 2.5rem;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:0.9rem}
+.search-box input:focus{outline:none;border-color:var(--accent)}
+.search-box::before{content:'🔍';position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);font-size:0.85rem}
+.filter-btn{padding:0.65rem 1rem;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--muted);cursor:pointer;font-size:0.85rem;transition:all 0.3s}
+.filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent)}
+
+/* Buttons */
+.btn{padding:0.6rem 1.2rem;border:none;border-radius:10px;font-size:0.85rem;cursor:pointer;font-weight:600;transition:all 0.3s;display:inline-flex;align-items:center;gap:0.4rem}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-secondary{background:rgba(255,255,255,0.06);color:var(--text);border:1px solid rgba(255,255,255,0.1)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:rgba(231,76,60,0.15);color:var(--red);border:1px solid rgba(231,76,60,0.2)}
+.btn-danger:hover{background:rgba(231,76,60,0.25)}
+.btn-sm{padding:0.4rem 0.8rem;font-size:0.8rem}
+
+/* Client groups */
+.client-group{margin-bottom:1.5rem}
+.client-group-header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:0.75rem;cursor:pointer}
+.client-group-header h3{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:0.5rem}
+.client-group-header .count{background:var(--accent);color:#fff;font-size:0.7rem;padding:0.15rem 0.5rem;border-radius:20px;font-weight:600}
+.client-group-header .toggle{color:var(--muted);transition:transform 0.3s}
+.client-group-header.collapsed .toggle{transform:rotate(-90deg)}
+
+/* Credential cards */
+.cred-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:0.75rem}
+.cred-card{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s;position:relative}
+.cred-card:hover{border-color:rgba(255,255,255,0.15);transform:translateY(-1px)}
+.cred-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem}
+.cred-service{display:flex;align-items:center;gap:0.6rem}
+.cred-service .icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.cred-service h4{font-size:0.95rem;font-weight:600}
+.cred-service .type{font-size:0.75rem;color:var(--muted)}
+.cred-actions{display:flex;gap:0.4rem}
+.cred-action{width:30px;height:30px;border:none;border-radius:8px;background:rgba(255,255,255,0.05);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:all 0.3s}
+.cred-action:hover{background:rgba(233,69,96,0.15);color:var(--accent)}
+
+/* Credential fields */
+.cred-fields{display:flex;flex-direction:column;gap:0.5rem}
+.cred-field{display:flex;align-items:center;justify-content:space-between;padding:0.5rem 0.75rem;background:rgba(255,255,255,0.03);border-radius:8px}
+.cred-field-label{font-size:0.75rem;color:var(--muted);min-width:70px}
+.cred-field-value{font-family:'Courier New',monospace;font-size:0.85rem;flex:1;margin:0 0.5rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cred-field-value.hidden{color:var(--muted);letter-spacing:3px}
+.cred-field-copy{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;padding:0.2rem;transition:color 0.3s}
+.cred-field-copy:hover{color:var(--accent)}
+
+/* Tags */
+.cred-tags{display:flex;gap:0.4rem;margin-top:0.75rem;flex-wrap:wrap}
+.tag{font-size:0.7rem;padding:0.2rem 0.5rem;border-radius:6px;font-weight:600}
+.tag-hosting{background:rgba(52,152,219,0.15);color:var(--blue)}
+.tag-domain{background:rgba(155,89,182,0.15);color:#b682d4}
+.tag-cms{background:rgba(243,156,18,0.15);color:var(--orange)}
+.tag-analytics{background:rgba(46,204,113,0.15);color:var(--green)}
+.tag-email{background:rgba(233,69,96,0.15);color:var(--accent-light)}
+.tag-social{background:rgba(52,152,219,0.15);color:#74b9ff}
+.tag-other{background:rgba(255,255,255,0.08);color:var(--muted)}
+
+/* Status indicators */
+.status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:0.4rem}
+.status-active{background:var(--green)}
+.status-expiring{background:var(--orange)}
+.status-expired{background:var(--red)}
+
+/* Modal */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg);border:1px solid rgba(255,255,255,0.1);border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+.modal-header h3{font-size:1.1rem;font-weight:700}
+.modal-close{background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer}
+.modal-body{padding:1.5rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.4rem;font-weight:600}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.6rem 0.9rem;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:0.9rem;font-family:inherit}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--accent)}
+.form-group textarea{min-height:70px;resize:vertical}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:flex-end;gap:0.75rem}
+
+/* Password generator */
+.pw-gen{display:flex;gap:0.5rem;margin-top:0.4rem}
+.pw-gen button{padding:0.3rem 0.6rem;background:rgba(233,69,96,0.1);border:1px solid rgba(233,69,96,0.2);border-radius:6px;color:var(--accent-light);font-size:0.75rem;cursor:pointer}
+.pw-gen button:hover{background:rgba(233,69,96,0.2)}
+.pw-strength{height:4px;border-radius:2px;background:rgba(255,255,255,0.1);margin-top:0.4rem;overflow:hidden}
+.pw-strength-bar{height:100%;border-radius:2px;transition:width 0.3s,background 0.3s}
+
+/* Empty state */
+.empty-state{text-align:center;padding:3rem;color:var(--muted)}
+.empty-state .icon{font-size:3rem;margin-bottom:1rem}
+
+/* Responsive */
+@media(max-width:768px){
+.header{padding:1rem}
+.main{padding:1rem}
+.security-banner{margin:1rem;flex-direction:column;text-align:center}
+.stats{grid-template-columns:1fr 1fr}
+.cred-grid{grid-template-columns:1fr}
+.form-row{grid-template-columns:1fr}
+.pin-digit{width:48px;height:56px;font-size:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<div style="background:#16213e;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05)">
+  <a href="nastroje.html" style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.85rem">← Zpět na nástroje</a>
+  <span style="font-size:0.8rem;color:rgba(255,255,255,0.5)">Správa přístupů</span>
+</div>
+
+<!-- Lock Screen -->
+<div id="lockScreen" class="lock-screen">
+  <div class="lock-icon">🔐</div>
+  <h2>Správa přístupů</h2>
+  <p>Zadejte PIN pro přístup ke klientským přihlašovacím údajům</p>
+  <div class="pin-input-group">
+    <input type="password" class="pin-digit" maxlength="1" data-idx="0" inputmode="numeric" autofocus>
+    <input type="password" class="pin-digit" maxlength="1" data-idx="1" inputmode="numeric">
+    <input type="password" class="pin-digit" maxlength="1" data-idx="2" inputmode="numeric">
+    <input type="password" class="pin-digit" maxlength="1" data-idx="3" inputmode="numeric">
+  </div>
+  <div id="pinError" class="pin-error">Nesprávný PIN. Zkuste to znovu.</div>
+  <div class="pin-hint">Výchozí PIN: 1234 (změňte v nastavení)</div>
+</div>
+
+<!-- Main App -->
+<div id="mainApp" class="main">
+  <div class="header">
+    <div class="header-left">
+      <a href="nastroje.html" class="back-link">← Nástroje</a>
+      <h1>🔐 Správa <span>přístupů</span></h1>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-secondary btn-sm" onclick="exportData()">📤 Export</button>
+      <button class="btn btn-secondary btn-sm" onclick="openSettings()">⚙️ Nastavení</button>
+      <button class="btn btn-primary" onclick="openAddModal()">+ Přidat přístup</button>
+    </div>
+  </div>
+
+  <div class="security-banner">
+    <div class="icon">🛡️</div>
+    <div>
+      <strong>Lokální úložiště</strong> — Všechna data jsou uložena pouze ve vašem prohlížeči (sessionStorage). Žádné údaje se neodesílají na server. Pro maximální bezpečnost doporučujeme používat správce hesel (Bitwarden, 1Password).
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats" style="margin-top:1.5rem">
+    <div class="stat-card">
+      <div class="val" id="statClients">0</div>
+      <div class="label">Klienti</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="statCredentials">0</div>
+      <div class="label">Uložené přístupy</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="statExpiring" style="color:var(--orange)">0</div>
+      <div class="label">Brzy vyprší</div>
+    </div>
+    <div class="stat-card">
+      <div class="val" id="statCategories">0</div>
+      <div class="label">Kategorií</div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Hledat klienta, službu, URL..." oninput="renderCredentials()">
+    </div>
+    <button class="filter-btn active" data-filter="all" onclick="setFilter(this)">Vše</button>
+    <button class="filter-btn" data-filter="hosting" onclick="setFilter(this)">Hosting</button>
+    <button class="filter-btn" data-filter="domain" onclick="setFilter(this)">Domény</button>
+    <button class="filter-btn" data-filter="cms" onclick="setFilter(this)">CMS</button>
+    <button class="filter-btn" data-filter="analytics" onclick="setFilter(this)">Analytika</button>
+    <button class="filter-btn" data-filter="email" onclick="setFilter(this)">Email</button>
+    <button class="filter-btn" data-filter="social" onclick="setFilter(this)">Sociální sítě</button>
+  </div>
+
+  <!-- Credentials list -->
+  <div id="credentialsList"></div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="credModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="modalTitle">Přidat přístup</h3>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Klient *</label>
+          <input type="text" id="fClient" placeholder="Název klienta" list="clientList">
+          <datalist id="clientList"></datalist>
+        </div>
+        <div class="form-group">
+          <label>Kategorie *</label>
+          <select id="fCategory">
+            <option value="hosting">🌐 Hosting</option>
+            <option value="domain">🏷️ Doména</option>
+            <option value="cms">📝 CMS / Admin</option>
+            <option value="analytics">📊 Analytika</option>
+            <option value="email">📧 Email</option>
+            <option value="social">💬 Sociální sítě</option>
+            <option value="other">📎 Ostatní</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Služba *</label>
+          <input type="text" id="fService" placeholder="např. Netlify, WordPress, GA4...">
+        </div>
+        <div class="form-group">
+          <label>URL přihlášení</label>
+          <input type="url" id="fUrl" placeholder="https://...">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Uživatelské jméno / Email</label>
+        <input type="text" id="fUsername" placeholder="admin@klient.cz">
+      </div>
+      <div class="form-group">
+        <label>Heslo</label>
+        <input type="text" id="fPassword" placeholder="Heslo">
+        <div class="pw-gen">
+          <button onclick="generatePassword(12)">Generovat 12 znaků</button>
+          <button onclick="generatePassword(16)">16 znaků</button>
+          <button onclick="generatePassword(24)">24 znaků</button>
+        </div>
+        <div class="pw-strength"><div class="pw-strength-bar" id="pwStrengthBar"></div></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>API klíč / Token</label>
+          <input type="text" id="fApiKey" placeholder="Volitelné">
+        </div>
+        <div class="form-group">
+          <label>Expirace</label>
+          <input type="date" id="fExpiry">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Poznámky</label>
+        <textarea id="fNotes" placeholder="2FA kód, recovery email, speciální instrukce..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveCredential()">💾 Uložit</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Modal -->
+<div class="modal-overlay" id="settingsModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>⚙️ Nastavení</h3>
+      <button class="modal-close" onclick="closeSettings()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Aktuální PIN</label>
+        <input type="password" id="sOldPin" placeholder="Zadejte aktuální PIN">
+      </div>
+      <div class="form-group">
+        <label>Nový PIN (4 číslice)</label>
+        <input type="password" id="sNewPin" maxlength="4" placeholder="Nový PIN">
+      </div>
+      <div class="form-group">
+        <label>Potvrdit nový PIN</label>
+        <input type="password" id="sConfirmPin" maxlength="4" placeholder="Zopakujte nový PIN">
+      </div>
+      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06)">
+        <h4 style="font-size:0.9rem;margin-bottom:0.75rem;color:var(--accent-light)">Data</h4>
+        <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
+          <button class="btn btn-secondary btn-sm" onclick="importData()">📥 Import JSON</button>
+          <button class="btn btn-secondary btn-sm" onclick="exportData()">📤 Export JSON</button>
+          <button class="btn btn-danger btn-sm" onclick="clearAll()">🗑️ Smazat vše</button>
+        </div>
+      </div>
+      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06)">
+        <h4 style="font-size:0.9rem;margin-bottom:0.75rem;color:var(--accent-light)">Automatické zamčení</h4>
+        <select id="sAutoLock" style="width:100%;padding:0.6rem;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:0.9rem">
+          <option value="5">5 minut</option>
+          <option value="15" selected>15 minut</option>
+          <option value="30">30 minut</option>
+          <option value="0">Nikdy (nedoporučujeme)</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeSettings()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveSettings()">💾 Uložit nastavení</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="handleImport(event)">
+
+<script>
+// State
+let credentials = [];
+let pin = '1234';
+let autoLockMinutes = 15;
+let currentFilter = 'all';
+let lockTimer = null;
+let editingId = null;
+
+// Category config
+const categories = {
+  hosting:   { icon: '🌐', label: 'Hosting',         color: 'var(--blue)' },
+  domain:    { icon: '🏷️', label: 'Doména',          color: '#b682d4' },
+  cms:       { icon: '📝', label: 'CMS / Admin',     color: 'var(--orange)' },
+  analytics: { icon: '📊', label: 'Analytika',       color: 'var(--green)' },
+  email:     { icon: '📧', label: 'Email',            color: 'var(--accent-light)' },
+  social:    { icon: '💬', label: 'Sociální sítě',   color: '#74b9ff' },
+  other:     { icon: '📎', label: 'Ostatní',          color: 'var(--muted)' }
+};
+
+// Demo data
+const demoData = [
+  { id:1, client:'Kavárna U Mlýna', category:'hosting', service:'Netlify', url:'https://app.netlify.com', username:'kavarna@email.cz', password:'demo-Netlify#2026!', apiKey:'', expiry:'', notes:'Free tier, deploy přes Git', created:'2026-02-15' },
+  { id:2, client:'Kavárna U Mlýna', category:'domain', service:'Wedos', url:'https://client.wedos.com', username:'kavarna@email.cz', password:'W3dos_Kav@rna24', apiKey:'', expiry:'2027-02-15', notes:'Automatická obnova zapnutá', created:'2026-02-15' },
+  { id:3, client:'Kavárna U Mlýna', category:'cms', service:'WordPress Admin', url:'https://kavarnaumlyna.cz/wp-admin', username:'admin', password:'kUm!WP_2026#secure', apiKey:'', expiry:'', notes:'2FA přes Google Authenticator', created:'2026-02-15' },
+  { id:4, client:'Kavárna U Mlýna', category:'analytics', service:'Google Analytics 4', url:'https://analytics.google.com', username:'kavarna.analytics@gmail.com', password:'GA4_kavarna!2026', apiKey:'', expiry:'', notes:'Property ID: 123456789', created:'2026-02-15' },
+  { id:5, client:'E-shop TechGear', category:'hosting', service:'Vercel', url:'https://vercel.com/dashboard', username:'techgear@firma.cz', password:'V3rcel_TG!prod', apiKey:'vrcl_abc123def456', expiry:'', notes:'Pro plan, auto-deploy z main branch', created:'2026-02-20' },
+  { id:6, client:'E-shop TechGear', category:'cms', service:'Shopify Admin', url:'https://techgear.myshopify.com/admin', username:'admin@techgear.cz', password:'Sh0pify_TG#2026!', apiKey:'shpat_xyz789', expiry:'2026-08-20', notes:'Shopify Plus plan', created:'2026-02-20' },
+  { id:7, client:'E-shop TechGear', category:'email', service:'Mailchimp', url:'https://login.mailchimp.com', username:'marketing@techgear.cz', password:'MC_techg3ar!nl', apiKey:'mc-api-key-demo', expiry:'', notes:'Standard plan, 5000 kontaktů', created:'2026-02-20' },
+  { id:8, client:'Reality Premium', category:'hosting', service:'Wedos VPS', url:'https://client.wedos.com', username:'reality@premium.cz', password:'W3dos_RP_vps!2026', apiKey:'', expiry:'2026-12-01', notes:'VPS NoLimit, SSH port 2222', created:'2026-02-25' },
+  { id:9, client:'Reality Premium', category:'social', service:'Facebook Business', url:'https://business.facebook.com', username:'marketing@realitypremium.cz', password:'FB_Re@lity#2026', apiKey:'', expiry:'', notes:'Stránka + reklamní účet, pixel ID: 112233', created:'2026-02-25' },
+  { id:10, client:'Reality Premium', category:'analytics', service:'Google Search Console', url:'https://search.google.com/search-console', username:'seo@realitypremium.cz', password:'GSC_reality_pr0!', apiKey:'', expiry:'', notes:'Ověřeno přes DNS TXT záznam', created:'2026-02-25' },
+];
+
+// Init
+function init() {
+  const saved = sessionStorage.getItem('kudli_creds');
+  if (saved) {
+    const data = JSON.parse(saved);
+    credentials = data.credentials || [];
+    pin = data.pin || '1234';
+    autoLockMinutes = data.autoLockMinutes || 15;
+  } else {
+    credentials = [...demoData];
+    save();
+  }
+  setupPinInputs();
+}
+
+function save() {
+  sessionStorage.setItem('kudli_creds', JSON.stringify({
+    credentials, pin, autoLockMinutes
+  }));
+}
+
+// PIN authentication
+function setupPinInputs() {
+  const inputs = document.querySelectorAll('.pin-digit');
+  inputs.forEach((inp, i) => {
+    inp.addEventListener('input', (e) => {
+      const val = e.target.value;
+      if (val && i < inputs.length - 1) {
+        inputs[i + 1].focus();
+      }
+      e.target.classList.toggle('filled', !!val);
+      // Check if all filled
+      const fullPin = Array.from(inputs).map(x => x.value).join('');
+      if (fullPin.length === 4) {
+        if (fullPin === pin) {
+          unlock();
+        } else {
+          document.getElementById('pinError').style.display = 'block';
+          inputs.forEach(x => { x.value = ''; x.classList.remove('filled'); });
+          inputs[0].focus();
+          setTimeout(() => {
+            document.getElementById('pinError').style.display = 'none';
+          }, 2000);
+        }
+      }
+    });
+    inp.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && !e.target.value && i > 0) {
+        inputs[i - 1].focus();
+      }
+    });
+  });
+}
+
+function unlock() {
+  document.getElementById('lockScreen').style.display = 'none';
+  document.getElementById('mainApp').style.display = 'block';
+  renderCredentials();
+  resetLockTimer();
+}
+
+function lock() {
+  document.getElementById('lockScreen').style.display = 'flex';
+  document.getElementById('mainApp').style.display = 'none';
+  document.querySelectorAll('.pin-digit').forEach(x => { x.value = ''; x.classList.remove('filled'); });
+  document.querySelector('.pin-digit').focus();
+}
+
+function resetLockTimer() {
+  if (lockTimer) clearTimeout(lockTimer);
+  if (autoLockMinutes > 0) {
+    lockTimer = setTimeout(lock, autoLockMinutes * 60 * 1000);
+  }
+}
+
+// Listen for activity
+document.addEventListener('click', resetLockTimer);
+document.addEventListener('keydown', resetLockTimer);
+
+// Render
+function renderCredentials() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  let filtered = credentials.filter(c => {
+    if (currentFilter !== 'all' && c.category !== currentFilter) return false;
+    if (search) {
+      const hay = `${c.client} ${c.service} ${c.url} ${c.username} ${c.notes}`.toLowerCase();
+      return hay.includes(search);
+    }
+    return true;
+  });
+
+  // Group by client
+  const groups = {};
+  filtered.forEach(c => {
+    if (!groups[c.client]) groups[c.client] = [];
+    groups[c.client].push(c);
+  });
+
+  const container = document.getElementById('credentialsList');
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="icon">🔍</div>
+        <p>Žádné přístupy nenalezeny</p>
+        <button class="btn btn-primary" onclick="openAddModal()" style="margin-top:1rem">+ Přidat první přístup</button>
+      </div>`;
+    updateStats();
+    return;
+  }
+
+  let html = '';
+  for (const [client, creds] of Object.entries(groups).sort((a,b) => a[0].localeCompare(b[0]))) {
+    html += `
+    <div class="client-group">
+      <div class="client-group-header" onclick="this.classList.toggle('collapsed');this.nextElementSibling.style.display=this.classList.contains('collapsed')?'none':'grid'">
+        <h3>${client} <span class="count">${creds.length}</span></h3>
+        <span class="toggle">▼</span>
+      </div>
+      <div class="cred-grid">`;
+
+    creds.forEach(c => {
+      const cat = categories[c.category] || categories.other;
+      const expiryStatus = getExpiryStatus(c.expiry);
+      html += `
+        <div class="cred-card">
+          <div class="cred-top">
+            <div class="cred-service">
+              <div class="icon" style="background:${cat.color}22;color:${cat.color}">${cat.icon}</div>
+              <div>
+                <h4>${c.service}</h4>
+                <div class="type">${cat.label}${c.url ? ` · <a href="${c.url}" target="_blank" style="color:var(--accent-light);font-size:0.75rem">Otevřít ↗</a>` : ''}</div>
+              </div>
+            </div>
+            <div class="cred-actions">
+              <button class="cred-action" title="Upravit" onclick="editCredential(${c.id})">✏️</button>
+              <button class="cred-action" title="Smazat" onclick="deleteCredential(${c.id})">🗑️</button>
+            </div>
+          </div>
+          <div class="cred-fields">
+            ${c.username ? `
+            <div class="cred-field">
+              <span class="cred-field-label">Login</span>
+              <span class="cred-field-value">${c.username}</span>
+              <button class="cred-field-copy" onclick="copyText('${escJS(c.username)}',this)" title="Kopírovat">📋</button>
+            </div>` : ''}
+            ${c.password ? `
+            <div class="cred-field">
+              <span class="cred-field-label">Heslo</span>
+              <span class="cred-field-value hidden" id="pw-${c.id}">••••••••</span>
+              <button class="cred-field-copy" onclick="togglePw(${c.id},'${escJS(c.password)}')" title="Zobrazit">👁️</button>
+              <button class="cred-field-copy" onclick="copyText('${escJS(c.password)}',this)" title="Kopírovat">📋</button>
+            </div>` : ''}
+            ${c.apiKey ? `
+            <div class="cred-field">
+              <span class="cred-field-label">API klíč</span>
+              <span class="cred-field-value hidden" id="api-${c.id}">••••••••</span>
+              <button class="cred-field-copy" onclick="toggleApi(${c.id},'${escJS(c.apiKey)}')" title="Zobrazit">👁️</button>
+              <button class="cred-field-copy" onclick="copyText('${escJS(c.apiKey)}',this)" title="Kopírovat">📋</button>
+            </div>` : ''}
+          </div>
+          <div class="cred-tags">
+            <span class="tag tag-${c.category}">${cat.icon} ${cat.label}</span>
+            ${c.expiry ? `<span class="tag" style="background:${expiryStatus.bg};color:${expiryStatus.color}"><span class="status-dot ${expiryStatus.cls}"></span>${expiryStatus.text}</span>` : ''}
+          </div>
+          ${c.notes ? `<div style="margin-top:0.6rem;font-size:0.78rem;color:var(--muted);padding:0.4rem 0.6rem;background:rgba(255,255,255,0.02);border-radius:6px">💡 ${c.notes}</div>` : ''}
+        </div>`;
+    });
+
+    html += `</div></div>`;
+  }
+
+  container.innerHTML = html;
+  updateStats();
+}
+
+function escJS(str) {
+  return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+}
+
+function getExpiryStatus(expiry) {
+  if (!expiry) return null;
+  const now = new Date();
+  const exp = new Date(expiry);
+  const days = Math.ceil((exp - now) / (1000 * 60 * 60 * 24));
+  if (days < 0) return { text: `Expirováno (${Math.abs(days)}d)`, cls: 'status-expired', color: 'var(--red)', bg: 'rgba(231,76,60,0.15)' };
+  if (days <= 30) return { text: `Vyprší za ${days}d`, cls: 'status-expiring', color: 'var(--orange)', bg: 'rgba(243,156,18,0.15)' };
+  return { text: `Platné do ${exp.toLocaleDateString('cs')}`, cls: 'status-active', color: 'var(--green)', bg: 'rgba(46,204,113,0.1)' };
+}
+
+function updateStats() {
+  const clients = [...new Set(credentials.map(c => c.client))];
+  const cats = [...new Set(credentials.map(c => c.category))];
+  const now = new Date();
+  const expiring = credentials.filter(c => {
+    if (!c.expiry) return false;
+    const d = Math.ceil((new Date(c.expiry) - now) / (1000*60*60*24));
+    return d >= 0 && d <= 30;
+  }).length;
+
+  document.getElementById('statClients').textContent = clients.length;
+  document.getElementById('statCredentials').textContent = credentials.length;
+  document.getElementById('statExpiring').textContent = expiring;
+  document.getElementById('statCategories').textContent = cats.length;
+
+  // Update client datalist
+  const dl = document.getElementById('clientList');
+  dl.innerHTML = clients.map(c => `<option value="${c}">`).join('');
+}
+
+function togglePw(id, pw) {
+  const el = document.getElementById('pw-' + id);
+  if (el.classList.contains('hidden')) {
+    el.textContent = pw;
+    el.classList.remove('hidden');
+    setTimeout(() => { el.textContent = '••••••••'; el.classList.add('hidden'); }, 5000);
+  } else {
+    el.textContent = '••••••••';
+    el.classList.add('hidden');
+  }
+}
+
+function toggleApi(id, key) {
+  const el = document.getElementById('api-' + id);
+  if (el.classList.contains('hidden')) {
+    el.textContent = key;
+    el.classList.remove('hidden');
+    setTimeout(() => { el.textContent = '••••••••'; el.classList.add('hidden'); }, 5000);
+  } else {
+    el.textContent = '••••••••';
+    el.classList.add('hidden');
+  }
+}
+
+function copyText(text, btn) {
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✅';
+    setTimeout(() => { btn.textContent = orig; }, 1500);
+  });
+}
+
+function setFilter(btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = btn.dataset.filter;
+  renderCredentials();
+}
+
+// Modal
+function openAddModal() {
+  editingId = null;
+  document.getElementById('modalTitle').textContent = 'Přidat přístup';
+  document.getElementById('fClient').value = '';
+  document.getElementById('fCategory').value = 'hosting';
+  document.getElementById('fService').value = '';
+  document.getElementById('fUrl').value = '';
+  document.getElementById('fUsername').value = '';
+  document.getElementById('fPassword').value = '';
+  document.getElementById('fApiKey').value = '';
+  document.getElementById('fExpiry').value = '';
+  document.getElementById('fNotes').value = '';
+  document.getElementById('pwStrengthBar').style.width = '0';
+  document.getElementById('credModal').classList.add('show');
+}
+
+function editCredential(id) {
+  const c = credentials.find(x => x.id === id);
+  if (!c) return;
+  editingId = id;
+  document.getElementById('modalTitle').textContent = 'Upravit přístup';
+  document.getElementById('fClient').value = c.client;
+  document.getElementById('fCategory').value = c.category;
+  document.getElementById('fService').value = c.service;
+  document.getElementById('fUrl').value = c.url || '';
+  document.getElementById('fUsername').value = c.username || '';
+  document.getElementById('fPassword').value = c.password || '';
+  document.getElementById('fApiKey').value = c.apiKey || '';
+  document.getElementById('fExpiry').value = c.expiry || '';
+  document.getElementById('fNotes').value = c.notes || '';
+  updatePwStrength(c.password || '');
+  document.getElementById('credModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('credModal').classList.remove('show');
+}
+
+function saveCredential() {
+  const client = document.getElementById('fClient').value.trim();
+  const category = document.getElementById('fCategory').value;
+  const service = document.getElementById('fService').value.trim();
+  if (!client || !service) {
+    alert('Vyplňte klienta a službu.');
+    return;
+  }
+
+  const data = {
+    client, category, service,
+    url: document.getElementById('fUrl').value.trim(),
+    username: document.getElementById('fUsername').value.trim(),
+    password: document.getElementById('fPassword').value,
+    apiKey: document.getElementById('fApiKey').value.trim(),
+    expiry: document.getElementById('fExpiry').value,
+    notes: document.getElementById('fNotes').value.trim(),
+  };
+
+  if (editingId) {
+    const idx = credentials.findIndex(x => x.id === editingId);
+    if (idx >= 0) credentials[idx] = { ...credentials[idx], ...data };
+  } else {
+    data.id = Date.now();
+    data.created = new Date().toISOString().split('T')[0];
+    credentials.push(data);
+  }
+
+  save();
+  closeModal();
+  renderCredentials();
+}
+
+function deleteCredential(id) {
+  if (!confirm('Opravdu smazat tento přístup?')) return;
+  credentials = credentials.filter(c => c.id !== id);
+  save();
+  renderCredentials();
+}
+
+// Password generator
+function generatePassword(len) {
+  const chars = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%&*_+-=';
+  let pw = '';
+  const arr = new Uint32Array(len);
+  crypto.getRandomValues(arr);
+  for (let i = 0; i < len; i++) {
+    pw += chars[arr[i] % chars.length];
+  }
+  document.getElementById('fPassword').value = pw;
+  updatePwStrength(pw);
+}
+
+function updatePwStrength(pw) {
+  let score = 0;
+  if (pw.length >= 8) score++;
+  if (pw.length >= 12) score++;
+  if (pw.length >= 16) score++;
+  if (/[A-Z]/.test(pw) && /[a-z]/.test(pw)) score++;
+  if (/\d/.test(pw)) score++;
+  if (/[^A-Za-z0-9]/.test(pw)) score++;
+
+  const bar = document.getElementById('pwStrengthBar');
+  const pct = Math.min(score / 6 * 100, 100);
+  const colors = ['var(--red)', 'var(--red)', 'var(--orange)', 'var(--orange)', 'var(--green)', 'var(--green)', 'var(--green)'];
+  bar.style.width = pct + '%';
+  bar.style.background = colors[score] || 'var(--red)';
+}
+
+document.getElementById('fPassword').addEventListener('input', (e) => updatePwStrength(e.target.value));
+
+// Settings
+function openSettings() {
+  document.getElementById('sOldPin').value = '';
+  document.getElementById('sNewPin').value = '';
+  document.getElementById('sConfirmPin').value = '';
+  document.getElementById('sAutoLock').value = autoLockMinutes;
+  document.getElementById('settingsModal').classList.add('show');
+}
+
+function closeSettings() {
+  document.getElementById('settingsModal').classList.remove('show');
+}
+
+function saveSettings() {
+  const oldPin = document.getElementById('sOldPin').value;
+  const newPin = document.getElementById('sNewPin').value;
+  const confirmPin = document.getElementById('sConfirmPin').value;
+  const newAutoLock = parseInt(document.getElementById('sAutoLock').value);
+
+  if (newPin) {
+    if (oldPin !== pin) { alert('Aktuální PIN je nesprávný.'); return; }
+    if (newPin.length !== 4 || !/^\d{4}$/.test(newPin)) { alert('PIN musí být 4 číslice.'); return; }
+    if (newPin !== confirmPin) { alert('PINy se neshodují.'); return; }
+    pin = newPin;
+  }
+
+  autoLockMinutes = newAutoLock;
+  save();
+  resetLockTimer();
+  closeSettings();
+  alert('Nastavení uloženo.');
+}
+
+// Export/Import
+function exportData() {
+  const blob = new Blob([JSON.stringify({ credentials, exportDate: new Date().toISOString(), version: '1.0' }, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `kudli-pristupy-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importData() {
+  document.getElementById('importFile').click();
+}
+
+function handleImport(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.credentials && Array.isArray(data.credentials)) {
+        if (confirm(`Import ${data.credentials.length} přístupů? Stávající data budou zachována.`)) {
+          const maxId = Math.max(0, ...credentials.map(c => c.id));
+          data.credentials.forEach((c, i) => { c.id = maxId + i + 1; });
+          credentials = [...credentials, ...data.credentials];
+          save();
+          renderCredentials();
+          alert('Import dokončen.');
+        }
+      } else {
+        alert('Neplatný formát souboru.');
+      }
+    } catch (err) {
+      alert('Chyba při čtení souboru.');
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+function clearAll() {
+  if (!confirm('Opravdu smazat VŠECHNA uložená data? Tato akce je nevratná!')) return;
+  if (!confirm('Skutečně potvrdit smazání?')) return;
+  credentials = [];
+  save();
+  renderCredentials();
+}
+
+// Load demo
+function loadDemo() {
+  credentials = [...demoData];
+  save();
+  renderCredentials();
+}
+
+// Init
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog — Kudli. marketing | Tipy a trendy z webového vývoje</title>
+    <meta name="description" content="Tipy a články o webovém vývoji, automatizaci a AI řešeních pro firmy.">
+    <meta property="og:title" content="Blog — Kudli. marketing">
+    <meta property="og:description" content="Tipy a články o webovém vývoji, automatizaci a AI řešeních pro firmy.">
+    <meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kudlimarketing.cz/blog.html">
+    <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a1a2e;
+            --accent: #e94560;
+            --accent-light: #ff6b81;
+            --bg: #f8f9fa;
+            --text: #333;
+            --text-light: #666;
+            --border: #e0e0e0;
+            --white: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* ========== HEADER & NAV ========== */
+        header {
+            background-color: var(--white);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        nav a {
+            color: var(--text);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        nav a:hover {
+            color: var(--accent);
+        }
+
+        nav a[href*="blog"] {
+            color: var(--accent);
+        }
+
+        /* Mobile menu toggle */
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary);
+        }
+
+        /* ========== HERO SECTION ========== */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, #2d2d44 100%);
+            color: var(--white);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        /* ========== MAIN CONTENT ========== */
+        main {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+        }
+
+        .blog-container {
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 3rem;
+        }
+
+        /* ========== FEATURED ARTICLE ========== */
+        .featured-article {
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            display: grid;
+            grid-template-columns: 1fr 300px;
+            gap: 2rem;
+            padding: 2rem;
+            margin-bottom: 3rem;
+            cursor: pointer;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .featured-article:hover {
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .featured-article-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .featured-article-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .featured-article-tag {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 0.35rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .featured-article-date {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .featured-article-date::before {
+            content: "📅 ";
+            margin-right: 0.3rem;
+        }
+
+        .featured-article-time {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .featured-article-time::before {
+            content: "⏱️ ";
+            margin-right: 0.3rem;
+        }
+
+        .featured-article p {
+            margin-bottom: 1.5rem;
+            color: var(--text-light);
+            line-height: 1.8;
+        }
+
+        .read-more {
+            color: var(--accent);
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.3s ease;
+        }
+
+        .read-more:hover {
+            gap: 0.8rem;
+        }
+
+        .featured-image {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            border-radius: 6px;
+            min-height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem;
+        }
+
+        /* ========== ARTICLE GRID ========== */
+        .articles-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .article-card {
+            background: var(--white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .article-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .article-image {
+            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2.5rem;
+        }
+
+        .article-content {
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .article-tag {
+            display: inline-block;
+            background-color: #f0f0f0;
+            color: var(--primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+            width: fit-content;
+        }
+
+        .article-card:nth-child(1) .article-tag { background-color: #ffe6cc; color: #c65911; }
+        .article-card:nth-child(2) .article-tag { background-color: #d4f1f4; color: #088395; }
+        .article-card:nth-child(3) .article-tag { background-color: #f5e6ff; color: #6a3fa0; }
+        .article-card:nth-child(4) .article-tag { background-color: #e6f3ff; color: #0052cc; }
+        .article-card:nth-child(5) .article-tag { background-color: #ffe6e6; color: #c41e3a; }
+        .article-card:nth-child(6) .article-tag { background-color: #e6ffe6; color: #2d5016; }
+
+        .article-content h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            color: var(--primary);
+            line-height: 1.4;
+        }
+
+        .article-excerpt {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+            flex-grow: 1;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+        }
+
+        .article-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border);
+            padding-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .article-meta {
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .sidebar-section {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .sidebar-section h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1.2rem;
+            color: var(--primary);
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .author-bio {
+            text-align: center;
+        }
+
+        .author-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 1rem;
+        }
+
+        .author-bio p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+
+        .topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+
+        .topic-tag {
+            background-color: var(--bg);
+            color: var(--primary);
+            padding: 0.4rem 0.9rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid var(--border);
+        }
+
+        .topic-tag:hover {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .cta-section h3 {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            border: none;
+            padding: 0;
+            color: white;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            background-color: white;
+            color: var(--accent);
+            padding: 0.6rem 1.4rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            border: 2px solid white;
+        }
+
+        .cta-btn:hover {
+            background-color: transparent;
+            color: white;
+        }
+
+        /* ========== ARTICLE DETAIL VIEW ========== */
+        .article-detail {
+            display: none;
+            background: var(--white);
+            padding: 3rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 3rem;
+        }
+
+        .article-detail.active {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .article-detail-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            color: var(--accent);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: gap 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-btn:hover {
+            gap: 1rem;
+        }
+
+        .article-detail h1 {
+            font-size: 2.2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .article-detail-meta {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .article-detail-content {
+            max-width: 800px;
+            font-size: 1rem;
+            line-height: 1.8;
+            color: var(--text);
+        }
+
+        .article-detail-content h2 {
+            font-size: 1.5rem;
+            margin: 2rem 0 1rem 0;
+            color: var(--primary);
+        }
+
+        .article-detail-content h3 {
+            font-size: 1.2rem;
+            margin: 1.5rem 0 0.8rem 0;
+            color: var(--primary);
+        }
+
+        .article-detail-content p {
+            margin-bottom: 1.2rem;
+            line-height: 1.8;
+        }
+
+        .article-detail-content ul,
+        .article-detail-content ol {
+            margin-left: 2rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .article-detail-content li {
+            margin-bottom: 0.6rem;
+        }
+
+        .article-detail-content strong {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        .article-detail-content em {
+            color: var(--accent);
+            font-style: italic;
+        }
+
+        .share-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .share-section label {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .share-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .share-btn:hover {
+            background: var(--accent);
+        }
+
+        .related-articles {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--border);
+        }
+
+        .related-articles h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .related-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .related-item {
+            background: var(--bg);
+            padding: 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid var(--accent);
+        }
+
+        .related-item:hover {
+            background: var(--border);
+            transform: translateX(4px);
+        }
+
+        .related-item h4 {
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            color: var(--primary);
+            line-height: 1.3;
+        }
+
+        .related-item p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .cta-banner {
+            background: linear-gradient(135deg, var(--primary), #2d2d44);
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            margin-top: 3rem;
+            text-align: center;
+        }
+
+        .cta-banner h2 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: white;
+        }
+
+        .cta-banner p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+        }
+
+        .cta-banner-btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 0.8rem 2rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .cta-banner-btn:hover {
+            background-color: var(--accent-light);
+            transform: scale(1.05);
+        }
+
+        /* ========== RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .blog-container {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-article {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .featured-image {
+                min-height: 200px;
+            }
+
+            .articles-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .article-image {
+                height: 150px;
+            }
+
+            .related-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .article-detail {
+                padding: 1.5rem;
+            }
+
+            .article-detail h1 {
+                font-size: 1.6rem;
+            }
+
+            main {
+                padding: 0 1rem;
+            }
+
+            .sidebar {
+                gap: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 1.5rem;
+            }
+
+            .featured-article-content h2 {
+                font-size: 1.4rem;
+            }
+
+            .article-content h3 {
+                font-size: 1rem;
+            }
+
+            nav {
+                padding: 1rem;
+            }
+
+            .logo {
+                font-size: 1.2rem;
+            }
+
+            .article-detail {
+                padding: 1rem;
+            }
+
+            .article-detail h1 {
+                font-size: 1.4rem;
+            }
+
+            .article-detail-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .share-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .cta-banner {
+                padding: 1.5rem;
+            }
+
+            .cta-banner h2 {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* ========== UTILITY ========== */
+        .hidden {
+            display: none;
+        }
+
+        .scroll-lock {
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER & NAV -->
+    <header>
+        <nav>
+            <a href="/" class="logo">Kudli<span>.</span> marketing</a>
+            <ul id="nav-menu">
+                <li><a href="index.html">← Zpět</a></li>
+                <li><a href="#services">Služby</a></li>
+                <li><a href="#portfolio">Portfolio</a></li>
+                <li><a href="/blog.html">Blog</a></li>
+                <li><a href="#pricing">Ceník</a></li>
+                <li><a href="#contact">Kontakt</a></li>
+            </ul>
+            <button class="mobile-menu-btn" id="mobile-menu-btn">☰</button>
+        </nav>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Blog</h1>
+            <p>Tipy, trendy a zkušenosti z webového vývoje a automatizace</p>
+        </div>
+    </section>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <div class="blog-container">
+            <!-- ARTICLES SECTION -->
+            <div class="articles-section">
+                <!-- FEATURED ARTICLE -->
+                <div class="featured-article" data-article="1">
+                    <div class="featured-article-content">
+                        <div class="featured-article-meta">
+                            <span class="featured-article-tag">Webový vývoj</span>
+                            <span class="featured-article-date">15. března 2026</span>
+                            <span class="featured-article-time">5 min čtení</span>
+                        </div>
+                        <h2>5 věcí, které musí mít každý firemní web v 2026</h2>
+                        <p>Moderní web není luxus, je nutností. Přečtěte si, jaké prvky již nelze ignorovat, pokud chcete zůstat konkurenceschopní a přitáhnout potenciální zákazníky.</p>
+                        <a href="#" class="read-more" onclick="showArticle(1); return false;">Číst článek →</a>
+                    </div>
+                    <div class="featured-image">🌐</div>
+                </div>
+
+                <!-- ARTICLES GRID -->
+                <div class="articles-grid">
+                    <!-- Article 2 -->
+                    <div class="article-card" data-article="2" onclick="showArticle(2)">
+                        <div class="article-image">⚙️</div>
+                        <div class="article-content">
+                            <span class="article-tag">Automatizace</span>
+                            <h3>Jak automatizace šetří malým firmám 10+ hodin týdně</h3>
+                            <p class="article-excerpt">Reálné příklady, jak na sobě můžete nechat dělat počítač rutinní práce a věnovat se růstu.</p>
+                            <div class="article-footer">
+                                <div class="article-meta">
+                                    <span>12. března 2026</span>
+                                    <span>4 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Article 3 -->
+                    <div class="article-card" data-article="3" onclick="showArticle(3)">
+                        <div class="article-image">🤖</div>
+                        <div class="article-content">
+                            <span class="article-tag">AI & Chatboty</span>
+                            <h3>AI chatbot pro vaši firmu: kompletní průvodce</h3>
+                            <p class="article-excerpt">Jak fungují chatboty, kdy se vyplatí a kolik vás bude stát. Praktický průvodce pro rozhodnutí.</p>
+                            <div class="article-footer">
+                                <div class="article-meta">
+                                    <span>8. března 2026</span>
+                                    <span>5 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Article 4 -->
+                    <div class="article-card" data-article="4" onclick="showArticle(4)">
+                        <div class="article-image">💰</div>
+                        <div class="article-content">
+                            <span class="article-tag">Ceník & Kalkulace</span>
+                            <h3>Kolik stojí web na míru v 2026? Upřímný přehled cen</h3>
+                            <p class="article-excerpt">Bez balastu a slibů. Reálné rozpočty pro různé typy projektů a faktory, které cenu ovlivňují.</p>
+                            <div class="article-footer">
+                                <div class="article-meta">
+                                    <span>5. března 2026</span>
+                                    <span>5 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Article 5 -->
+                    <div class="article-card" data-article="5" onclick="showArticle(5)">
+                        <div class="article-image">🎯</div>
+                        <div class="article-content">
+                            <span class="article-tag">Konverze & UX</span>
+                            <h3>Landing page, která konvertuje: 7 ověřených principů</h3>
+                            <p class="article-excerpt">Jak psát nadpisy, strukturovat obsah a umisťovat CTA tlačítka, aby lidi opravdu konvertovali.</p>
+                            <div class="article-footer">
+                                <div class="article-meta">
+                                    <span>1. března 2026</span>
+                                    <span>4 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Article 6 -->
+                    <div class="article-card" data-article="6" onclick="showArticle(6)">
+                        <div class="article-image">🛍️</div>
+                        <div class="article-content">
+                            <span class="article-tag">E-commerce</span>
+                            <h3>E-shop vs. marketplace: Co je lepší pro váš byznys?</h3>
+                            <p class="article-excerpt">Srovnění výhod a nevýhod. Kdy se vyplatí vlastní e-shop a kdy je marketplace lepší volbou.</p>
+                            <div class="article-footer">
+                                <div class="article-meta">
+                                    <span>25. února 2026</span>
+                                    <span>4 min</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- SIDEBAR -->
+            <aside class="sidebar">
+                <!-- Author Bio -->
+                <div class="sidebar-section author-bio">
+                    <h3>O autorovi</h3>
+                    <div class="author-avatar">👨‍💻</div>
+                    <p><strong>Ondřej Dvořák</strong></p>
+                    <p>Freelance vývojář a specialista na web. Pomáhám malým firmám růst skrze moderní weby a automatizaci.</p>
+                </div>
+
+                <!-- Popular Topics -->
+                <div class="sidebar-section">
+                    <h3>Populární témata</h3>
+                    <div class="topics">
+                        <span class="topic-tag">Web design</span>
+                        <span class="topic-tag">Automatizace</span>
+                        <span class="topic-tag">E-commerce</span>
+                        <span class="topic-tag">Chatboty</span>
+                        <span class="topic-tag">SEO</span>
+                        <span class="topic-tag">Ceník</span>
+                    </div>
+                </div>
+
+                <!-- CTA -->
+                <div class="cta-section">
+                    <h3>Potřebujete pomoct?</h3>
+                    <p>Pojďme promluvit o vašem projektu a jak jej můžu realizovat.</p>
+                    <a href="/onboarding.html" class="cta-btn">Začít</a>
+                </div>
+            </aside>
+        </div>
+
+        <!-- ARTICLE DETAIL VIEW -->
+        <div class="article-detail" id="article-detail">
+            <div class="article-detail-header">
+                <button class="back-btn" onclick="closeArticle()">← Zpět na blog</button>
+            </div>
+            <div id="article-detail-content"></div>
+        </div>
+    </main>
+
+    <script>
+        // Article data with full content
+        const articles = {
+            1: {
+                title: "5 věcí, které musí mít každý firemní web v 2026",
+                category: "Webový vývoj",
+                date: "15. března 2026",
+                readTime: "5 min čtení",
+                excerpt: "Moderní web není luxus, je nutností. Přečtěte si, jaké prvky již nelze ignorovat.",
+                content: `
+                    <h1>5 věcí, které musí mít každý firemní web v 2026</h1>
+                    <div class="article-detail-meta">
+                        <span>📅 15. března 2026</span>
+                        <span>⏱️ 5 min čtení</span>
+                        <span>📚 Webový vývoj</span>
+                    </div>
+                    <div class="article-detail-content">
+                        <p>V dnešní digitální éře již není web jen ozdobou, ale <strong>základním stavebním kamenem vašeho byznysu</strong>. Zákazníci si vás vyhledávají online a jejich první dojem o vás často vzniká právě na webu. Pokud váš web nesplňuje určitá kritéria, přicházíte o potenciální klienty.</p>
+
+                        <h2>1. Blesk-rychlost načítání</h2>
+                        <p>Návštěvníci čekají na načtení stránky průměrně <em>3 sekundy</em>. Pokud web načítá déle, 40% uživatelů jej opustí. Pro malou firmu to znamená <strong>ztrátu objednávek a ztrátu důvěry</strong>.</p>
+                        <ul>
+                            <li>Optimalizace obrázků a videa</li>
+                            <li>Caching a CDN (Content Delivery Network)</li>
+                            <li>Minifikace CSS a JavaScriptu</li>
+                            <li>Lazy loading komponent</li>
+                        </ul>
+                        <p><strong>Tip:</strong> Otestujte svůj web v Google PageSpeed Insights. Cíl: skóre nad 80 bodů.</p>
+
+                        <h2>2. Mobilní responsivita je povinná, ne volba</h2>
+                        <p>Více než 60% návštěv webu pochází z mobilních zařízení. Pokud váš web není optimalizovaný pro mobil, <em>více jak polovina vašich potenciálních zákazníků vás nenajde</em>.</p>
+                        <ul>
+                            <li>Menší tlačítka, snazší klikání</li>
+                            <li>Čitelný text bez zoomu</li>
+                            <li>Vertikální rozložení obsahu</li>
+                            <li>Rychlé nabití stránky</li>
+                        </ul>
+                        <p>Zkouška: Otevřete si web na telefonu. Pokud si musíte zvětšovat text nebo se horizontálně posouvat, chybí vám mobilní optimalizace.</p>
+
+                        <h2>3. Jasné a viditelné call-to-action (CTA)</h2>
+                        <p>Pokud návštěvník neví, co má dělat, neudělá nic. Web bez <strong>jasného CTA</strong> je jako obchod bez prodejce.</p>
+                        <ul>
+                            <li>Tlačítka "Kontaktujte nás", "Objednat", "Více informací"</li>
+                            <li>Viditelné a v kontrastní barvě</li>
+                            <li>Několikrát na stránce, ne pouze jednou</li>
+                            <li>Formulár pro zprávu nebo rezervaci</li>
+                        </ul>
+                        <p><strong>Statistika:</strong> Weby s 3-4 CTA prvky mají 30-50% vyšší konverzi než weby bez nich.</p>
+
+                        <h2>4. HTTPS a bezpečnost není debata</h2>
+                        <p>Každý web <em>musí</em> mít SSL certifikát (HTTPS). Bez něj:</p>
+                        <ul>
+                            <li>Prohlížeč zobrazí varování "Připojení není bezpečné"</li>
+                            <li>Google wam penalizuje v SEO</li>
+                            <li>Zákazníci vám nebudou věřit</li>
+                        </ul>
+                        <p>Dobrá zpráva: SSL certifikáty jsou nyní obvykle zdarma (Let's Encrypt) nebo stojí řádově desítky korun ročně.</p>
+
+                        <h2>5. Funkční kontaktní formulář a offline komunikace</h2>
+                        <p>Formulář musí být <strong>jednoduché, bez zbytečných polí</strong>. Podívejte se:</p>
+                        <ul>
+                            <li>Max. 5 polí (jméno, email, zpráva)</li>
+                            <li>Automatické potvrzení odeslání</li>
+                            <li>Vám přijde email s novou zprávou</li>
+                            <li>Další komunikační kanály: tel. číslo, adresa, social media</li>
+                        </ul>
+                        <p>Pokud formulář nefunguje, přijdete o zásadní příležitost kontaktu se zákazníkem.</p>
+
+                        <h2>Shrnutí v číslech</h2>
+                        <p>Firmy, které mají web s těmito 5 prvky:</p>
+                        <ul>
+                            <li><strong>+50%</strong> zvýšení důvěry zákazníků</li>
+                            <li><strong>+35%</strong> více objednávek z internetu</li>
+                            <li><strong>+20%</strong> lepší viditelnost v Google</li>
+                            <li><strong>-40%</strong> méně nákladů na reklamu (přes organický traffic)</li>
+                        </ul>
+
+                        <p><em>Váš web je vaše 24/7 prodejní síla. Ujistěte se, že pracuje pro vás, ne proti vám.</em></p>
+                    </div>
+                `
+            },
+            2: {
+                title: "Jak automatizace šetří malým firmám 10+ hodin týdně",
+                category: "Automatizace",
+                date: "12. března 2026",
+                readTime: "4 min čtení",
+                excerpt: "Reálné příklady, jak na sobě můžete nechat dělat počítač rutinní práce.",
+                content: `
+                    <h1>Jak automatizace šetří malým firmám 10+ hodin týdně</h1>
+                    <div class="article-detail-meta">
+                        <span>📅 12. března 2026</span>
+                        <span>⏱️ 4 min čtení</span>
+                        <span>📚 Automatizace</span>
+                    </div>
+                    <div class="article-detail-content">
+                        <p>Malé firmy často bojují se <strong>nedostatkem času a lidí</strong>. Automatizace je řešení, o kterém mnoho podnikatelů neví. Pojďme si projít konkrétní příklady, jak funguje a kolik času vám ušetří.</p>
+
+                        <h2>Co je automatizace a proč na ni spoléhat?</h2>
+                        <p>Automatizace je proces, kdy <em>počítač provádí rutinní úkoly bez lidské intervention</em>. Přesunete se z "dělání" na "řízení procesu".</p>
+                        <ul>
+                            <li>Nižší chybovost (počítač se neunaví)</li>
+                            <li>Rychlejší provádění (sekund místo hodin)</li>
+                            <li>Vaše čas na důležitější věci</li>
+                            <li>Nižší náklady (často bez dalších lidí)</li>
+                        </ul>
+
+                        <h2>Praktické příklady: 10+ hodin šetření týdně</h2>
+
+                        <h3>1. Účetnictví a faktury (3 hodiny/týden)</h3>
+                        <p><strong>Bez automatizace:</strong> Ruční vyplnění faktury, kopírování dat, zaslání emailem, zápis do tabulky.</p>
+                        <p><strong>S automatizací:</strong> Zákazník se zaregistruje → automaticky se vytvoří faktura → zašle se sám → zápis do účetnictví.</p>
+                        <p><strong>Nástroje:</strong> Wave, Fakturazo, Zapier (propojení nástrojů)</p>
+
+                        <h3>2. Email marketing a follow-up (2.5 hodiny/týden)</h3>
+                        <p>Místo ručního psaní emailů na nové leads:</p>
+                        <ul>
+                            <li>Automatická uvítací zpráva</li>
+                            <li>Automatické připomenutí, když si zákazník něco vybere</li>
+                            <li>Automatické se-mailing na základě chování</li>
+                        </ul>
+                        <p><strong>Nástroje:</strong> Brevo, Mailchimp, ActiveCampaign</p>
+
+                        <h3>3. Reporting a reporty (2 hodiny/týden)</h3>
+                        <p>Místo ručního sbírání dat a psaní reportů:</p>
+                        <ul>
+                            <li>Automatický sběr dat z více zdrojů</li>
+                            <li>Automatické vytvoření reportu a grafu</li>
+                            <li>Automatické zaslání reportu každé pondělí</li>
+                        </ul>
+                        <p><strong>Nástroje:</strong> Google Sheets API, Power BI, Data Studio</p>
+
+                        <h3>4. Lead management a klasifikace (1.5 hodiny/týden)</h3>
+                        <p>Přidá se nový lead → automaticky se klasifikuje → přiřadí správnému prodejci → zašle se mu welcome zpráva.</p>
+                        <p><strong>Nástroje:</strong> HubSpot, Pipedrive, CRM na míru</p>
+
+                        <h3>5. Data entry a synchronizace (1.5 hodiny/týden)</h3>
+                        <p>Automatické přenesení dat mezi aplikacemi (formulář → CRM → tabulka → email)</p>
+                        <p><strong>Nástroje:</strong> Zapier, Make (dříve Integromat), Airtable</p>
+
+                        <h2>ROI výpočet: Kolik vám ušetří?</h2>
+                        <p><strong>Úspora času:</strong> 10 hodin/týden = 40 hodin/měsíc = 480 hodin/rok</p>
+                        <p><strong>Průměrná hodinová sazba malého podnikatele:</strong> 500 Kč/hod</p>
+                        <p><strong>Roční úspora:</strong> 480 × 500 = <em>240 000 Kč/rok</em></p>
+                        <p><strong>Typický náklad na automatizaci:</strong> 2 000-10 000 Kč/měsíc</p>
+                        <p><strong>Čistý přínos:</strong> 240 000 - (5 000 × 12) = <strong>180 000 Kč/rok</strong></p>
+
+                        <h2>Kde začít?</h2>
+                        <ol>
+                            <li>Zapište si všechny opakující se úkoly, které děláte během týdne</li>
+                            <li>Vyberte si ten nejčasově náročnější</li>
+                            <li>Ptejte se: "Dá se to automatizovat?"</li>
+                            <li>Vyzkoušejte zdarma trial vybraného nástroje</li>
+                            <li>Implementujte a měřte úsporu</li>
+                        </ol>
+
+                        <p><strong>Závěr:</strong> Automatizace není jen pro velké korporace. Malé firmy, které ji využívají, získávají obrovskou konkurenční výhodu: více času, méně chyb, nižší náklady.</p>
+                    </div>
+                `
+            },
+            3: {
+                title: "AI chatbot pro vaši firmu: kompletní průvodce",
+                category: "AI & Chatboty",
+                date: "8. března 2026",
+                readTime: "5 min čtení",
+                excerpt: "Jak fungují chatboty, kdy se vyplatí a kolik vás bude stát.",
+                content: `
+                    <h1>AI chatbot pro vaši firmu: kompletní průvodce</h1>
+                    <div class="article-detail-meta">
+                        <span>📅 8. března 2026</span>
+                        <span>⏱️ 5 min čtení</span>
+                        <span>📚 AI & Chatboty</span>
+                    </div>
+                    <div class="article-detail-content">
+                        <p>Chatboty nejsou budoucnost — jsou <strong>přítomnost</strong>. Miliiony firem je již používají. Ale co přesně je to chatbot, jak funguje a má smysl pro vaši firmu?</p>
+
+                        <h2>Co je AI chatbot?</h2>
+                        <p>Chatbot je <em>automatizovaný program, který si s lidmi povídá</em> a odpovídá na jejich otázky 24/7 bez potřeby člověka.</p>
+                        <p>Techniky:</p>
+                        <ul>
+                            <li><strong>Rule-based chatbots:</strong> Jednoduché, odpovídají na přednastavené otázky (méně flexibilní)</li>
+                            <li><strong>AI chatbots (LLM):</strong> Používají umělou inteligenci (ChatGPT, Claude), rozumějí kontextu, jsou flexibilní</li>
+                        </ul>
+
+                        <h2>Jak AI chatbot funguje?</h2>
+                        <ol>
+                            <li>Uživatel napíše zprávu</li>
+                            <li>AI chatbot ji přečte a rozumí kontextu</li>
+                            <li>Vygeneruje relevantní odpověď na základě vašeho trénovacího materiálu</li>
+                            <li>Odešle odpověď uživateli</li>
+                            <li>Pokud chatbot neumí odpovědět → přepošle na reálného člověka</li>
+                        </ol>
+
+                        <h2>Praktické výhody pro malou firmu</h2>
+                        <ul>
+                            <li><strong>24/7 dostupnost:</strong> Odpovídá i v noci, o víkendech</li>
+                            <li><strong>Nižší náklady na support:</strong> Řeší 60-80% otázek automaticky</li>
+                            <li><strong>Vyšší spokojenost:</strong> Okamžitá odpověď bez čekání</li>
+                            <li><strong>Sbírání leadů:</strong> Kvalifikuje zájemce automaticky</li>
+                            <li><strong>Snadnější onboarding:</strong> Chatbot vysvětluje, jak produkt funguje</li>
+                        </ul>
+
+                        <h2>Reálný případ: Prodejce služeb (webdesign, IT)</h2>
+                        <p><strong>Bez chatbotu:</strong> Lead napíše email, čeká 24 hodin na odpověď, již není zainteresovaný.</p>
+                        <p><strong>S chatbotem:</strong> Lead napíše → chatbot okamžitě odpovídá s ceníkem, FAQ a možností rezervace → konverze zdvojnásobí se.</p>
+
+                        <h2>Jaké otázky chatbot zvládne?</h2>
+                        <h3>Ideální na automatizaci:</h3>
+                        <ul>
+                            <li>Jaká jsou vaše pracovní doba?</li>
+                            <li>Kolik stojí služba X?</li>
+                            <li>Jak se zaregistrovat?</li>
+                            <li>Co je součástí balíčku?</li>
+                            <li>Jak kontaktovat support?</li>
+                            <li>Jaká jsou podmínky vrácení?</li>
+                        </ul>
+
+                        <h3>Vyžadují člověka:</h3>
+                        <ul>
+                            <li>Komplexní technické problémy</li>
+                            <li>Stížnosti a konflikty</li>
+                            <li>Velmi specifické dotazy</li>
+                            <li>Emoční podpora</li>
+                        </ul>
+
+                        <h2>Kolik stojí chatbot?</h2>
+                        <p><strong>Jednoduchý chatbot:</strong> 5 000-15 000 Kč (jednorazbvě)</p>
+                        <p><strong>Chatbot s AI:</strong> 10 000-30 000 Kč (jednorazově) + 2 000-5 000 Kč/měsíc (hosting + API)</p>
+                        <p><strong>Enterprise řešení:</strong> 50 000+ Kč/měsíc</p>
+                        <p><strong>Zdarma nástroje:</strong> Tidio, Drift (omezená verze), GitHub Copilot (pro dev)</p>
+
+                        <h2>ROI: Kolik vám přinese?</h2>
+                        <p>Příklad firmy s 50 leadů/měsíc:</p>
+                        <ul>
+                            <li>Bez chatbotu: Váš čas odpovídá = 10 hodin/měsíc = 5 000 Kč</li>
+                            <li>S chatbotem: Řeší 80% → váš čas = 2 hodiny/měsíc = 1 000 Kč</li>
+                            <li>Úspora: 4 000 Kč/měsíc</li>
+                            <li>Navíc: +20% konverze (lépe odpovídáte)</li>
+                        </ul>
+                        <p><strong>ROI:</strong> Chatbot se vrátí za 2-3 měsíce.</p>
+
+                        <h2>Kdy si chatbot pořídit?</h2>
+                        <p><strong>Má smysl, pokud máte:</strong></p>
+                        <ul>
+                            <li>Více jak 20 leadů/měsíc</li>
+                            <li>Opakující se otázky od klientů</li>
+                            <li>Web s vysokým trafficu</li>
+                            <li>Chcete zvýšit konverzi</li>
+                        </ul>
+                        <p><strong>Nema smysl, pokud:</strong></p>
+                        <ul>
+                            <li>Máte méně 5 leadů/měsíc</li>
+                            <li>Všechny otázky jsou velmi specifické</li>
+                            <li>Máte osobní vztah se všemi klienty</li>
+                        </ul>
+
+                        <h2>Jak začít?</h2>
+                        <ol>
+                            <li>Vyzkoušejte zdarma nástroj (Tidio, Zendesk chat)</li>
+                            <li>Naprogramujte si základní otázky a odpovědi</li>
+                            <li>Pozorujte, jaké otázky dostáváte nejčastěji</li>
+                            <li>Zvyšte složitost postupně</li>
+                            <li>Změřte dopad na konverzi a čas</li>
+                        </ol>
+
+                        <p><strong>Závěr:</strong> AI chatbot je investice, která se vrací. Pro malé firmy bez týmu supportu je to game-changer.</p>
+                    </div>
+                `
+            },
+            4: {
+                title: "Kolik stojí web na míru v 2026? Upřímný přehled cen",
+                category: "Ceník & Kalkulace",
+                date: "5. března 2026",
+                readTime: "5 min čtení",
+                excerpt: "Bez balastu a slibů. Reálné rozpočty pro různé typy projektů.",
+                content: `
+                    <h1>Kolik stojí web na míru v 2026? Upřímný přehled cen</h1>
+                    <div class="article-detail-meta">
+                        <span>📅 5. března 2026</span>
+                        <span>⏱️ 5 min čtení</span>
+                        <span>📚 Ceník & Kalkulace</span>
+                    </div>
+                    <div class="article-detail-content">
+                        <p>Otázka, kterou slýchám nejčastěji: <strong>"Kolik stojí web?"</strong> Odpověď je obvykle: "Záleží." Pojďme být konkrétní.</p>
+
+                        <h2>Proč si cena liší?</h2>
+                        <p>Cena webu závisí na:</p>
+                        <ul>
+                            <li><strong>Složitost:</strong> Jednoduchá přistávací stránka vs. e-shop s 1000+ produkty</li>
+                            <li><strong>Funkcionalita:</strong> Formulář vs. AI chatbot vs. platební brána</li>
+                            <li><strong>Čas vývoje:</strong> Jednoduchý web = 40-60 hodin; komplexní = 200+ hodin</li>
+                            <li><strong>Péče o design:</strong> Základní design vs. profesionální branding</li>
+                            <li><strong>Údržba:</strong> Web bez updatů vs. aktivní maintenance</li>
+                        </ul>
+
+                        <h2>Reálné ceny v Česku (2026)</h2>
+
+                        <h3>1. Přistávací stránka (Landing page)</h3>
+                        <p><strong>Účel:</strong> Sbírání emailů, prodej produktu, branding</p>
+                        <p><strong>Rozsah:</strong> 1-5 sekcí, formulář, fotografie, SEO</p>
+                        <p><strong>Cena:</strong> 15 000 - 40 000 Kč</p>
+                        <p><strong>Čas:</strong> 2-3 týdny</p>
+                        <p><strong>Vhodné pro:</strong> Startupy, kurzy online, malé služby</p>
+
+                        <h3>2. Firemní web (Portfolio / Prezentace)</h3>
+                        <p><strong>Účel:</strong> Představení firmy, služeb, budování důvěry</p>
+                        <p><strong>Rozsah:</strong> 5-10 stránek (Domů, O nás, Služby, Portfolio, Blog, Kontakt)</p>
+                        <p><strong>Cena:</strong> 40 000 - 100 000 Kč</p>
+                        <p><strong>Čas:</strong> 4-8 týdnů</p>
+                        <p><strong>Vhodné pro:</strong> Malé a střední firmy, freelanceři, agentury</p>
+
+                        <h3>3. E-shop (10-100 produktů)</h3>
+                        <p><strong>Účel:</strong> Prodej fyzických nebo digitálních produktů</p>
+                        <p><strong>Rozsah:</strong> Katalog, nákupní košík, platební brána, správa objednávek</p>
+                        <p><strong>Cena:</strong> 80 000 - 150 000 Kč</p>
+                        <p><strong>Čas:</strong> 6-10 týdnů</p>
+                        <p><strong>Vhodné pro:</strong> Malé prodejny, výrobci, obchodníci</p>
+
+                        <h3>4. Moderní e-shop (100+ produktů)</h3>
+                        <p><strong>Účel:</strong> Seriózní prodej, integrace se skladem, marketing automation</p>
+                        <p><strong>Rozsah:</strong> Pokročilý katalog, vyhledávání, filtry, recenze, email marketing</p>
+                        <p><strong>Cena:</strong> 150 000 - 300 000 Kč</p>
+                        <p><strong>Čas:</strong> 8-16 týdnů</p>
+                        <p><strong>Vhodné pro:</strong> Střední obchody, distribuční společnosti</p>
+
+                        <h3>5. Web na míru s vlastní funkcionalitou</h3>
+                        <p><strong>Účel:</strong> Specifické řešení, API integrace, vlastní software</p>
+                        <p><strong>Rozsah:</strong> Téměř neomezený (rezervační systém, CRM, marketplace)</p>
+                        <p><strong>Cena:</strong> 300 000 - 1 000 000+ Kč</p>
+                        <p><strong>Čas:</strong> 3-12 měsíců</p>
+                        <p><strong>Vhodné pro:</strong> Větší firmy se specifickými potřebami</p>
+
+                        <h2>Další náklady, které musíte počítat</h2>
+                        <ul>
+                            <li><strong>Doména:</strong> 200-500 Kč/rok</li>
+                            <li><strong>Hosting:</strong> 1 000-5 000 Kč/měsíc (záleží na objemu)</li>
+                            <li><strong>SSL certifikát:</strong> Zdarma (Let's Encrypt) nebo 1 000-5 000 Kč/rok</li>
+                            <li><strong>Email s vlastní doménou:</strong> 300-2 000 Kč/měsíc</li>
+                            <li><strong>Údržba & podpora:</strong> 2 000-10 000 Kč/měsíc (doporučeno)</li>
+                            <li><strong>SEO optimalizace:</strong> 5 000-20 000 Kč jednorazově</li>
+                            <li><strong>Design úpravy:</strong> 2 000-5 000 Kč/měsíc (na vyžádání)</li>
+                        </ul>
+
+                        <h2>Checklist: Co vás drží?</h2>
+                        <p><strong>Nejčastější chyby při odhadu:</strong></p>
+                        <ul>
+                            <li>❌ Zapomenutí na fotografie a tvorbu obsahu</li>
+                            <li>❌ Nedostatek jasného briefa (co přesně chcete)</li>
+                            <li>❌ Nekonečné revize a změny</li>
+                            <li>❌ Ignorování mobilní optimalizace</li>
+                            <li>❌ Zapomenutí na SEO od začátku</li>
+                        </ul>
+
+                        <h2>Tipy pro úsporu</h2>
+                        <ol>
+                            <li>Vyberte si template nebo no-code builder (Webflow, Wix) - ušetříte 50%</li>
+                            <li>Jasně definujte scope - vím, co chci = snazší odhad</li>
+                            <li>Postarejte se sami o obsah a fotografie</li>
+                            <li>Začněte s MVP (minimální funkčnost) a později rozšiřujte</li>
+                            <li>Hledejte junior vývojáře nebo agenturu mimo Prahu</li>
+                        </ol>
+
+                        <h2>Kdo dělá web?</h2>
+                        <p><strong>Freelancer:</strong> 40 000-200 000 Kč (rychlejší, osobnější, horší support)</p>
+                        <p><strong>Malá agentura:</strong> 80 000-500 000 Kč (kvalita, tým, podpora)</p>
+                        <p><strong>Velká agentura:</strong> 200 000-2 000 000+ Kč (prestižní, pomalé, drahé)</p>
+                        <p><strong>No-code platforma:</strong> 5 000-50 000 Kč (nejrychlejší, menší flexibilita)</p>
+
+                        <p><strong>Závěr:</strong> Web není jednorázový nákup. Je to investice do vašeho byznysu. Nižší cena = nižší kvalita. Středně kvalitní web vám přinese 10x více než investujete.</p>
+                    </div>
+                `
+            },
+            5: {
+                title: "Landing page, která konvertuje: 7 ověřených principů",
+                category: "Konverze & UX",
+                date: "1. března 2026",
+                readTime: "4 min čtení",
+                excerpt: "Jak psát nadpisy, strukturovat obsah a umisťovat CTA tlačítka.",
+                content: `
+                    <h1>Landing page, která konvertuje: 7 ověřených principů</h1>
+                    <div class="article-detail-meta">
+                        <span>📅 1. března 2026</span>
+                        <span>⏱️ 4 min čtení</span>
+                        <span>📚 Konverze & UX</span>
+                    </div>
+                    <div class="article-detail-content">
+                        <p>Landing page není obyčejná webová stránka. Je to <strong>prodejní nástroj</strong>. Rozdíl mezi landing page, která prodává, a jednou, která nebaví: <em>design a psychologie</em>.</p>
+
+                        <h2>Princip 1: Jeden cíl — jeden CTA (Call to Action)</h2>
+                        <p>Návštěvník musí ihned vědět, <strong>co má dělat</strong>. Pokud má na výběr 3 tlačítka, půjde pryč.</p>
+                        <ul>
+                            <li>❌ Špatně: "Více informací", "Kontaktujte nás", "Koupit", "Chat"</li>
+                            <li>✅ Správně: Jedno dominantní tlačítko "Zaslat mi demo" (zelené, velké, v kontrastu)</li>
+                        </ul>
+                        <p><strong>Statistika:</strong> Stránky s jedním CTA mají 2x vyšší konverzi.</p>
+
+                        <h2>Princip 2: Silný nadpis (Headline)</h2>
+                        <p>Máte <strong>3 sekundy</strong> na to, abyste jeho pozornost získali. Nadpis musí:</p>
+                        <ul>
+                            <li>Jasně uvádět benefit (jaký problém řešíte)</li>
+                            <li>Vyvolat emoci (zajímavost, naději, úlevu)</li>
+                            <li>Být konkrétní (bez nesmyslů jako "Revoluční řešení")</li>
+                        </ul>
+                        <p><strong>Příklady:</strong></p>
+                        <ul>
+                            <li>❌ "Web design služby"</li>
+                            <li>✅ "Web, který vám přinese 5x více zákazníků za 30 dní"</li>
+                        </ul>
+
+                        <h2>Princip 3: Sociální důkaz (Social Proof)</h2>
+                        <p>Lidé věří ostatním lidem více než firmám. Sdílejte:</p>
+                        <ul>
+                            <li>⭐ Recenze od klientů ("Zvýšili jsme prodej o 40%" — Jan K.)</li>
+                            <li>👥 Počet spokojených klientů ("Už 150+ firem nám věří")</li>
+                            <li>📰 Logo známých partnerů nebo publikací</li>
+                            <li>🏆 Ceny nebo certifikace</li>
+                        </ul>
+                        <p><strong>Efekt:</strong> Sociální důkaz zvyšuje konverzi o 30-50%.</p>
+
+                        <h2>Princip 4: Vytvoření pocitu naléhavosti (Urgency)</h2>
+                        <p>Lidé odkládají rozhodnutí. Dejte jim důvod jednat <strong>nyní</strong>:</p>
+                        <ul>
+                            <li>"Omezené místo — zbývá jen 5 míst"</li>
+                            <li>"Sleva jen do pátku"</li>
+                            <li>"Ušetřit 5 000 Kč pouze dnes"</li>
+                            <li>"Jsou tady poslední 2 balíčky"</li>
+                        </ul>
+                        <p><strong>Pozor:</strong> Urgency musí být <em>pravá</em>, ne falešná. Inače ztratíte důvěru.</p>
+
+                        <h2>Princip 5: Struktura AIDA</h2>
+                        <p>Tímto sledem strukturujte obsah:</p>
+                        <ol>
+                            <li><strong>Attention (Pozornost):</strong> Silný nadpis a vizuál</li>
+                            <li><strong>Interest (Zájem):</strong> Proč vás poslouchat? (subheadline, benefit)</li>
+                            <li><strong>Desire (Touha):</strong> Jaké výhody budete mít? (seznam benefitů, příklady, recenze)</li>
+                            <li><strong>Action (Akce):</strong> Co teď? (CTA tlačítko, formulář)</li>
+                        </ol>
+
+                        <h2>Princip 6: Minimální formulář</h2>
+                        <p>Míň polí = vyšší konverze. Ideální:</p>
+                        <ul>
+                            <li>3 pole: Jméno, Email, Telefon</li>
+                            <li>Max. 5 polí: Výše + Zpráva, Společnost</li>
+                            <li>Nikdy: Více jak 7 polí bez dobrého důvodu</li>
+                        </ul>
+                        <p><strong>Statistika:</strong> Přidání jednoho pole sníží konverzi o 8-10%.</p>
+
+                        <h2>Princip 7: Jasná cena a bez překvapení</h2>
+                        <p>Pokud prodáváte produkt, řekněte cenu. Pokud ji ukrýváte, ztratíte důvěru.</p>
+                        <ul>
+                            <li>✅ "Balíček X stojí 49 000 Kč"</li>
+                            <li>✅ "Konzultace zdarma, poté 5 000 Kč/měsíc"</li>
+                            <li>❌ "Cena dle specifikace" (bez kontaktu se neucházíte)</li>
+                        </ul>
+
+                        <h2>Bonus: 3 rychlé testy na zlepšení</h2>
+                        <ol>
+                            <li><strong>A/B test nadpisů:</strong> Dvě verze, týden testování, která má vyšší konverzi?</li>
+                            <li><strong>Barva CTA tlačítka:</strong> Zkuste červené, zelené, oranžové. Měřte.</li>
+                            <li><strong>Umístění formuláře:</strong> Vlevo, vpravo, dole? Testujte a měřte.</li>
+                        </ol>
+
+                        <h2>Příklad: Potvrzená landing page se 12% konverzí</h2>
+                        <ul>
+                            <li>✓ Silný nadpis (benefit-driven)</li>
+                            <li>✓ 1 CTA (velké, zelené, "Zaslat mi demo")</li>
+                            <li>✓ 3 klíčové benefity s ikonami</li>
+                            <li>✓ 3 pravé recenze s foto</li>
+                            <li>✓ "Omezené místa" (urgency)</li>
+                            <li>✓ Minimální formulář (jméno, email, telefon)</li>
+                            <li>✓ Jasná cena (bez překvapení)</li>
+                        </ul>
+
+                        <p><strong>Závěr:</strong> Nejde o to, jak pěkná stránka vypadá. Jde o to, kolik lidí se na ni zkonvertuje. Testujte, měřte, optimalizujte.</p>
+                    </div>
+                `
+            },
+            6: {
+                title: "E-shop vs. marketplace: Co je lepší pro váš byznys?",
+                category: "E-commerce",
+                date: "25. února 2026",
+                readTime: "4 min čtení",
+                excerpt: "Srovnění výhod a nevýhod. Kdy se vyplatí vlastní e-shop.",
+                content: `
+                    <h1>E-shop vs. marketplace: Co je lepší pro váš byznys?</h1>
+                    <div class="article-detail-meta">
+                        <span>📅 25. února 2026</span>
+                        <span>⏱️ 4 min čtení</span>
+                        <span>📚 E-commerce</span>
+                    </div>
+                    <div class="article-detail-content">
+                        <p>Chcete prodávat online, ale neznáte, zda si pořídit vlastní e-shop nebo prodávat na Amazon, Alza či Shopify. Pojďme si porovnat obě strategie.</p>
+
+                        <h2>Vlastní e-shop — Pros & Cons</h2>
+
+                        <h3>Výhody:</h3>
+                        <ul>
+                            <li><strong>Kontrola:</strong> Všechno řídíte vy (design, ceny, obsah, komunikace)</li>
+                            <li><strong>Brand building:</strong> Zákazník je s vaší značkou, ne s Amazonem</li>
+                            <li><strong>Vyšší zisk:</strong> Neplatíte 15-30% provizii (marketplace poplatek)</li>
+                            <li><strong>Email seznam:</strong> Vlastní databáze zákazníků pro budoucí marketing</li>
+                            <li><strong>Flexibility:</strong> Vlastní funkce, design, pravidla</li>
+                            <li><strong>Dlouhodobá hodnota:</strong> Stavíte vlastní asset</li>
+                        </ul>
+
+                        <h3>Nevýhody:</h3>
+                        <ul>
+                            <li><strong>Náklady:</strong> 80-300 tis. Kč vývoj + 3-10 tis./měsíc hosting</li>
+                            <li><strong>Čas:</strong> 2-4 měsíce vývoje</li>
+                            <li><strong>Zodpovědnost:</strong> Vše na vás (customer support, logistika, bezpečnost)</li>
+                            <li><strong>Bez traffic:</strong> Musíte lidi přitáhnout sami (SEO, reklama)</li>
+                            <li><strong>Technické problémy:</strong> Může se zhroutit, hackat apod.</li>
+                            <li><strong>Komplexnost:</strong> Správa inventáře, platebních metod, mailů</li>
+                        </ul>
+
+                        <h2>Marketplace (Amazon, Alza, eBay) — Pros & Cons</h2>
+
+                        <h3>Výhody:</h3>
+                        <ul>
+                            <li><strong>Okamžitý traffic:</strong> Miliony potenciálních zákazníků</li>
+                            <li><strong>Nula vývoj:</strong> Stačí nahrát produkty</li>
+                            <li><strong>Nižší startup náklady:</strong> Jen provizní poplatek za prodej</li>
+                            <li><strong>Bezpečnost:</strong> Platby řeší marketplace, ne vy</li>
+                            <li><strong>Логистика:</strong> Marketplace často zajišťuje dopravu</li>
+                            <li><strong>Podpora:</strong> Technická a zákaznická podpora marketplace</li>
+                        </ul>
+
+                        <h3>Nevýhody:</h3>
+                        <ul>
+                            <li><strong>Provize:</strong> 15-30% z každého prodeje (obrovské na dlouhodobě)</li>
+                            <li><strong>Nula brand:</strong> Zákazník vidí marketplace, ne vaši značku</li>
+                            <li><strong>Omezená kontrola:</strong> Nemůžete měnit design, pravidla apod.</li>
+                            <li><strong>Soutěž:</strong> Stovky konkurentů na stejném produktu</li>
+                            <li><strong>Závislost:</strong> Pokud vás marketplace zablokuje, ztratíte všechno</li>
+                            <li><strong>Bez dat:</strong> Neznáte své zákazníky, nenavážete vztah</li>
+                            <li><strong>Rating = všechno:</strong> Jeden špatný review vám sníží prodeje</li>
+                        </ul>
+
+                        <h2>Srovnění v číslech</h2>
+                        <p><strong>Prodejte 1 000 produktů za 1 000 Kč = 1 000 000 Kč tržby</strong></p>
+                        <p><strong>Vlastní e-shop:</strong></p>
+                        <ul>
+                            <li>Náklady: 150 tis. (vývoj) + 5 tis. × 12 (hosting) = 210 000 Kč/rok</li>
+                            <li>Zisk: 1 000 000 - 210 000 = 790 000 Kč</li>
+                        </ul>
+                        <p><strong>Marketplace (25% provize):</strong></p>
+                        <ul>
+                            <li>Náklady: 250 000 Kč (provize)</li>
+                            <li>Zisk: 1 000 000 - 250 000 = 750 000 Kč</li>
+                        </ul>
+                        <p><strong>Na první pohled podobné, ale:</strong> Vlastní e-shop se vyplácí po roku, marketplace provede zkrácením tržeb.</p>
+
+                        <h2>Kdy si pořídit vlastní e-shop?</h2>
+                        <h3>Zvolte vlastní e-shop, pokud:</h3>
+                        <ul>
+                            <li>Prodáváte fyzické produkty (knihy, oblečení, elektronika)</li>
+                            <li>Máte > 100 produktů</li>
+                            <li>Plánujete dlouhodobě prodávat</li>
+                            <li>Chcete budovat značku a vztah se zákazníky</li>
+                            <li>Máte 10+ prodejů za měsíc (Break-even)</li>
+                        </ul>
+
+                        <h3>Zůstaňte na marketplace, pokud:</h3>
+                        <ul>
+                            <li>Testujete nový produkt (MVP fáze)</li>
+                            <li>Prodáváte digitální produkty (nižší provize)</li>
+                            <li>Chcete okamžitý traffic bez marketingu</li>
+                            <li>Máte < 100 produktů</li>
+                            <li>Nemáte čas na techniku a support</li>
+                        </ul>
+
+                        <h2>Bonus: Hybridní strategie (Doporučuji)</h2>
+                        <p><strong>Nejlepší řešení pro malou firmu:</strong> Vlastní e-shop + marketplace</p>
+                        <ul>
+                            <li>Vlastní e-shop: Kde budujete brand a sbíráte emaily</li>
+                            <li>Marketplace: Kde testujete a sbíráte nové zákazníky</li>
+                            <li>Efekt: Máte 2 zdroje tržeb a nenávisíte na jednom</li>
+                        </ul>
+                        <p><strong>Příklad workflow:</strong> Zákazník vás vidí na Amazonu → kupuje → vy ho přidáte na email → on nakupuje přímo z vašeho e-shopu (bez Amazonu) → marže roste.</p>
+
+                        <h2>Akční plán</h2>
+                        <ol>
+                            <li>Pokud testujete: <strong>Marketplace (měsíc 1-2)</strong></li>
+                            <li>Pokud funguje: <strong>Vlastní e-shop (měsíc 2-3)</strong></li>
+                            <li>Jakmile vyrůstá: <strong>Marketplace jako secondary channel</strong></li>
+                        </ol>
+
+                        <p><strong>Závěr:</strong> Marketplace je sprint, vlastní e-shop je maraton. Kdo chce dlouhodobě vydělávat, potřebuje vlastní e-shop.</p>
+                    </div>
+                `
+            }
+        };
+
+        // Show article detail
+        function showArticle(articleId) {
+            const article = articles[articleId];
+            const detailDiv = document.getElementById('article-detail');
+            const contentDiv = document.getElementById('article-detail-content');
+
+            if (!article) return;
+
+            // Get related articles (exclude current)
+            const relatedIds = Object.keys(articles).filter(id => id != articleId).sort(() => Math.random() - 0.5).slice(0, 3);
+            const relatedHTML = relatedIds.map(id => {
+                const a = articles[id];
+                return `
+                    <div class="related-item" onclick="showArticle(${id})">
+                        <h4>${a.title}</h4>
+                        <p>${a.date}</p>
+                    </div>
+                `;
+            }).join('');
+
+            const html = `
+                ${article.content}
+                <div class="share-section">
+                    <label>Sdílet:</label>
+                    <button class="share-btn" onclick="copyLink(${articleId})">📋 Kopírovat odkaz</button>
+                </div>
+                <div class="related-articles">
+                    <h3>Podívejte se také na</h3>
+                    <div class="related-grid">
+                        ${relatedHTML}
+                    </div>
+                </div>
+                <div class="cta-banner">
+                    <h2>Líbil se vám článek?</h2>
+                    <p>Pojďme promluvit o vašem projektu a jak jej můžu realizovat.</p>
+                    <a href="/onboarding.html" class="cta-banner-btn">Chci konzultaci</a>
+                </div>
+            `;
+
+            contentDiv.innerHTML = html;
+            detailDiv.classList.add('active');
+            window.scrollTo({ top: detailDiv.offsetTop - 100, behavior: 'smooth' });
+        }
+
+        // Close article detail
+        function closeArticle() {
+            const detailDiv = document.getElementById('article-detail');
+            detailDiv.classList.remove('active');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Copy article link
+        function copyLink(articleId) {
+            const url = window.location.origin + window.location.pathname + '#article-' + articleId;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Odkaz byl zkopírován do schránky!');
+            });
+        }
+
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const navMenu = document.getElementById('nav-menu');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            if (navMenu.style.display === 'flex') {
+                navMenu.style.display = 'none';
+            } else {
+                navMenu.style.display = 'flex';
+                navMenu.style.flexDirection = 'column';
+                navMenu.style.position = 'absolute';
+                navMenu.style.top = '100%';
+                navMenu.style.left = '0';
+                navMenu.style.right = '0';
+                navMenu.style.background = 'white';
+                navMenu.style.borderBottom = '1px solid var(--border)';
+                navMenu.style.padding = '1rem 2rem';
+                navMenu.style.gap = '1rem';
+            }
+        });
+    </script>
+
+</body>
+</html>

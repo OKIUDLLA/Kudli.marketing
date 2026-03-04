@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cenový kalkulátor — Kudli. marketing</title>
+    <meta name="description" content="Kalkulačka cen webových služeb — spočítejte si cenu webu, e-shopu nebo automatizace.">
+    <meta property="og:title" content="Cenový kalkulátor — Kudli. marketing">
+    <meta property="og:description" content="Kalkulačka cen webových služeb — spočítejte si cenu webu, e-shopu nebo automatizace.">
+    <meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kudlimarketing.cz/kalkulator.html">
+    <style>
+        :root { --primary:#1a1a2e; --accent:#e94560; --accent-light:#ff6b81; --bg:#f8f9fa; --white:#fff; --text:#333; --gray:#666; --shadow:0 4px 20px rgba(0,0,0,0.08); --radius:12px; }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6;}
+        .container{max-width:900px;margin:0 auto;padding:2rem;}
+        header{text-align:center;padding:3rem 0 2rem;}
+        header h1{font-size:2.2rem;color:var(--primary);}
+        header p{color:var(--gray);margin-top:0.5rem;font-size:1.1rem;}
+        .card{background:var(--white);border-radius:var(--radius);padding:2rem;margin-bottom:1.5rem;box-shadow:var(--shadow);}
+        .card h2{font-size:1.3rem;color:var(--primary);margin-bottom:1.5rem;padding-bottom:0.75rem;border-bottom:2px solid var(--bg);}
+        .option-group{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem;}
+        .option{border:2px solid #e0e0e0;border-radius:var(--radius);padding:1.25rem;cursor:pointer;transition:all .2s;text-align:center;position:relative;}
+        .option:hover{border-color:var(--accent-light);background:#fff5f7;}
+        .option.selected{border-color:var(--accent);background:#fff0f3;box-shadow:0 0 0 3px rgba(233,69,96,0.15);}
+        .option .name{font-weight:700;font-size:1rem;margin-bottom:0.3rem;}
+        .option .desc{font-size:0.8rem;color:var(--gray);}
+        .option .price-tag{font-size:0.85rem;color:var(--accent);font-weight:600;margin-top:0.5rem;}
+        .checkbox-group{display:flex;flex-direction:column;gap:0.75rem;}
+        .checkbox-item{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 1rem;border:2px solid #e0e0e0;border-radius:8px;cursor:pointer;transition:all .2s;}
+        .checkbox-item:hover{border-color:var(--accent-light);}
+        .checkbox-item.checked{border-color:var(--accent);background:#fff0f3;}
+        .checkbox-item input{display:none;}
+        .check-box{width:22px;height:22px;border:2px solid #ccc;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0;}
+        .checkbox-item.checked .check-box{background:var(--accent);border-color:var(--accent);color:white;}
+        .check-label{flex:1;}
+        .check-label .name{font-weight:600;font-size:0.95rem;}
+        .check-label .desc{font-size:0.8rem;color:var(--gray);}
+        .check-price{font-weight:700;color:var(--accent);white-space:nowrap;}
+        .slider-group{margin-bottom:1.5rem;}
+        .slider-group label{display:flex;justify-content:space-between;margin-bottom:0.5rem;font-weight:600;}
+        .slider-group label span{color:var(--accent);}
+        input[type=range]{width:100%;-webkit-appearance:none;height:8px;border-radius:4px;background:#e0e0e0;outline:none;}
+        input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 8px rgba(233,69,96,0.3);}
+        .summary{background:linear-gradient(135deg,var(--primary),#0f3460);color:white;border-radius:var(--radius);padding:2.5rem;text-align:center;position:sticky;top:1rem;}
+        .summary h2{color:white;border-bottom:1px solid rgba(255,255,255,0.15);padding-bottom:0.75rem;margin-bottom:1.5rem;}
+        .summary-items{text-align:left;margin-bottom:2rem;}
+        .summary-item{display:flex;justify-content:space-between;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.08);font-size:0.95rem;}
+        .summary-item .label{color:rgba(255,255,255,0.75);}
+        .summary-item .val{font-weight:600;}
+        .total-price{font-size:3rem;font-weight:800;color:var(--accent-light);margin:0.5rem 0;}
+        .total-label{font-size:0.9rem;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:1px;}
+        .time-est{margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);font-size:0.9rem;}
+        .btn-cta{display:inline-block;margin-top:1.5rem;padding:1rem 2.5rem;background:var(--accent);color:white;border:none;border-radius:8px;font-size:1.1rem;font-weight:700;cursor:pointer;text-decoration:none;transition:all .3s;}
+        .btn-cta:hover{background:var(--accent-light);transform:translateY(-2px);box-shadow:0 8px 25px rgba(233,69,96,0.3);}
+        .layout{display:grid;grid-template-columns:1fr 340px;gap:2rem;align-items:start;}
+        .disclaimer{text-align:center;color:var(--gray);font-size:0.85rem;margin-top:2rem;font-style:italic;}
+        @media(max-width:800px){.layout{grid-template-columns:1fr;}.summary{position:static;}}
+    </style>
+</head>
+<body>
+<a href="index.html" style="display:inline-flex;align-items:center;gap:0.5rem;color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.9rem;padding:1.5rem;transition:color 0.3s">← Zpět na hlavní stránku</a>
+<div class="container">
+    <header>
+        <h1>Kolik bude stát váš projekt?</h1>
+        <p>Sestavte si orientační kalkulaci za 30 sekund</p>
+    </header>
+
+    <div class="layout">
+        <div class="config">
+            <div class="card">
+                <h2>1. Typ projektu</h2>
+                <div class="option-group" id="projectType">
+                    <div class="option" data-value="landing" data-price="8000" data-days="5" onclick="selectOption('projectType',this)">
+                        <div class="name">Landing Page</div>
+                        <div class="desc">Jednostránkový web</div>
+                        <div class="price-tag">od 8 000 Kč</div>
+                    </div>
+                    <div class="option" data-value="web" data-price="20000" data-days="15" onclick="selectOption('projectType',this)">
+                        <div class="name">Firemní web</div>
+                        <div class="desc">Vícestránkový web</div>
+                        <div class="price-tag">od 20 000 Kč</div>
+                    </div>
+                    <div class="option" data-value="eshop" data-price="35000" data-days="25" onclick="selectOption('projectType',this)">
+                        <div class="name">E-shop</div>
+                        <div class="desc">Online obchod</div>
+                        <div class="price-tag">od 35 000 Kč</div>
+                    </div>
+                    <div class="option" data-value="app" data-price="45000" data-days="30" onclick="selectOption('projectType',this)">
+                        <div class="name">Webová aplikace</div>
+                        <div class="desc">Vlastní SaaS / nástroj</div>
+                        <div class="price-tag">od 45 000 Kč</div>
+                    </div>
+                    <div class="option" data-value="automat" data-price="12000" data-days="10" onclick="selectOption('projectType',this)">
+                        <div class="name">Automatizace</div>
+                        <div class="desc">Zefektivnění procesů</div>
+                        <div class="price-tag">od 12 000 Kč</div>
+                    </div>
+                    <div class="option" data-value="consult" data-price="5000" data-days="3" onclick="selectOption('projectType',this)">
+                        <div class="name">AI konzultace</div>
+                        <div class="desc">Poradenství a strategie</div>
+                        <div class="price-tag">od 5 000 Kč</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>2. Rozsah designu</h2>
+                <div class="option-group" id="designLevel">
+                    <div class="option" data-value="basic" data-price="0" data-days="0" onclick="selectOption('designLevel',this)">
+                        <div class="name">Základní</div>
+                        <div class="desc">Čistý moderní design</div>
+                        <div class="price-tag">v ceně</div>
+                    </div>
+                    <div class="option" data-value="custom" data-price="8000" data-days="5" onclick="selectOption('designLevel',this)">
+                        <div class="name">Na míru</div>
+                        <div class="desc">Unikátní grafický návrh</div>
+                        <div class="price-tag">+ 8 000 Kč</div>
+                    </div>
+                    <div class="option" data-value="premium" data-price="15000" data-days="8" onclick="selectOption('designLevel',this)">
+                        <div class="name">Premium</div>
+                        <div class="desc">Kompletní brand identity</div>
+                        <div class="price-tag">+ 15 000 Kč</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>3. Počet stránek</h2>
+                <div class="slider-group">
+                    <label>Počet stránek: <span id="pagesValue">5</span></label>
+                    <input type="range" id="pagesSlider" min="1" max="30" value="5" oninput="updatePages()">
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>4. Doplňkové služby</h2>
+                <div class="checkbox-group" id="addons">
+                    <div class="checkbox-item" onclick="toggleAddon(this)" data-price="5000" data-days="3">
+                        <input type="checkbox"><div class="check-box">✓</div>
+                        <div class="check-label"><div class="name">SEO optimalizace</div><div class="desc">Nastavení pro vyhledávače, klíčová slova, meta tagy</div></div>
+                        <div class="check-price">+ 5 000 Kč</div>
+                    </div>
+                    <div class="checkbox-item" onclick="toggleAddon(this)" data-price="3000" data-days="1">
+                        <input type="checkbox"><div class="check-box">✓</div>
+                        <div class="check-label"><div class="name">Google Analytics</div><div class="desc">Sledování návštěvnosti a konverzí</div></div>
+                        <div class="check-price">+ 3 000 Kč</div>
+                    </div>
+                    <div class="checkbox-item" onclick="toggleAddon(this)" data-price="4000" data-days="2">
+                        <input type="checkbox"><div class="check-box">✓</div>
+                        <div class="check-label"><div class="name">Kontaktní formulář</div><div class="desc">S notifikacemi a anti-spam ochranou</div></div>
+                        <div class="check-price">+ 4 000 Kč</div>
+                    </div>
+                    <div class="checkbox-item" onclick="toggleAddon(this)" data-price="6000" data-days="3">
+                        <input type="checkbox"><div class="check-box">✓</div>
+                        <div class="check-label"><div class="name">CMS (správa obsahu)</div><div class="desc">Sami si upravíte texty a obrázky</div></div>
+                        <div class="check-price">+ 6 000 Kč</div>
+                    </div>
+                    <div class="checkbox-item" onclick="toggleAddon(this)" data-price="8000" data-days="5">
+                        <input type="checkbox"><div class="check-box">✓</div>
+                        <div class="check-label"><div class="name">Vícejazyčnost</div><div class="desc">Web ve dvou a více jazycích</div></div>
+                        <div class="check-price">+ 8 000 Kč</div>
+                    </div>
+                    <div class="checkbox-item" onclick="toggleAddon(this)" data-price="3000" data-days="0">
+                        <input type="checkbox"><div class="check-box">✓</div>
+                        <div class="check-label"><div class="name">Měsíční podpora (3 měs.)</div><div class="desc">Opravy, aktualizace, drobné úpravy</div></div>
+                        <div class="check-price">+ 3 000 Kč</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="summary" id="summary">
+            <h2>Vaše kalkulace</h2>
+            <div class="summary-items" id="summaryItems">
+                <div class="summary-item"><span class="label">Vyberte typ projektu...</span></div>
+            </div>
+            <div class="total-label">Orientační cena</div>
+            <div class="total-price" id="totalPrice">— Kč</div>
+            <div class="time-est" id="timeEst">Odhadovaná doba: — dní</div>
+            <a href="mailto:o.kudlicka@gmail.com?subject=Popt%C3%A1vka%20z%20kalkul%C3%A1toru" class="btn-cta">Nezávazně poptat</a>
+        </div>
+    </div>
+
+    <p class="disclaimer">Ceny jsou orientační a mohou se lišit dle konkrétních požadavků. Nejsem plátce DPH.</p>
+</div>
+
+<script>
+const state = { projectType: null, designLevel: null, pages: 5, addons: [] };
+
+function selectOption(group, el) {
+    document.querySelectorAll(`#${group} .option`).forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    state[group] = { price: +el.dataset.price, days: +el.dataset.days, name: el.querySelector('.name').textContent };
+    recalc();
+}
+
+function updatePages() {
+    const v = document.getElementById('pagesSlider').value;
+    document.getElementById('pagesValue').textContent = v;
+    state.pages = +v;
+    recalc();
+}
+
+function toggleAddon(el) {
+    el.classList.toggle('checked');
+    const cb = el.querySelector('input');
+    cb.checked = !cb.checked;
+    state.addons = [];
+    document.querySelectorAll('.checkbox-item.checked').forEach(item => {
+        state.addons.push({ price: +item.dataset.price, days: +item.dataset.days, name: item.querySelector('.name').textContent });
+    });
+    recalc();
+}
+
+function recalc() {
+    let total = 0, days = 0, items = [];
+    if (state.projectType) {
+        total += state.projectType.price;
+        days += state.projectType.days;
+        items.push({ label: state.projectType.name, val: fmt(state.projectType.price) });
+    }
+    if (state.designLevel) {
+        total += state.designLevel.price;
+        days += state.designLevel.days;
+        if (state.designLevel.price > 0) items.push({ label: 'Design: ' + state.designLevel.name, val: '+' + fmt(state.designLevel.price) });
+    }
+    // Extra pages cost
+    const basePages = state.projectType ? (state.projectType.name === 'Landing Page' ? 1 : 5) : 5;
+    const extraPages = Math.max(0, state.pages - basePages);
+    if (extraPages > 0) {
+        const pageCost = extraPages * 2000;
+        total += pageCost;
+        days += Math.ceil(extraPages * 0.5);
+        items.push({ label: extraPages + ' extra stránek', val: '+' + fmt(pageCost) });
+    }
+    state.addons.forEach(a => {
+        total += a.price;
+        days += a.days;
+        items.push({ label: a.name, val: '+' + fmt(a.price) });
+    });
+
+    const summaryEl = document.getElementById('summaryItems');
+    if (items.length === 0) {
+        summaryEl.innerHTML = '<div class="summary-item"><span class="label">Vyberte typ projektu...</span></div>';
+    } else {
+        summaryEl.innerHTML = items.map(i => `<div class="summary-item"><span class="label">${i.label}</span><span class="val">${i.val}</span></div>`).join('');
+    }
+    document.getElementById('totalPrice').textContent = total > 0 ? fmt(total) : '— Kč';
+    document.getElementById('timeEst').textContent = days > 0 ? `Odhadovaná doba: ${days}–${days + 5} pracovních dní` : 'Odhadovaná doba: — dní';
+}
+
+function fmt(n) { return n.toLocaleString('cs-CZ') + ' Kč'; }
+
+// Pre-select defaults
+document.querySelector('#projectType .option:nth-child(2)').click();
+document.querySelector('#designLevel .option:first-child').click();
+</script>
+</body>
+</html>

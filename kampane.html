@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email kampaně — Kudli. marketing</title>
+<meta name="description" content="Plánování a sledování email kampaní. Šablony, A/B testy, metriky open rate a CTR.">
+<meta property="og:title" content="Email kampaně — Kudli. marketing">
+<meta property="og:description" content="Plánování a sledování email kampaní. Šablony, A/B testy, metriky open rate a CTR.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/kampane.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+.top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}.top-bar .logo span{color:var(--accent)}
+.container{max-width:1000px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.6rem;font-weight:800;margin-bottom:0.3rem}h1 em{color:var(--accent);font-style:normal}
+.subtitle{color:var(--muted);margin-bottom:2rem;font-size:0.95rem}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.75rem;margin-bottom:2rem}
+.stat{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.stat .num{font-size:1.6rem;font-weight:800}.stat .label{font-size:0.75rem;color:var(--muted);margin-top:0.2rem}
+
+.toolbar{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.toolbar select{background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.55rem 1rem;border-radius:10px;font-size:0.85rem;font-family:inherit}
+.btn{background:var(--accent);color:#fff;border:none;padding:0.6rem 1.25rem;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:inherit;transition:all 0.3s}
+.btn:hover{background:var(--accent-light);transform:translateY(-1px)}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.15);color:var(--text)}
+.btn-sm{padding:0.35rem 0.75rem;font-size:0.78rem}
+
+.campaigns{display:flex;flex-direction:column;gap:1rem}
+.camp-card{background:var(--card);border-radius:16px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s;cursor:pointer;position:relative;overflow:hidden}
+.camp-card:hover{border-color:rgba(233,69,96,0.3);transform:translateY(-2px)}
+.camp-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+.camp-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem}
+.camp-title{font-weight:700;font-size:1rem}
+.camp-meta{font-size:0.8rem;color:var(--muted)}
+.camp-status{padding:0.2rem 0.65rem;border-radius:8px;font-size:0.7rem;font-weight:700;text-transform:uppercase}
+
+.metrics{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:0.75rem;margin-bottom:0.75rem}
+.metric{background:rgba(255,255,255,0.03);border-radius:10px;padding:0.75rem;text-align:center}
+.metric .val{font-size:1.3rem;font-weight:800}.metric .lbl{font-size:0.7rem;color:var(--muted);margin-top:0.15rem}
+.metric-bar{height:4px;background:rgba(255,255,255,0.06);border-radius:2px;margin-top:0.4rem;overflow:hidden}
+.metric-bar div{height:100%;border-radius:2px}
+
+.camp-details{display:none;margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06)}
+.camp-card.open .camp-details{display:block}
+.camp-subject{font-size:0.9rem;margin-bottom:0.5rem}
+.camp-subject strong{color:var(--accent-light)}
+.camp-preview{background:rgba(255,255,255,0.03);border-radius:10px;padding:1rem;font-size:0.85rem;line-height:1.6;color:rgba(255,255,255,0.7);max-height:200px;overflow-y:auto}
+.camp-actions{display:flex;gap:0.5rem;margin-top:1rem;flex-wrap:wrap}
+.camp-actions .btn{font-size:0.78rem;padding:0.4rem 0.9rem}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:100;padding:1rem}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;max-width:600px;width:100%;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:1.2rem;margin-bottom:1.5rem}
+.fg{margin-bottom:1rem}.fg label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;font-weight:600}
+.fg input,.fg select,.fg textarea{width:100%;background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.6rem 1rem;border-radius:10px;font-size:0.9rem;font-family:inherit}
+.fg textarea{min-height:120px;resize:vertical}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.modal-actions{display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem}
+
+/* Templates */
+.templates{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem;margin-bottom:2rem}
+.tmpl-card{background:var(--card);border-radius:12px;padding:1rem;border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:all 0.3s;text-align:center}
+.tmpl-card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.tmpl-icon{font-size:2rem;margin-bottom:0.5rem}
+.tmpl-name{font-weight:700;font-size:0.9rem;margin-bottom:0.2rem}
+.tmpl-desc{font-size:0.75rem;color:var(--muted)}
+
+.section-title{font-size:1rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+.section-title::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.08)}
+
+@media(max-width:768px){.metrics{grid-template-columns:1fr 1fr}.fr{grid-template-columns:1fr}.templates{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+ <a href="nastroje.html" class="logo">Kudli<span>.</span> marketing</a>
+ <a href="nastroje.html" style="color:var(--muted);text-decoration:none;font-size:0.85rem">← Zpět na nástroje</a>
+</div>
+<div class="container">
+ <h1>Email <em>kampaně</em></h1>
+ <p class="subtitle">Plánuj, sleduj a optimalizuj emailové kampaně pro klienty i vlastní marketing</p>
+
+ <div class="stats" id="stats"></div>
+
+ <div class="section-title">📝 Rychlé šablony</div>
+ <div class="templates" id="templates"></div>
+
+ <div class="toolbar">
+   <select id="filterStatus" onchange="render()"><option value="">Všechny stavy</option><option value="sent">Odeslané</option><option value="scheduled">Naplánované</option><option value="draft">Návrhy</option></select>
+   <button class="btn" onclick="openModal()">+ Nová kampaň</button>
+ </div>
+
+ <div class="campaigns" id="campaigns"></div>
+</div>
+
+<div class="modal-overlay" id="modal">
+ <div class="modal">
+   <h2 id="modalTitle">Nová kampaň</h2>
+   <div class="fg"><label>Název kampaně</label><input id="fName" placeholder="Březnový newsletter"></div>
+   <div class="fr">
+     <div class="fg"><label>Klient / Projekt</label><input id="fClient" placeholder="Vlastní marketing"></div>
+     <div class="fg"><label>Stav</label><select id="fStatus"><option value="draft">Návrh</option><option value="scheduled">Naplánovaná</option><option value="sent">Odeslaná</option></select></div>
+   </div>
+   <div class="fg"><label>Předmět emailu</label><input id="fSubject" placeholder="Jak zvýšit návštěvnost webu o 50%?"></div>
+   <div class="fr">
+     <div class="fg"><label>Datum odeslání</label><input type="date" id="fDate"></div>
+     <div class="fg"><label>Příjemců</label><input type="number" id="fRecipients" placeholder="150"></div>
+   </div>
+   <div class="fr">
+     <div class="fg"><label>Open rate (%)</label><input type="number" id="fOpenRate" placeholder="32" step="0.1"></div>
+     <div class="fg"><label>Click rate (%)</label><input type="number" id="fClickRate" placeholder="5.2" step="0.1"></div>
+   </div>
+   <div class="fg"><label>Obsah / Preview emailu</label><textarea id="fBody" placeholder="Hlavní text emailu nebo poznámky ke kampani..."></textarea></div>
+   <div class="modal-actions">
+     <button class="btn btn-outline" onclick="closeModal()">Zrušit</button>
+     <button class="btn" onclick="saveCampaign()">Uložit</button>
+   </div>
+ </div>
+</div>
+
+<script>
+const STATUS_MAP = {
+ sent: { label:'Odeslaná', bg:'rgba(46,204,113,0.15)', color:'#2ecc71', border:'#2ecc71' },
+ scheduled: { label:'Naplánovaná', bg:'rgba(52,152,219,0.15)', color:'#3498db', border:'#3498db' },
+ draft: { label:'Návrh', bg:'rgba(243,156,18,0.15)', color:'#f39c12', border:'#f39c12' }
+};
+
+const TEMPLATES = [
+ { icon:'🚀', name:'Uvítací email', desc:'Pro nové leady a klienty', subject:'Vítejte! Začínáme spolupráci', body:'Dobrý den,\n\nděkuji za důvěru a těším se na spolupráci.\n\nV příloze najdete:\n• Harmonogram projektu\n• Kontaktní údaje\n• První kroky\n\nPokud máte jakékoli dotazy, jsem vám k dispozici.\n\nS pozdravem,\nOndřej Kudlička\nKudli. marketing' },
+ { icon:'📊', name:'Měsíční report', desc:'Shrnutí výsledků za měsíc', subject:'Měsíční report — [měsíc] 2026', body:'Dobrý den,\n\nv příloze posílám měsíční přehled výsledků:\n\n📈 Návštěvnost: +XX%\n🎯 Konverze: XX\n⏱ Průměrný čas na webu: X:XX\n\nKlíčové úspěchy tohoto měsíce:\n1. ...\n2. ...\n\nPlán na příští měsíc:\n1. ...\n2. ...\n\nTěším se na váš feedback.\n\nOndřej Kudlička' },
+ { icon:'💡', name:'Nabídka služeb', desc:'Upsell nebo cross-sell', subject:'Nová služba, která by vás mohla zajímat', body:'Dobrý den,\n\nrád bych vám představil novou službu, která by mohla pomoci vašemu podnikání:\n\n🔹 [Název služby]\n🔹 Hlavní přínosy: ...\n🔹 Cena: od XX Kč\n\nMůžeme si domluvit krátký hovor? Zabere to max 15 minut.\n\nOndřej Kudlička' },
+ { icon:'⭐', name:'Žádost o referenci', desc:'Po dokončení projektu', subject:'Jak se vám líbí nový web?', body:'Dobrý den,\n\njsem rád, že je projekt úspěšně dokončen!\n\nByl bych moc vděčný za krátkou referenci — pomůže mi to získat další klienty.\n\nStačí 2–3 věty o vaší zkušenosti:\n→ [Odkaz na formulář]\n\nDěkuji předem!\n\nOndřej Kudlička' },
+];
+
+let campaigns = JSON.parse(sessionStorage.getItem('kudli_campaigns') || 'null') || [
+ { id:1, name:'Uvítací email — Kavárna Zrnko', client:'Kavárna Zrnko', status:'sent', subject:'Vítejte! Začínáme redesign vašeho webu', date:'2026-02-15', recipients:1, openRate:100, clickRate:50, body:'Dobrý den, Martine,\n\nděkuji za důvěru a těším se na spolupráci na redesignu webu Kavárny Zrnko.\n\nPrvní kroky:\n1. Úvodní call — pondělí 17.2.\n2. Wireframy do pátku 21.2.\n3. Grafický návrh do 28.2.\n\nHarmonogram a brief naleznete v příloze.\n\nOndřej' },
+ { id:2, name:'Březnový newsletter', client:'Vlastní marketing', status:'sent', subject:'3 tipy jak zvýšit návštěvnost webu o 50%', date:'2026-03-01', recipients:47, openRate:38.5, clickRate:8.2, body:'Ahoj,\n\nv dnešním newsletteru sdílím 3 praktické tipy, které jsem použil u svých klientů:\n\n1. Optimalizace meta descriptions (case study)\n2. Interní linkbuilding — proč je důležitý\n3. Rychlost webu jako SEO faktor\n\nChcete vědět víc? Rezervujte si bezplatnou konzultaci →' },
+ { id:3, name:'Report únor — Kavárna Zrnko', client:'Kavárna Zrnko', status:'sent', subject:'Měsíční report — únor 2026', date:'2026-02-28', recipients:2, openRate:100, clickRate:100, body:'Dobrý den,\n\nunorovný report:\n📈 Návštěvnost: +45% (850 → 1,230)\n🎯 Konverze (rezervace): 23\n⏱ Průměrný čas: 2:34\n\nNový web funguje skvěle. Doporučuji přidat blog sekci pro lepší SEO.' },
+ { id:4, name:'Follow-up — Bloom Digital', client:'Bloom Digital', status:'scheduled', subject:'Připravil jsem pro vás návrh redesignu', date:'2026-03-05', recipients:1, openRate:0, clickRate:0, body:'Dobrý den, Markéto,\n\nnavazuji na náš rozhovor z networking eventu. Připravil jsem krátkou analýzu vašeho webu s návrhy na zlepšení.\n\nKlíčové body:\n• Responzivní design (aktuálně problém na mobilu)\n• SEO — chybí meta descriptions\n• Rychlost — potenciál zlepšení o 40%\n\nMůžeme si domluvit 15min call?\n\nOndřej' },
+ { id:5, name:'Nabídka AI chatbot — AutoMax', client:'AutoMax s.r.o.', status:'draft', subject:'AI chatbot pro váš autobazar — nabídka', date:'', recipients:1, openRate:0, clickRate:0, body:'Dobrý den, Davide,\n\nna základě vaší poptávky jsem připravil nabídku na AI chatbota:\n\n🤖 Chatbot napojený na vaši databázi vozidel\n📱 Funguje 24/7, odpovídá na dotazy\n📊 Kvalifikuje leady a předává makléřům\n\nCena: 45,000 Kč jednorázově + 5,000 Kč/měs. maintenance\n\nKdy by vám vyhovoval call?' },
+];
+let editId = null;
+
+function save() { sessionStorage.setItem('kudli_campaigns', JSON.stringify(campaigns)); }
+
+function renderStats() {
+ const sent = campaigns.filter(c=>c.status==='sent');
+ const avgOpen = sent.length ? (sent.reduce((s,c)=>s+c.openRate,0)/sent.length) : 0;
+ const avgClick = sent.length ? (sent.reduce((s,c)=>s+c.clickRate,0)/sent.length) : 0;
+ const totalRecip = sent.reduce((s,c)=>s+c.recipients,0);
+ document.getElementById('stats').innerHTML = `
+   <div class="stat"><div class="num" style="color:var(--accent)">${campaigns.length}</div><div class="label">Celkem kampaní</div></div>
+   <div class="stat"><div class="num" style="color:var(--green)">${avgOpen.toFixed(1)}%</div><div class="label">Prům. open rate</div></div>
+   <div class="stat"><div class="num" style="color:var(--blue)">${avgClick.toFixed(1)}%</div><div class="label">Prům. click rate</div></div>
+   <div class="stat"><div class="num" style="color:var(--orange)">${totalRecip}</div><div class="label">Celkem příjemců</div></div>
+ `;
+}
+
+function renderTemplates() {
+ document.getElementById('templates').innerHTML = TEMPLATES.map((t,i) =>
+   `<div class="tmpl-card" onclick="useTemplate(${i})">
+     <div class="tmpl-icon">${t.icon}</div>
+     <div class="tmpl-name">${t.name}</div>
+     <div class="tmpl-desc">${t.desc}</div>
+   </div>`
+ ).join('');
+}
+
+function useTemplate(i) {
+ const t = TEMPLATES[i];
+ openModal();
+ document.getElementById('fSubject').value = t.subject;
+ document.getElementById('fBody').value = t.body;
+ document.getElementById('fName').value = t.name;
+}
+
+function render() {
+ renderStats();
+ const fs = document.getElementById('filterStatus').value;
+ let filtered = fs ? campaigns.filter(c=>c.status===fs) : [...campaigns];
+ filtered.sort((a,b) => {
+   const order = {scheduled:0,draft:1,sent:2};
+   if (order[a.status]!==order[b.status]) return order[a.status]-order[b.status];
+   return (b.date||'').localeCompare(a.date||'');
+ });
+
+ const container = document.getElementById('campaigns');
+ if (!filtered.length) { container.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted)">Žádné kampaně</div>'; return; }
+
+ container.innerHTML = filtered.map(c => {
+   const s = STATUS_MAP[c.status];
+   const openColor = c.openRate >= 30 ? 'var(--green)' : c.openRate >= 20 ? 'var(--orange)' : 'var(--red)';
+   const clickColor = c.clickRate >= 5 ? 'var(--green)' : c.clickRate >= 2 ? 'var(--orange)' : 'var(--red)';
+   return `<div class="camp-card" onclick="this.classList.toggle('open')">
+     <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:${s.border}"></div>
+     <div class="camp-header">
+       <div>
+         <div class="camp-title">${c.name}</div>
+         <div class="camp-meta">${c.client}${c.date ? ' · '+new Date(c.date).toLocaleDateString('cs-CZ') : ''} · ${c.recipients} příjemců</div>
+       </div>
+       <span class="camp-status" style="background:${s.bg};color:${s.color}">${s.label}</span>
+     </div>
+     ${c.status==='sent' ? `<div class="metrics">
+       <div class="metric"><div class="val" style="color:${openColor}">${c.openRate}%</div><div class="lbl">Open rate</div><div class="metric-bar"><div style="width:${c.openRate}%;background:${openColor}"></div></div></div>
+       <div class="metric"><div class="val" style="color:${clickColor}">${c.clickRate}%</div><div class="lbl">Click rate</div><div class="metric-bar"><div style="width:${Math.min(c.clickRate*5,100)}%;background:${clickColor}"></div></div></div>
+       <div class="metric"><div class="val" style="color:var(--accent)">${c.recipients}</div><div class="lbl">Příjemců</div></div>
+     </div>` : ''}
+     <div class="camp-details">
+       <div class="camp-subject">Předmět: <strong>${c.subject}</strong></div>
+       ${c.body ? `<div class="camp-preview">${c.body.replace(/\n/g,'<br>')}</div>` : ''}
+       <div class="camp-actions">
+         <button class="btn" onclick="event.stopPropagation();editCampaign(${c.id})">Upravit</button>
+         <button class="btn btn-outline" onclick="event.stopPropagation();dupCampaign(${c.id})">Duplikovat</button>
+         <button class="btn btn-outline" style="color:var(--red);border-color:var(--red)" onclick="event.stopPropagation();delCampaign(${c.id})">Smazat</button>
+       </div>
+     </div>
+   </div>`;
+ }).join('');
+}
+
+function openModal(id) {
+ editId = id||null;
+ document.getElementById('modalTitle').textContent = id ? 'Upravit kampaň' : 'Nová kampaň';
+ if (id) {
+   const c = campaigns.find(x=>x.id===id);
+   document.getElementById('fName').value=c.name;document.getElementById('fClient').value=c.client;
+   document.getElementById('fStatus').value=c.status;document.getElementById('fSubject').value=c.subject;
+   document.getElementById('fDate').value=c.date;document.getElementById('fRecipients').value=c.recipients;
+   document.getElementById('fOpenRate').value=c.openRate;document.getElementById('fClickRate').value=c.clickRate;
+   document.getElementById('fBody').value=c.body||'';
+ } else if (!id) {
+   ['fName','fClient','fSubject','fDate','fRecipients','fOpenRate','fClickRate','fBody'].forEach(i=>{const e=document.getElementById(i);if(e)e.value=''});
+   document.getElementById('fStatus').value='draft';
+ }
+ document.getElementById('modal').classList.add('active');
+}
+function closeModal(){document.getElementById('modal').classList.remove('active');editId=null;}
+function saveCampaign(){
+ const d={name:document.getElementById('fName').value.trim(),client:document.getElementById('fClient').value.trim(),status:document.getElementById('fStatus').value,subject:document.getElementById('fSubject').value.trim(),date:document.getElementById('fDate').value,recipients:Number(document.getElementById('fRecipients').value)||0,openRate:Number(document.getElementById('fOpenRate').value)||0,clickRate:Number(document.getElementById('fClickRate').value)||0,body:document.getElementById('fBody').value.trim()};
+ if(!d.name)return alert('Vyplň název kampaně.');
+ if(editId){const i=campaigns.findIndex(c=>c.id===editId);campaigns[i]={...campaigns[i],...d};}
+ else{d.id=Date.now();campaigns.push(d);}
+ save();closeModal();render();
+}
+function editCampaign(id){openModal(id);}
+function dupCampaign(id){const c=campaigns.find(x=>x.id===id);campaigns.push({...c,id:Date.now(),name:c.name+' (kopie)',status:'draft',openRate:0,clickRate:0});save();render();}
+function delCampaign(id){if(!confirm('Smazat kampaň?'))return;campaigns=campaigns.filter(c=>c.id!==id);save();render();}
+
+renderTemplates();
+render();
+</script>
+</body>
+</html>

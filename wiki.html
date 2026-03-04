@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Knowledge Base | Kudli. marketing</title>
+<meta name="description" content="Interní znalostní báze — postupy, návody, know-how pro freelance marketing.">
+<meta property="og:title" content="Knowledge Base | Kudli. marketing">
+<meta property="og:description" content="Centrální místo pro všechny postupy a know-how.">
+<meta property="og:image" content="og-image.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.top-bar{background:var(--card);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05)}
+.top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
+.top-bar a:hover{color:var(--accent)}
+.layout{display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 49px)}
+.sidebar{background:var(--card);border-right:1px solid rgba(255,255,255,0.05);padding:1.5rem 1rem;overflow-y:auto}
+.sidebar-title{font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:0.75rem;margin-top:1rem}
+.sidebar-title:first-child{margin-top:0}
+.sidebar-search{width:100%;padding:0.5rem 0.75rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.85rem;margin-bottom:1rem}
+.nav-item{display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0.75rem;border-radius:8px;cursor:pointer;font-size:0.85rem;color:var(--muted);transition:all 0.15s;margin-bottom:2px}
+.nav-item:hover{background:rgba(255,255,255,0.05);color:var(--text)}
+.nav-item.active{background:rgba(233,69,96,0.15);color:var(--accent)}
+.nav-icon{font-size:1rem;width:20px;text-align:center}
+.nav-count{margin-left:auto;font-size:0.7rem;background:rgba(255,255,255,0.05);padding:0.1rem 0.4rem;border-radius:4px}
+
+.main{padding:2rem;overflow-y:auto;max-height:calc(100vh - 49px)}
+h1{font-size:1.75rem;margin-bottom:0.25rem}
+h1 em{color:var(--accent);font-style:normal}
+.page-subtitle{color:var(--muted);margin-bottom:2rem}
+
+/* Article list */
+.articles-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem;margin-bottom:2rem}
+.article-card{background:var(--card);border-radius:12px;padding:1.25rem;border:1px solid rgba(255,255,255,0.05);cursor:pointer;transition:all 0.2s}
+.article-card:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(0,0,0,0.3);border-color:rgba(233,69,96,0.2)}
+.article-cat{font-size:0.7rem;font-weight:600;padding:0.15rem 0.5rem;border-radius:4px;display:inline-block;margin-bottom:0.5rem}
+.article-title{font-size:1rem;font-weight:600;margin-bottom:0.35rem}
+.article-excerpt{font-size:0.8rem;color:var(--muted);line-height:1.5;margin-bottom:0.75rem}
+.article-meta{display:flex;justify-content:space-between;align-items:center;font-size:0.7rem;color:var(--muted)}
+
+/* Article view */
+.article-view{display:none}
+.article-view.show{display:block}
+.article-list-view.hide{display:none}
+.back-btn{display:inline-flex;align-items:center;gap:0.35rem;color:var(--accent);cursor:pointer;font-size:0.85rem;margin-bottom:1.5rem;background:none;border:none}
+.back-btn:hover{text-decoration:underline}
+.article-content{background:var(--card);border-radius:14px;padding:2rem;border:1px solid rgba(255,255,255,0.05)}
+.article-content h2{font-size:1.4rem;margin-bottom:0.5rem}
+.article-content .meta-bar{display:flex;gap:1rem;align-items:center;color:var(--muted);font-size:0.8rem;margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.05);flex-wrap:wrap}
+.article-content .body{line-height:1.8;font-size:0.9rem}
+.article-content .body h3{font-size:1.1rem;margin:1.5rem 0 0.75rem;color:var(--accent)}
+.article-content .body p{margin-bottom:1rem}
+.article-content .body ul,.article-content .body ol{margin:0.5rem 0 1rem 1.5rem}
+.article-content .body li{margin-bottom:0.35rem}
+.article-content .body code{background:rgba(255,255,255,0.08);padding:0.15rem 0.4rem;border-radius:4px;font-size:0.85rem}
+.article-content .body blockquote{border-left:3px solid var(--accent);padding:0.75rem 1rem;margin:1rem 0;background:rgba(233,69,96,0.05);border-radius:0 8px 8px 0;font-style:italic}
+.article-content .body .tip{background:rgba(46,204,113,0.08);border:1px solid rgba(46,204,113,0.15);border-radius:8px;padding:1rem;margin:1rem 0}
+.article-content .body .tip::before{content:'💡 Tip: ';font-weight:700;color:var(--green)}
+.article-content .body .warning{background:rgba(243,156,18,0.08);border:1px solid rgba(243,156,18,0.15);border-radius:8px;padding:1rem;margin:1rem 0}
+.article-content .body .warning::before{content:'⚠️ Pozor: ';font-weight:700;color:var(--orange)}
+
+/* Buttons */
+.btn{padding:0.6rem 1.25rem;border-radius:8px;border:none;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.1)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:16px;padding:2rem;width:90%;max-width:650px;max-height:85vh;overflow-y:auto}
+.modal h2{font-size:1.25rem;margin-bottom:1.5rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.35rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.9rem;font-family:inherit}
+.form-group textarea{resize:vertical;min-height:250px;line-height:1.6}
+.modal-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1.5rem}
+
+@media(max-width:768px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{display:none}
+  .main{padding:1.5rem 1rem}
+  .articles-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="nastroje.html">← Zpět na nástroje</a>
+  <span style="font-size:0.8rem;color:var(--muted)">Knowledge Base</span>
+</div>
+
+<div class="layout">
+  <div class="sidebar">
+    <input type="text" class="sidebar-search" id="sideSearch" placeholder="Hledat..." oninput="render()">
+    <div id="sideNav"></div>
+  </div>
+  <div class="main">
+    <div class="article-list-view" id="listView">
+      <h1>📚 Knowledge <em>Base</em></h1>
+      <p class="page-subtitle">Postupy, návody a know-how pro freelance marketing</p>
+      <div style="margin-bottom:1.5rem">
+        <button class="btn btn-primary" onclick="openModal()">+ Nový článek</button>
+      </div>
+      <div class="articles-grid" id="articlesGrid"></div>
+    </div>
+    <div class="article-view" id="articleView">
+      <button class="back-btn" onclick="showList()">← Zpět na seznam</button>
+      <div class="article-content" id="articleContent"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">Nový článek</h2>
+    <input type="hidden" id="editId">
+    <div class="form-group">
+      <label>Název článku</label>
+      <input type="text" id="aTitle" placeholder="Např. Jak nastavit Google Analytics">
+    </div>
+    <div class="form-group">
+      <label>Kategorie</label>
+      <select id="aCat">
+        <option value="seo">SEO</option>
+        <option value="ppc">PPC reklama</option>
+        <option value="social">Sociální sítě</option>
+        <option value="analytics">Analytika</option>
+        <option value="tools">Nástroje</option>
+        <option value="process">Procesy</option>
+        <option value="sales">Sales</option>
+        <option value="copywriting">Copywriting</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Obsah (HTML podporováno: h3, p, ul, li, blockquote, code)</label>
+      <textarea id="aBody" placeholder="Text článku..."></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveArticle()">Uložit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CAT_MAP = {
+  seo:{label:'SEO',color:'#2ecc71',icon:'🔍'},
+  ppc:{label:'PPC',color:'#e94560',icon:'💰'},
+  social:{label:'Sociální sítě',color:'#3498db',icon:'📱'},
+  analytics:{label:'Analytika',color:'#9b59b6',icon:'📊'},
+  tools:{label:'Nástroje',color:'#f39c12',icon:'🔧'},
+  process:{label:'Procesy',color:'#1abc9c',icon:'⚙️'},
+  sales:{label:'Sales',color:'#e67e22',icon:'💼'},
+  copywriting:{label:'Copywriting',color:'#e74c3c',icon:'✍️'}
+};
+
+function defaultArticles(){
+  return [
+    {id:1,title:'Jak nastavit Google Analytics 4',cat:'analytics',date:'2026-02-28',views:15,body:`
+<h3>Proč GA4?</h3>
+<p>Google Analytics 4 je nová generace analytického nástroje od Googlu. Oproti Universal Analytics nabízí lepší sledování across-device, prediktivní metriky a integraci s Google Ads.</p>
+
+<h3>Krok za krokem</h3>
+<ol>
+<li>Přejděte na <code>analytics.google.com</code> a klikněte na "Vytvořit účet"</li>
+<li>Zadejte název účtu (název firmy klienta)</li>
+<li>Vytvořte property — zadejte URL webu, časové pásmo CET, měnu CZK</li>
+<li>Zkopírujte Measurement ID (formát G-XXXXXXXXX)</li>
+<li>Vložte tracking kód do <code>&lt;head&gt;</code> sekce webu</li>
+</ol>
+
+<div class="tip">Pro WordPress použijte plugin "Site Kit by Google" — nastaví GA4, Search Console i AdSense najednou.</div>
+
+<h3>Důležité události k nastavení</h3>
+<ul>
+<li><strong>page_view</strong> — automaticky sledováno</li>
+<li><strong>scroll</strong> — Enhanced Measurement (zapnout v nastavení)</li>
+<li><strong>click</strong> — odchozí odkazy, automaticky</li>
+<li><strong>form_submit</strong> — nutno nastavit custom event</li>
+<li><strong>purchase</strong> — pro e-shopy, enhanced ecommerce</li>
+</ul>
+
+<h3>Konverze</h3>
+<p>V GA4 se konverze nastavují přes Events → označte událost jako konverzi. Typické konverze pro klienty: odeslání formuláře, telefonní hovor, dokončení objednávky.</p>
+
+<div class="warning">GA4 nezachovává data déle než 14 měsíců v explorativních reportech. Pro delší analýzy exportujte do BigQuery.</div>`},
+
+    {id:2,title:'Checklist: SEO audit webu',cat:'seo',date:'2026-02-25',views:22,body:`
+<h3>Technické SEO</h3>
+<ul>
+<li>Kontrola indexace: <code>site:domena.cz</code> v Googlu</li>
+<li>Robots.txt — správně nastavený, neblokuje důležité stránky</li>
+<li>Sitemap.xml — existuje, je aktuální, submitnutá v GSC</li>
+<li>HTTPS — celý web na HTTPS, žádný mixed content</li>
+<li>Rychlost — Core Web Vitals v PageSpeed Insights (cíl: zelené skóre)</li>
+<li>Mobile-friendly — test v Google Mobile-Friendly Tool</li>
+<li>Canonical tagy — na všech stránkách, bez duplicit</li>
+</ul>
+
+<h3>On-page SEO</h3>
+<ul>
+<li>Title tagy — unikátní, max 60 znaků, klíčové slovo na začátku</li>
+<li>Meta description — unikátní, max 160 znaků, CTA</li>
+<li>H1 — jeden na stránku, obsahuje klíčové slovo</li>
+<li>URL struktura — čistá, krátká, s klíčovým slovem</li>
+<li>Interní prolinkování — logická struktura, anchor texty</li>
+<li>Obrázky — alt tagy, komprese, WebP formát</li>
+</ul>
+
+<h3>Content</h3>
+<ul>
+<li>Klíčová slova — research přes Ahrefs/Semrush/Ubersuggest</li>
+<li>Content gap — co má konkurence a klient ne?</li>
+<li>E-E-A-T — Experience, Expertise, Authority, Trust signály</li>
+</ul>
+
+<div class="tip">Pro rychlý audit použij Screaming Frog (free do 500 URL) — crawlne celý web a ukáže chyby v title, meta, H1, broken links atd.</div>`},
+
+    {id:3,title:'Jak psát efektivní PPC reklamy',cat:'ppc',date:'2026-02-20',views:18,body:`
+<h3>Struktura Google Ads účtu</h3>
+<p>Správná struktura je základ úspěchu. Rozdělte kampaně podle typu služby/produktu, reklamní sestavy podle záměru uživatele.</p>
+
+<h3>Pravidla pro psaní nadpisů</h3>
+<ul>
+<li>Nadpis 1: Klíčové slovo + benefit (max 30 znaků)</li>
+<li>Nadpis 2: USP nebo nabídka</li>
+<li>Nadpis 3: CTA nebo značka</li>
+</ul>
+
+<blockquote>Příklad: "Tvorba webů od 8 900 Kč | Moderní design za 14 dní | Kudli. marketing"</blockquote>
+
+<h3>Tipy pro vyšší CTR</h3>
+<ul>
+<li>Použijte čísla a konkrétní údaje</li>
+<li>Přidejte rozšíření (sitelinks, callout, structured snippets)</li>
+<li>Testujte min. 3 varianty reklam v každé sestavě</li>
+<li>Dynamické vkládání klíčových slov: <code>{KeyWord:Výchozí text}</code></li>
+</ul>
+
+<div class="warning">Nikdy nesměřujte reklamy na homepage. Vždy vytvořte specifickou landing page pro každou kampaň.</div>
+
+<h3>Rozpočet pro malé firmy</h3>
+<p>Doporučený minimální denní rozpočet: 200–500 Kč. Start s přesnými shodami (exact match), postupně rozšiřovat na phrase match. Negativní klíčová slova přidávat každý týden.</p>`},
+
+    {id:4,title:'Strategie pro Instagram marketing',cat:'social',date:'2026-02-18',views:12,body:`
+<h3>Content pillars</h3>
+<p>Každý klientský účet by měl mít 3-5 content pilířů — opakující se témata, která budují značku:</p>
+<ul>
+<li><strong>Edukační</strong> — tipy, návody, how-to</li>
+<li><strong>Behind the scenes</strong> — autenticita, lidskost</li>
+<li><strong>Sociální důkaz</strong> — reference, výsledky, before/after</li>
+<li><strong>Zábava</strong> — memes, trendy, reels</li>
+<li><strong>Prodejní</strong> — nabídky, CTA (max 20% obsahu)</li>
+</ul>
+
+<h3>Optimální frekvence</h3>
+<ul>
+<li>Feed posty: 3-4× týdně</li>
+<li>Stories: denně (min. 3-5 stories)</li>
+<li>Reels: 2-3× týdně (nejvyšší organický dosah)</li>
+<li>Carousel: 1-2× týdně (nejvyšší engagement)</li>
+</ul>
+
+<h3>Hashtag strategie</h3>
+<p>Používejte mix 15-20 hashtagů: 5 velkých (100k+ příspěvků), 10 středních (10-100k), 5 niche (pod 10k). Rotujte sady hashtagů každý týden.</p>
+
+<div class="tip">Nejlepší čas pro publikaci v ČR: úterý-čtvrtek, 11:00-13:00 a 18:00-20:00. Vždy ověřte v Insights konkrétního účtu.</div>`},
+
+    {id:5,title:'Jak připravit nabídku, která prodává',cat:'sales',date:'2026-02-15',views:20,body:`
+<h3>Struktura vítězné nabídky</h3>
+<ol>
+<li><strong>Problém klienta</strong> — ukažte, že rozumíte jejich situaci</li>
+<li><strong>Vaše řešení</strong> — konkrétní kroky, ne abstraktní sliby</li>
+<li><strong>Očekávané výsledky</strong> — čísla, metriky, ROI odhad</li>
+<li><strong>Rozsah a harmonogram</strong> — co přesně, kdy</li>
+<li><strong>Investice</strong> — cena + co je v ní zahrnuto</li>
+<li><strong>Další kroky</strong> — jasné CTA, termín platnosti</li>
+</ol>
+
+<h3>Cenová psychologie</h3>
+<ul>
+<li>Vždy nabízejte 3 balíčky (kotevní efekt)</li>
+<li>Prostřední balíček = ten, který chcete prodat</li>
+<li>Neuvádějte hodinovou sazbu — vždy projektová cena</li>
+<li>Ukažte ROI: "Investice 19 900 Kč → očekávaný přínos 80 000+ Kč"</li>
+</ul>
+
+<blockquote>Klienti nekupují hodiny práce. Kupují výsledky a pocit jistoty, že je o ně postaráno.</blockquote>
+
+<div class="tip">Nabídku posílejte do 48 hodin po schůzce. Každý den prodlení snižuje šanci na uzavření o 10-15%.</div>
+
+<h3>Follow-up sekvence</h3>
+<p>Den 0: Odeslání nabídky. Den 3: Follow-up email. Den 7: Telefonát. Den 14: Poslední follow-up s časově omezenou nabídkou.</p>`},
+
+    {id:6,title:'Copywriting formule pro web',cat:'copywriting',date:'2026-02-12',views:14,body:`
+<h3>AIDA formule</h3>
+<ul>
+<li><strong>A</strong>ttention — Upoutejte pozornost nadpisem</li>
+<li><strong>I</strong>nterest — Vzbuďte zájem relevantním problémem</li>
+<li><strong>D</strong>esire — Vytvořte touhu ukázáním řešení</li>
+<li><strong>A</strong>ction — Výzva k akci (CTA)</li>
+</ul>
+
+<h3>PAS formule</h3>
+<ul>
+<li><strong>P</strong>roblem — Pojmenujte problém klienta</li>
+<li><strong>A</strong>gitate — Zesílete bolest, ukažte důsledky</li>
+<li><strong>S</strong>olve — Představte vaše řešení</li>
+</ul>
+
+<h3>Pravidla pro landing pages</h3>
+<ul>
+<li>Jeden cíl = jedno CTA na stránku</li>
+<li>Nadpis musí komunikovat hlavní benefit do 3 sekund</li>
+<li>Social proof nad fold (loga klientů, hodnocení)</li>
+<li>Odstraňte navigaci — žádné úniky ze stránky</li>
+<li>CTA button: akční text ("Získat nabídku zdarma" místo "Odeslat")</li>
+</ul>
+
+<div class="tip">Testujte nadpisy pomocí ab-test.html. I malá změna v headline může zvýšit konverzi o 20-40%.</div>`},
+
+    {id:7,title:'Nástroje pro freelance marketéra',cat:'tools',date:'2026-02-10',views:25,body:`
+<h3>Povinná výbava</h3>
+<ul>
+<li><strong>Google Analytics 4</strong> — analytika zdarma</li>
+<li><strong>Google Search Console</strong> — SEO monitoring zdarma</li>
+<li><strong>Google Ads</strong> — PPC reklama</li>
+<li><strong>Meta Business Suite</strong> — správa FB/IG zdarma</li>
+<li><strong>Canva Pro</strong> — grafika, 119 Kč/měsíc</li>
+</ul>
+
+<h3>SEO nástroje</h3>
+<ul>
+<li><strong>Screaming Frog</strong> — technický audit (free do 500 URL)</li>
+<li><strong>Ubersuggest</strong> — keyword research (free verze dostačuje na start)</li>
+<li><strong>Ahrefs Webmaster Tools</strong> — backlink analýza zdarma</li>
+</ul>
+
+<h3>Automatizace</h3>
+<ul>
+<li><strong>Make.com</strong> — automatizace workflow (free do 1000 ops/měsíc)</li>
+<li><strong>Zapier</strong> — alternativa k Make, jednodušší</li>
+<li><strong>Calendly</strong> — plánování schůzek (free verze OK)</li>
+</ul>
+
+<h3>Fakturace a admin</h3>
+<ul>
+<li><strong>Fakturoid</strong> — české fakturační řešení (od 199 Kč/měsíc)</li>
+<li><strong>iDoklad</strong> — alternativa k Fakturoid</li>
+<li><strong>Notion</strong> — projektový management + wiki</li>
+</ul>
+
+<div class="warning">Investujte do nástrojů postupně. Na začátku stačí free verze všeho. Upgradujte až když vám free limity nestačí.</div>`},
+
+    {id:8,title:'Proces onboardingu klienta',cat:'process',date:'2026-02-08',views:10,body:`
+<h3>Fáze 1: Před podpisem</h3>
+<ol>
+<li>Discovery call (20 min) — potřeby, rozpočet, termín</li>
+<li>Příprava nabídky v generator-nabidek.html</li>
+<li>Follow-up a vyjednávání</li>
+<li>Podpis smlouvy (smlouvy.html)</li>
+</ol>
+
+<h3>Fáze 2: Onboarding (den 1-3)</h3>
+<ol>
+<li>Welcome email (šablona v sablony.html)</li>
+<li>Vytvoření složky v Google Drive</li>
+<li>Přidání do CRM (crm.html)</li>
+<li>Vyžádání přístupů (Analytics, hosting, sociální sítě)</li>
+<li>Zálohová faktura (faktura.html)</li>
+</ol>
+
+<h3>Fáze 3: Kickoff (den 3-7)</h3>
+<ol>
+<li>Kickoff schůzka — prezentace plánu</li>
+<li>Nastavení projektového checklistu (checklisty.html)</li>
+<li>Definice KPI a milníků</li>
+<li>Nastavení deadlinů (deadliny.html)</li>
+</ol>
+
+<div class="tip">Celý onboarding by měl trvat max 7 dní. Klient musí do týdne vidět první výstup, jinak ztrácí důvěru.</div>
+
+<h3>Dokumenty k vyžádání</h3>
+<ul>
+<li>Logo v SVG/PNG + brand manuál</li>
+<li>Přístupy ke Google Analytics a Search Console</li>
+<li>Přístupy k hostingu / FTP / CMS</li>
+<li>Přístupy k sociálním sítím (Meta Business Suite)</li>
+<li>Přístupy k reklamním účtům (Google Ads, Meta Ads)</li>
+</ul>`}
+  ];
+}
+
+let articles = JSON.parse(sessionStorage.getItem('wiki_data')) || defaultArticles();
+let nextId = Math.max(...articles.map(a=>a.id),0)+1;
+let activeCat = 'all';
+
+function save(){sessionStorage.setItem('wiki_data',JSON.stringify(articles))}
+
+function getFiltered(){
+  let list = articles;
+  const q = document.getElementById('sideSearch').value.toLowerCase();
+  if(q) list = list.filter(a=>a.title.toLowerCase().includes(q)||a.body.toLowerCase().includes(q));
+  if(activeCat!=='all') list = list.filter(a=>a.cat===activeCat);
+  return list.sort((a,b)=>b.views-a.views);
+}
+
+function renderSidebar(){
+  const counts = {};
+  articles.forEach(a=>{counts[a.cat]=(counts[a.cat]||0)+1});
+  let html = `<div class="sidebar-title">Kategorie</div>`;
+  html += `<div class="nav-item ${activeCat==='all'?'active':''}" onclick="setCat('all')"><span class="nav-icon">📚</span>Vše<span class="nav-count">${articles.length}</span></div>`;
+  Object.entries(CAT_MAP).forEach(([k,v])=>{
+    if(counts[k]){
+      html += `<div class="nav-item ${activeCat===k?'active':''}" onclick="setCat('${k}')"><span class="nav-icon">${v.icon}</span>${v.label}<span class="nav-count">${counts[k]}</span></div>`;
+    }
+  });
+  html += `<div class="sidebar-title" style="margin-top:1.5rem">Nejčtenější</div>`;
+  const top3 = [...articles].sort((a,b)=>b.views-a.views).slice(0,3);
+  top3.forEach(a=>{
+    html += `<div class="nav-item" onclick="viewArticle(${a.id})"><span class="nav-icon">📄</span><span style="font-size:0.8rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${a.title}</span></div>`;
+  });
+  document.getElementById('sideNav').innerHTML = html;
+}
+
+function setCat(c){activeCat=c;showList();render()}
+
+function renderGrid(){
+  const list = getFiltered();
+  if(!list.length){
+    document.getElementById('articlesGrid').innerHTML = '<div style="text-align:center;color:var(--muted);padding:3rem;grid-column:1/-1">Žádné články nenalezeny.</div>';
+    return;
+  }
+  document.getElementById('articlesGrid').innerHTML = list.map(a=>{
+    const c = CAT_MAP[a.cat]||{label:a.cat,color:'#999'};
+    const excerpt = a.body.replace(/<[^>]+>/g,'').substring(0,120)+'...';
+    return `
+    <div class="article-card" onclick="viewArticle(${a.id})">
+      <span class="article-cat" style="background:${c.color}22;color:${c.color}">${c.label}</span>
+      <div class="article-title">${a.title}</div>
+      <div class="article-excerpt">${excerpt}</div>
+      <div class="article-meta">
+        <span>${a.date}</span>
+        <span>${a.views}× zobrazeno</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function render(){renderSidebar();renderGrid()}
+
+function viewArticle(id){
+  const a = articles.find(x=>x.id===id);
+  if(!a) return;
+  a.views++;save();
+  const c = CAT_MAP[a.cat]||{label:a.cat,color:'#999'};
+  document.getElementById('articleContent').innerHTML = `
+    <h2>${a.title}</h2>
+    <div class="meta-bar">
+      <span class="article-cat" style="background:${c.color}22;color:${c.color}">${c.label}</span>
+      <span>📅 ${a.date}</span>
+      <span>👁 ${a.views} zobrazení</span>
+      <button class="btn btn-outline" style="margin-left:auto;padding:0.3rem 0.65rem;font-size:0.8rem" onclick="editArticle(${a.id})">✏️ Upravit</button>
+      <button class="btn btn-outline" style="padding:0.3rem 0.65rem;font-size:0.8rem;color:var(--red);border-color:rgba(231,76,60,0.3)" onclick="deleteArticle(${a.id})">🗑️</button>
+    </div>
+    <div class="body">${a.body}</div>
+  `;
+  document.getElementById('listView').classList.add('hide');
+  document.getElementById('articleView').classList.add('show');
+}
+
+function showList(){
+  document.getElementById('listView').classList.remove('hide');
+  document.getElementById('articleView').classList.remove('show');
+  render();
+}
+
+function openModal(id){
+  const a = id ? articles.find(x=>x.id===id) : null;
+  document.getElementById('editId').value = id||'';
+  document.getElementById('modalTitle').textContent = a ? 'Upravit článek' : 'Nový článek';
+  document.getElementById('aTitle').value = a ? a.title : '';
+  document.getElementById('aCat').value = a ? a.cat : 'seo';
+  document.getElementById('aBody').value = a ? a.body : '';
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show')}
+
+function saveArticle(){
+  const title = document.getElementById('aTitle').value.trim();
+  const cat = document.getElementById('aCat').value;
+  const body = document.getElementById('aBody').value.trim();
+  if(!title||!body) return alert('Vyplňte název a obsah');
+  const editId = document.getElementById('editId').value;
+  if(editId){
+    const a = articles.find(x=>x.id===parseInt(editId));
+    a.title=title;a.cat=cat;a.body=body;
+  } else {
+    const today = new Date().toISOString().split('T')[0];
+    articles.push({id:nextId++,title,cat,body,date:today,views:0});
+  }
+  save();closeModal();showList();render();
+}
+
+function editArticle(id){closeModal();openModal(id)}
+function deleteArticle(id){
+  if(!confirm('Smazat článek?')) return;
+  articles = articles.filter(a=>a.id!==id);
+  save();showList();render();
+}
+
+render();
+</script>
+</body>
+</html>

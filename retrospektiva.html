@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Retrospektiva projektů — Kudli. marketing</title>
+<meta name="description" content="Zpětné hodnocení projektů. Co šlo dobře, co zlepšit a jaké poučení si odnést.">
+<meta property="og:title" content="Retrospektiva projektů — Kudli. marketing">
+<meta property="og:description" content="Zpětné hodnocení projektů — co šlo dobře, co zlepšit.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/retrospektiva.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+.top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
+.top-bar a:hover{color:var(--text)}
+
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.8rem;font-weight:800;margin-bottom:0.3rem}
+h1 em{color:var(--accent);font-style:normal}
+.sub{color:var(--muted);margin-bottom:2rem;font-size:0.95rem}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.75rem;margin-bottom:2rem}
+.stat{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.stat .num{font-size:1.5rem;font-weight:800}
+.stat .lbl{font-size:0.7rem;color:var(--muted);margin-top:0.2rem}
+
+/* Retro card */
+.retro-list{display:flex;flex-direction:column;gap:1rem;margin-bottom:2rem}
+
+.retro-card{background:var(--card);border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.06);transition:all 0.2s}
+.retro-card:hover{border-color:rgba(233,69,96,0.3)}
+
+.retro-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;gap:1rem;flex-wrap:wrap}
+.retro-title{font-size:1.1rem;font-weight:800}
+.retro-meta{display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap}
+.retro-date{font-size:0.75rem;color:var(--muted)}
+.retro-score{padding:0.2rem 0.6rem;border-radius:6px;font-size:0.75rem;font-weight:700}
+
+.retro-columns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:1rem}
+.retro-col{background:rgba(255,255,255,0.03);border-radius:10px;padding:1rem}
+.retro-col h4{font-size:0.8rem;font-weight:700;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.3rem}
+.retro-col ul{list-style:none;padding:0}
+.retro-col li{font-size:0.8rem;color:var(--muted);padding:0.25rem 0;line-height:1.4;position:relative;padding-left:1rem}
+.retro-col li::before{content:'•';position:absolute;left:0;font-weight:700}
+.col-good h4{color:var(--green)}
+.col-good li::before{color:var(--green)}
+.col-bad h4{color:var(--red)}
+.col-bad li::before{color:var(--red)}
+.col-improve h4{color:var(--blue)}
+.col-improve li::before{color:var(--blue)}
+
+.retro-takeaway{background:rgba(233,69,96,0.08);border-radius:8px;padding:0.75rem 1rem;font-size:0.85rem;border-left:3px solid var(--accent)}
+.retro-takeaway strong{color:var(--accent)}
+
+.retro-actions{display:flex;gap:0.3rem;margin-top:0.75rem}
+.retro-actions button{background:rgba(255,255,255,0.08);border:none;color:var(--text);padding:0.3rem 0.6rem;border-radius:6px;cursor:pointer;font-size:0.75rem;transition:all 0.2s}
+.retro-actions button:hover{background:var(--accent)}
+
+/* Add form */
+.add-section{background:var(--card);border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.06)}
+.add-section h3{font-size:1rem;margin-bottom:1rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem}
+.form-row.full{grid-template-columns:1fr}
+.form-row.triple{grid-template-columns:1fr 1fr 1fr}
+input,select,textarea{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.55rem 0.75rem;border-radius:8px;font-size:0.85rem;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical;min-height:80px}
+label{font-size:0.75rem;color:var(--muted);display:block;margin-bottom:0.2rem}
+.btn{padding:0.55rem 1.25rem;border-radius:8px;border:none;cursor:pointer;font-weight:700;font-size:0.85rem;transition:all 0.2s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-secondary{background:rgba(255,255,255,0.1);color:var(--text)}
+.btn-secondary:hover{background:rgba(255,255,255,0.15)}
+.btn-row{display:flex;gap:0.5rem;margin-top:0.75rem}
+
+/* Responsive */
+@media(max-width:768px){
+ .container{padding:1.5rem 1rem}
+ h1{font-size:1.4rem}
+ .retro-columns{grid-template-columns:1fr}
+ .form-row,.form-row.triple{grid-template-columns:1fr}
+ .stats{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+ .retro-header{flex-direction:column}
+}
+
+/* Print */
+@media print{
+ body{background:#fff;color:#000}
+ .top-bar,.add-section,.btn,.retro-actions{display:none!important}
+ .container{max-width:100%;padding:0}
+ .retro-card{border:1px solid #ccc;background:#fff;color:#000;break-inside:avoid}
+ .retro-card *{color:#000!important}
+ .retro-col{background:#f5f5f5}
+ .stat{border:1px solid #ccc;background:#fff}
+ .stat *{color:#000!important}
+ .retro-takeaway{background:#fff3f3;border-left-color:#e94560}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+ <a href="nastroje.html">&larr; Zpět na nástroje</a>
+ <span style="font-size:0.8rem;color:var(--muted)">Retrospektiva projektů</span>
+</div>
+
+<div class="container">
+
+<h1>Retrospektiva <em>projektů</em></h1>
+<p class="sub">Co šlo dobře, co ne, a co si z toho odnést do dalšího projektu</p>
+
+<div class="stats">
+ <div class="stat"><div class="num" style="color:var(--accent)" id="statTotal">0</div><div class="lbl">Retrospektiv</div></div>
+ <div class="stat"><div class="num" style="color:var(--green)" id="statAvg">0</div><div class="lbl">Průměrné skóre /10</div></div>
+ <div class="stat"><div class="num" style="color:var(--blue)" id="statLessons">0</div><div class="lbl">Poučení celkem</div></div>
+ <div class="stat"><div class="num" style="color:var(--orange)" id="statBest">—</div><div class="lbl">Nejlepší projekt</div></div>
+</div>
+
+<div class="retro-list" id="retroList"></div>
+
+<div class="add-section">
+ <h3>+ Nová retrospektiva</h3>
+ <div class="form-row">
+  <div><label>Název projektu</label><input type="text" id="newProject" placeholder="Např. Web pro Kavárnu Zrnko"></div>
+  <div><label>Datum dokončení</label><input type="date" id="newDate"></div>
+ </div>
+ <div class="form-row">
+  <div><label>Klient</label><input type="text" id="newClient" placeholder="Firma / klient"></div>
+  <div><label>Hodnocení (1–10)</label><input type="number" id="newScore" min="1" max="10" placeholder="8"></div>
+ </div>
+ <div class="form-row.triple" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;margin-bottom:0.75rem">
+  <div><label>Co šlo dobře (po řádcích)</label><textarea id="newGood" placeholder="Rychlá komunikace&#10;Design na první pokus&#10;..."></textarea></div>
+  <div><label>Co nešlo (po řádcích)</label><textarea id="newBad" placeholder="Pozdní dodání obsahu&#10;Nejasný brief&#10;..."></textarea></div>
+  <div><label>Co zlepšit (po řádcích)</label><textarea id="newImprove" placeholder="Lepší onboarding&#10;Časový buffer&#10;..."></textarea></div>
+ </div>
+ <div class="form-row full">
+  <div><label>Klíčové poučení</label><input type="text" id="newTakeaway" placeholder="Hlavní takeaway z projektu"></div>
+ </div>
+ <div class="btn-row">
+  <button class="btn btn-primary" onclick="addRetro()">Přidat retrospektivu</button>
+  <button class="btn btn-secondary" onclick="exportCSV()">Export CSV</button>
+ </div>
+</div>
+
+</div>
+
+<script>
+const KEY = 'kudli_retros';
+
+function load(){
+ const s = sessionStorage.getItem(KEY);
+ if(s) return JSON.parse(s);
+ const demo = [
+  {id:1,project:'Web Kavárna Zrnko',client:'Kavárna Zrnko s.r.o.',date:'2026-02-15',score:9,
+   good:['Rychlá komunikace s klientem','Design schválen na první návrh','Dodání o 3 dny dříve'],
+   bad:['Klient dodal fotky pozdě','Chyběly texty pro stránku O nás'],
+   improve:['Poslat checklist materiálů hned na začátku','Stanovit pevný deadline pro podklady'],
+   takeaway:'Checklist podkladů posílat ihned po podpisu smlouvy — šetří to týden práce.'},
+  {id:2,project:'E-shop MadeByHand.cz',client:'MadeByHand.cz',date:'2026-02-01',score:7,
+   good:['Pěkný vizuální výsledek','Klient spokojený s UX','Dobrý SEO základ'],
+   bad:['Podcenění složitosti košíku','Tři kolečka revizí navíc','Scope creep — přidané funkce'],
+   improve:['Přesnější odhad u e-shopů (+30 % buffer)','Jasně definovat scope ve smlouvě','Říct NE dalším požadavkům bez change requestu'],
+   takeaway:'U e-shopů vždy přidat 30% časový buffer a striktně hlídat scope.'},
+  {id:3,project:'Landing page FitLife',client:'FitLife Academy',date:'2026-01-20',score:8,
+   good:['Jednoduchý brief = rychlá realizace','Konverzní poměr 4.2 %','Klient doporučil dalšího klienta'],
+   bad:['A/B test nespuštěn včas','Mobilní verze měla drobné bugy'],
+   improve:['Testovat mobilní verzi důkladněji','Spustit A/B test od prvního dne'],
+   takeaway:'Mobilní testování = priorita č. 1 před spuštěním.'},
+  {id:4,project:'Branding Restaurace U Jelena',client:'Restaurace U Jelena',date:'2026-01-10',score:6,
+   good:['Logo se klientovi líbilo','Rychlé dodání brand manuálu'],
+   bad:['Klient měnil barvy 4×','Nejasná vize — „chceme něco moderního"','Faktura zaplacena se 3týdenním zpožděním'],
+   improve:['Moodboard schůzka před startem','Omezit počet revizí ve smlouvě na 2','Záloha 50 % předem'],
+   takeaway:'Vždy požadovat zálohu 50 % a max 2 kola revizí u brandingu.'},
+  {id:5,project:'Social media strategie BeautyBox',client:'BeautyBox e-shop',date:'2026-02-20',score:8,
+   good:['Content kalendář na 3 měsíce','Engagement +45 % za první měsíc','Klientka nadšená z Reels šablon'],
+   bad:['Reporting byl složitější, než se čekalo','Některé posty vyžadovaly víc úprav'],
+   improve:['Automatizovat reporting přes šablonu','Vytvořit knihovnu Canva šablon pro opakované použití'],
+   takeaway:'Automatizace reportingu ušetří 2 hodiny měsíčně per klient.'}
+ ];
+ sessionStorage.setItem(KEY, JSON.stringify(demo));
+ return demo;
+}
+
+function save(data){ sessionStorage.setItem(KEY, JSON.stringify(data)); }
+
+function scoreColor(s){
+ if(s >= 8) return 'var(--green)';
+ if(s >= 6) return 'var(--orange)';
+ return 'var(--red)';
+}
+
+function scoreBg(s){
+ if(s >= 8) return 'rgba(46,204,113,0.15)';
+ if(s >= 6) return 'rgba(243,156,18,0.15)';
+ return 'rgba(231,76,60,0.15)';
+}
+
+function fmtDate(d){
+ if(!d) return '—';
+ const p = d.split('-');
+ return p[2]+'. '+parseInt(p[1])+'. '+p[0];
+}
+
+function render(){
+ const retros = load();
+ const sorted = [...retros].sort((a,b) => b.date.localeCompare(a.date));
+
+ // Stats
+ document.getElementById('statTotal').textContent = retros.length;
+ const avg = retros.length ? (retros.reduce((s,r)=>s+r.score,0)/retros.length).toFixed(1) : '0';
+ document.getElementById('statAvg').textContent = avg;
+ const lessons = retros.reduce((s,r)=>s+r.improve.length,0);
+ document.getElementById('statLessons').textContent = lessons;
+ const best = retros.length ? retros.reduce((a,b)=>a.score>=b.score?a:b) : null;
+ document.getElementById('statBest').textContent = best ? best.score+'/10' : '—';
+
+ let html = '';
+ sorted.forEach(r => {
+  html += `<div class="retro-card">
+   <div class="retro-header">
+    <div>
+     <div class="retro-title">${r.project}</div>
+     <div style="font-size:0.8rem;color:var(--muted)">${r.client} · ${fmtDate(r.date)}</div>
+    </div>
+    <div class="retro-meta">
+     <span class="retro-score" style="background:${scoreBg(r.score)};color:${scoreColor(r.score)}">${r.score}/10</span>
+    </div>
+   </div>
+   <div class="retro-columns">
+    <div class="retro-col col-good">
+     <h4>✅ Co šlo dobře</h4>
+     <ul>${r.good.map(g=>`<li>${g}</li>`).join('')}</ul>
+    </div>
+    <div class="retro-col col-bad">
+     <h4>❌ Co nešlo</h4>
+     <ul>${r.bad.map(b=>`<li>${b}</li>`).join('')}</ul>
+    </div>
+    <div class="retro-col col-improve">
+     <h4>💡 Co zlepšit</h4>
+     <ul>${r.improve.map(i=>`<li>${i}</li>`).join('')}</ul>
+    </div>
+   </div>
+   ${r.takeaway ? `<div class="retro-takeaway"><strong>Poučení:</strong> ${r.takeaway}</div>` : ''}
+   <div class="retro-actions">
+    <button onclick="deleteRetro(${r.id})">🗑️ Smazat</button>
+   </div>
+  </div>`;
+ });
+
+ if(!html) html = '<p style="color:var(--muted);text-align:center;padding:2rem">Zatím žádné retrospektivy.</p>';
+ document.getElementById('retroList').innerHTML = html;
+}
+
+function deleteRetro(id){
+ let data = load();
+ data = data.filter(r => r.id !== id);
+ save(data);
+ render();
+}
+
+function parseLines(text){
+ return text.split('\n').map(l=>l.trim()).filter(Boolean);
+}
+
+function addRetro(){
+ const project = document.getElementById('newProject').value.trim();
+ const date = document.getElementById('newDate').value;
+ const client = document.getElementById('newClient').value.trim();
+ const score = parseInt(document.getElementById('newScore').value);
+ const good = parseLines(document.getElementById('newGood').value);
+ const bad = parseLines(document.getElementById('newBad').value);
+ const improve = parseLines(document.getElementById('newImprove').value);
+ const takeaway = document.getElementById('newTakeaway').value.trim();
+
+ if(!project || !date || !score) return alert('Vyplň název, datum a hodnocení.');
+ if(score < 1 || score > 10) return alert('Hodnocení musí být 1–10.');
+
+ const data = load();
+ const id = data.length ? Math.max(...data.map(r=>r.id))+1 : 1;
+ data.push({id, project, client, date, score, good, bad, improve, takeaway});
+ save(data);
+
+ document.getElementById('newProject').value = '';
+ document.getElementById('newDate').value = '';
+ document.getElementById('newClient').value = '';
+ document.getElementById('newScore').value = '';
+ document.getElementById('newGood').value = '';
+ document.getElementById('newBad').value = '';
+ document.getElementById('newImprove').value = '';
+ document.getElementById('newTakeaway').value = '';
+ render();
+}
+
+function exportCSV(){
+ const data = load();
+ let csv = 'Projekt;Klient;Datum;Skóre;Dobře;Špatně;Zlepšit;Poučení\n';
+ data.forEach(r => {
+  csv += `"${r.project}";"${r.client}";"${r.date}";${r.score};"${r.good.join(', ')}";"${r.bad.join(', ')}";"${r.improve.join(', ')}";"${r.takeaway}"\n`;
+ });
+ const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+ const a = document.createElement('a');
+ a.href = URL.createObjectURL(blob);
+ a.download = 'retrospektivy.csv';
+ a.click();
+}
+
+render();
+</script>
+</body>
+</html>

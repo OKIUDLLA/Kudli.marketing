@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Projektové checklisty — Kudli. marketing</title>
+<meta name="description" content="Projektové checklisty pro 5 typů projektů — web, e-shop, chatbot, automatizace, redesign.">
+<meta property="og:title" content="Projektové checklisty — Kudli. marketing">
+<meta property="og:description" content="Projektové checklisty pro 5 typů projektů — web, e-shop, chatbot, automatizace, redesign.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/checklisty.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+.top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}
+.top-bar .logo span{color:var(--accent)}
+.top-bar .badge{background:rgba(233,69,96,0.15);color:var(--accent-light);padding:0.25rem 0.75rem;border-radius:15px;font-size:0.75rem;font-weight:600}
+
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+
+.header{text-align:center;margin-bottom:2rem}
+.header h1{font-size:2rem;font-weight:800}
+.header h1 em{color:var(--accent);font-style:normal}
+.header p{color:var(--muted);margin-top:0.5rem}
+
+/* Project type selector */
+.type-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.75rem;margin-bottom:2rem}
+.type-btn{background:var(--card);border:2px solid rgba(255,255,255,0.08);border-radius:14px;padding:1rem;text-align:center;cursor:pointer;transition:all 0.3s;user-select:none}
+.type-btn:hover{border-color:rgba(233,69,96,0.4);transform:translateY(-2px)}
+.type-btn.active{border-color:var(--accent);background:rgba(233,69,96,0.1)}
+.type-btn .icon{font-size:1.8rem;margin-bottom:0.3rem}
+.type-btn .name{font-size:0.85rem;font-weight:600}
+.type-btn .count{font-size:0.7rem;color:var(--muted);margin-top:0.15rem}
+
+/* Progress bar */
+.progress-section{background:var(--card);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;border:1px solid rgba(255,255,255,0.06)}
+.progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem}
+.progress-header .title{font-weight:700;font-size:1rem}
+.progress-header .pct{font-size:1.5rem;font-weight:800;color:var(--accent)}
+.progress-bar-bg{height:10px;background:rgba(255,255,255,0.08);border-radius:5px;overflow:hidden}
+.progress-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent),var(--accent-light));transition:width 0.6s cubic-bezier(0.22,1,0.36,1)}
+.progress-stats{display:flex;gap:1.5rem;margin-top:0.75rem;font-size:0.8rem;color:var(--muted)}
+
+/* Checklist phases */
+.phase{margin-bottom:1.5rem}
+.phase-header{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 0;cursor:pointer;user-select:none;border-bottom:1px solid rgba(255,255,255,0.06)}
+.phase-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.phase-info{flex:1}
+.phase-info h3{font-size:0.95rem;font-weight:700}
+.phase-info .sub{font-size:0.75rem;color:var(--muted)}
+.phase-pct{font-size:0.85rem;font-weight:700;color:var(--accent-light)}
+.phase-toggle{font-size:1rem;color:var(--muted);transition:transform 0.3s}
+.phase.open .phase-toggle{transform:rotate(180deg)}
+
+.task-list{display:none;padding:0.5rem 0 0.5rem 3rem}
+.phase.open .task-list{display:block}
+
+.task-item{display:flex;align-items:flex-start;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+.task-item:last-child{border:none}
+.task-cb{width:22px;height:22px;border-radius:6px;border:2px solid rgba(255,255,255,0.2);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.3s;margin-top:1px}
+.task-cb.done{background:var(--green);border-color:var(--green)}
+.task-cb.done::after{content:'✓';font-size:0.75rem;color:#fff;font-weight:700}
+.task-text{flex:1;font-size:0.9rem;line-height:1.5;transition:all 0.3s}
+.task-item.completed .task-text{text-decoration:line-through;color:var(--muted)}
+.task-note{font-size:0.75rem;color:var(--muted);display:block;margin-top:0.15rem;font-style:italic}
+
+/* Actions */
+.actions{display:flex;gap:0.75rem;margin-top:1rem;flex-wrap:wrap}
+.btn{padding:0.55rem 1.25rem;border:none;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.3s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light);transform:translateY(-1px)}
+.btn-ghost{background:rgba(255,255,255,0.06);color:var(--text)}
+.btn-ghost:hover{background:rgba(255,255,255,0.12)}
+
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--green);color:#fff;padding:0.7rem 1.5rem;border-radius:10px;font-weight:600;font-size:0.85rem;transform:translateY(100px);opacity:0;transition:all 0.4s;z-index:100}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:600px){
+ .type-grid{grid-template-columns:1fr 1fr}
+ .task-list{padding-left:1rem}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+ <div style="display:flex;align-items:center;gap:1.5rem">
+   <a href="index.html" class="logo">Kudli<span>.</span> marketing</a>
+   <span class="badge">INTERNÍ NÁSTROJ</span>
+ </div>
+ <a href="index.html" style="color:var(--muted);text-decoration:none;font-size:0.85rem">← Zpět</a>
+</div>
+
+<div class="container">
+ <div class="header">
+   <h1>Projektové <em>checklisty</em></h1>
+   <p>Vyberte typ projektu a odklikávejte kroky. Progres se ukládá automaticky.</p>
+ </div>
+
+ <!-- Type selector -->
+ <div class="type-grid" id="typeGrid"></div>
+
+ <!-- Progress -->
+ <div class="progress-section" id="progressSection" style="display:none">
+   <div class="progress-header">
+     <span class="title" id="progressTitle">—</span>
+     <span class="pct" id="progressPct">0%</span>
+   </div>
+   <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressBar" style="width:0%"></div></div>
+   <div class="progress-stats">
+     <span><span id="statDone">0</span> hotovo</span>
+     <span><span id="statRemaining">0</span> zbývá</span>
+     <span>Celkem: <span id="statTotal">0</span> úkolů</span>
+   </div>
+ </div>
+
+ <!-- Phases -->
+ <div id="phasesContainer"></div>
+
+ <!-- Actions -->
+ <div class="actions" id="actionsBar" style="display:none">
+   <button class="btn btn-primary" onclick="resetChecklist()">🔄 Reset checklist</button>
+   <button class="btn btn-ghost" onclick="printChecklist()">🖨️ Tisk / PDF</button>
+   <button class="btn btn-ghost" onclick="copyChecklist()">📋 Kopírovat text</button>
+ </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const PROJECTS = {
+ web: {
+   name: 'Firemní web',
+   icon: '🌐',
+   color: '#e94560',
+   phases: [
+     { name: 'Příprava', icon: '📋', tasks: [
+       { text: 'Úvodní schůzka s klientem', note: 'Zjistit cíle, cílovou skupinu, konkurenci' },
+       { text: 'Analýza konkurence (3–5 webů)' },
+       { text: 'Definice struktury webu (sitemap)' },
+       { text: 'Wireframes klíčových stránek' },
+       { text: 'Odsouhlasení wireframes klientem' },
+       { text: 'Shromáždění podkladů (texty, fotky, logo)' }
+     ]},
+     { name: 'Design', icon: '🎨', tasks: [
+       { text: 'Návrh vizuální identity (barvy, fonty)' },
+       { text: 'Design hlavní stránky' },
+       { text: 'Design podstránek' },
+       { text: 'Responzivní varianty (mobil, tablet)' },
+       { text: 'Schválení designu klientem' },
+       { text: 'Příprava design systému / komponent' }
+     ]},
+     { name: 'Vývoj', icon: '💻', tasks: [
+       { text: 'Setup projektu (repo, hosting, CI/CD)' },
+       { text: 'Kódování HTML/CSS struktury' },
+       { text: 'Implementace JavaScriptu (animace, formuláře)' },
+       { text: 'Napojení kontaktního formuláře' },
+       { text: 'Integrace Google Analytics / měření' },
+       { text: 'SEO optimalizace (meta tagy, sitemap, robots)' },
+       { text: 'Optimalizace obrázků (WebP, lazy loading)' },
+       { text: 'Schema.org strukturovaná data' }
+     ]},
+     { name: 'Testování', icon: '🧪', tasks: [
+       { text: 'Cross-browser testování (Chrome, Firefox, Safari)' },
+       { text: 'Mobilní testování (iOS, Android)' },
+       { text: 'Test rychlosti (PageSpeed Insights > 90)' },
+       { text: 'Test formulářů a interakcí' },
+       { text: 'Kontrola odkazů (žádné 404)' },
+       { text: 'Kontrola textu (překlepy, formátování)' },
+       { text: 'Accessibility kontrola (kontrast, alt texty)' }
+     ]},
+     { name: 'Spuštění', icon: '🚀', tasks: [
+       { text: 'Nastavení domény a DNS' },
+       { text: 'SSL certifikát (HTTPS)' },
+       { text: 'Nasazení na produkční hosting' },
+       { text: 'Finální kontrola na živé doméně' },
+       { text: 'Odeslání sitemap do Google Search Console' },
+       { text: 'Předání přístupů klientovi' },
+       { text: 'Dokumentace ke správě webu' },
+       { text: 'Fakturace a uzavření projektu' }
+     ]}
+   ]
+ },
+ eshop: {
+   name: 'E-shop',
+   icon: '🛒',
+   color: '#2ecc71',
+   phases: [
+     { name: 'Příprava', icon: '📋', tasks: [
+       { text: 'Analýza produktového portfolia' },
+       { text: 'Definice kategorií a filtrů' },
+       { text: 'Výběr platební brány (GoPay, Stripe, Comgate)' },
+       { text: 'Výběr dopravce (PPL, Zásilkovna, DPD)' },
+       { text: 'Požadavky na EET / účetní systém' },
+       { text: 'Wireframes klíčových stránek (produkt, košík, checkout)' }
+     ]},
+     { name: 'Design', icon: '🎨', tasks: [
+       { text: 'Design produktové karty' },
+       { text: 'Design košíku a checkout flow' },
+       { text: 'Design kategorie s filtry' },
+       { text: 'Mobilní optimalizace' },
+       { text: 'Schválení designu' }
+     ]},
+     { name: 'Vývoj', icon: '💻', tasks: [
+       { text: 'Setup e-shop platformy' },
+       { text: 'Implementace produktového katalogu' },
+       { text: 'Nákupní košík a checkout' },
+       { text: 'Integrace platební brány' },
+       { text: 'Integrace dopravců' },
+       { text: 'Uživatelské účty a objednávky' },
+       { text: 'Email notifikace (potvrzení, odeslání)' },
+       { text: 'SEO optimalizace produktů' },
+       { text: 'Import produktů (CSV / API)' }
+     ]},
+     { name: 'Testování', icon: '🧪', tasks: [
+       { text: 'Testovací objednávka (celý flow)' },
+       { text: 'Test plateb (sandbox)' },
+       { text: 'Test emailových notifikací' },
+       { text: 'Mobilní testování košíku' },
+       { text: 'Zátěžový test (více objednávek)' },
+       { text: 'Kontrola právních náležitostí (obchodní podmínky, GDPR)' }
+     ]},
+     { name: 'Spuštění', icon: '🚀', tasks: [
+       { text: 'Přepnutí plateb na produkci' },
+       { text: 'Import reálných produktů' },
+       { text: 'Nastavení domény a SSL' },
+       { text: 'Google Merchant Center' },
+       { text: 'Školení klienta na správu objednávek' },
+       { text: 'Předání dokumentace' }
+     ]}
+   ]
+ },
+ chatbot: {
+   name: 'AI Chatbot',
+   icon: '🤖',
+   color: '#3498db',
+   phases: [
+     { name: 'Analýza', icon: '🔍', tasks: [
+       { text: 'Zmapování nejčastějších dotazů zákazníků' },
+       { text: 'Definice cílů chatbota (podpora, prodej, FAQ)' },
+       { text: 'Sběr existující knowledge base / FAQ' },
+       { text: 'Rozhodnutí o AI modelu (GPT, Claude, vlastní)' },
+       { text: 'Definice tone of voice chatbota' }
+     ]},
+     { name: 'Design konverzace', icon: '💬', tasks: [
+       { text: 'Návrh konverzačních scénářů' },
+       { text: 'Definice fallback odpovědí' },
+       { text: 'Eskalační pravidla (kdy předat člověku)' },
+       { text: 'Uvítací zpráva a quick replies' },
+       { text: 'Schválení scénářů klientem' }
+     ]},
+     { name: 'Implementace', icon: '⚙️', tasks: [
+       { text: 'Setup AI backendu' },
+       { text: 'Trénink na knowledge base klienta' },
+       { text: 'Implementace widget UI' },
+       { text: 'Napojení na web klienta' },
+       { text: 'Integrace s CRM / helpdesk (volitelné)' },
+       { text: 'Logování konverzací pro analýzu' }
+     ]},
+     { name: 'Testování', icon: '🧪', tasks: [
+       { text: 'Testování 50+ různých dotazů' },
+       { text: 'Edge cases (nesmysly, útočné dotazy)' },
+       { text: 'Test eskalace na člověka' },
+       { text: 'Mobilní testování widgetu' },
+       { text: 'Měření přesnosti odpovědí' }
+     ]},
+     { name: 'Spuštění & optimalizace', icon: '🚀', tasks: [
+       { text: 'Nasazení na produkční web' },
+       { text: 'A/B test pozice widgetu' },
+       { text: 'Monitoring prvních 100 konverzací' },
+       { text: 'Fine-tuning odpovědí' },
+       { text: 'Předání analytického dashboardu klientovi' },
+       { text: 'Dokumentace a školení' }
+     ]}
+   ]
+ },
+ automatizace: {
+   name: 'Automatizace',
+   icon: '⚡',
+   color: '#f39c12',
+   phases: [
+     { name: 'Audit procesů', icon: '🔍', tasks: [
+       { text: 'Zmapování současných manuálních procesů' },
+       { text: 'Identifikace bottlenecks a časových ztrát' },
+       { text: 'Prioritizace procesů k automatizaci' },
+       { text: 'Výpočet ROI automatizace' },
+       { text: 'Výběr nástrojů (Make, Zapier, vlastní)' }
+     ]},
+     { name: 'Návrh', icon: '📐', tasks: [
+       { text: 'Diagram workflow (vstup → zpracování → výstup)' },
+       { text: 'Definice triggerů a podmínek' },
+       { text: 'Návrh error handling' },
+       { text: 'Integrace s existujícími systémy' },
+       { text: 'Schválení workflow klientem' }
+     ]},
+     { name: 'Implementace', icon: '⚙️', tasks: [
+       { text: 'Setup automatizační platformy' },
+       { text: 'Naprogramování hlavního workflow' },
+       { text: 'Napojení API / webhooků' },
+       { text: 'Error handling a notifikace' },
+       { text: 'Testování s reálnými daty' }
+     ]},
+     { name: 'Spuštění', icon: '🚀', tasks: [
+       { text: 'Produkční deploy' },
+       { text: 'Monitoring prvních 7 dní' },
+       { text: 'Optimalizace na základě dat' },
+       { text: 'Školení klienta na úpravy' },
+       { text: 'Dokumentace workflow' },
+       { text: 'Předání přístupů' }
+     ]}
+   ]
+ },
+ redesign: {
+   name: 'Redesign',
+   icon: '🔄',
+   color: '#9b59b6',
+   phases: [
+     { name: 'Audit stávajícího webu', icon: '🔍', tasks: [
+       { text: 'UX audit (heatmapy, analytics)' },
+       { text: 'SEO audit (pozice, chyby, rychlost)' },
+       { text: 'Analýza konverzního funnelu' },
+       { text: 'Competitor benchmarking' },
+       { text: 'Definice cílů redesignu (KPIs)' },
+       { text: 'Záloha stávajícího webu' }
+     ]},
+     { name: 'Nový design', icon: '🎨', tasks: [
+       { text: 'Aktualizace brand identity (barvy, fonty)' },
+       { text: 'Nová informační architektura' },
+       { text: 'Design hlavní stránky (porovnání staré vs nové)' },
+       { text: 'Design klíčových podstránek' },
+       { text: 'Mobilní varianty' },
+       { text: 'Schválení klientem' }
+     ]},
+     { name: 'Migrace & vývoj', icon: '💻', tasks: [
+       { text: 'Setup nového prostředí' },
+       { text: 'Migrace obsahu ze starého webu' },
+       { text: 'Kódování nového designu' },
+       { text: 'Nastavení 301 redirectů' },
+       { text: 'SEO migrace (zachování URL, meta tagy)' },
+       { text: 'Testování na staging' }
+     ]},
+     { name: 'Spuštění', icon: '🚀', tasks: [
+       { text: 'Přepnutí na nový web' },
+       { text: 'Kontrola 301 redirectů' },
+       { text: 'Monitoring pozic v Google (7 dní)' },
+       { text: 'A/B porovnání metrik (staré vs nové)' },
+       { text: 'Předání klientovi' }
+     ]}
+   ]
+ }
+};
+
+let currentType = null;
+let checkState = {};
+
+function init() {
+ const grid = document.getElementById('typeGrid');
+ Object.entries(PROJECTS).forEach(([key, proj]) => {
+   const totalTasks = proj.phases.reduce((s,p) => s + p.tasks.length, 0);
+   const div = document.createElement('div');
+   div.className = 'type-btn';
+   div.dataset.type = key;
+   div.onclick = () => selectType(key);
+   div.innerHTML = `<div class="icon">${proj.icon}</div><div class="name">${proj.name}</div><div class="count">${totalTasks} kroků</div>`;
+   grid.appendChild(div);
+ });
+ loadState();
+}
+
+function selectType(type) {
+ currentType = type;
+ document.querySelectorAll('.type-btn').forEach(b => b.classList.toggle('active', b.dataset.type === type));
+ document.getElementById('progressSection').style.display = 'block';
+ document.getElementById('actionsBar').style.display = 'flex';
+ renderPhases();
+ updateProgress();
+}
+
+function renderPhases() {
+ const proj = PROJECTS[currentType];
+ const container = document.getElementById('phasesContainer');
+ container.innerHTML = '';
+
+ proj.phases.forEach((phase, pi) => {
+   const div = document.createElement('div');
+   div.className = 'phase open';
+   div.innerHTML = `
+     <div class="phase-header" onclick="this.parentElement.classList.toggle('open')">
+       <div class="phase-icon" style="background:rgba(${hexToRgb(proj.color)},0.15);color:${proj.color}">${phase.icon}</div>
+       <div class="phase-info">
+         <h3>Fáze ${pi+1}: ${phase.name}</h3>
+         <div class="sub">${phase.tasks.length} kroků</div>
+       </div>
+       <span class="phase-pct" id="phasePct-${pi}">0%</span>
+       <span class="phase-toggle">▼</span>
+     </div>
+     <div class="task-list">
+       ${phase.tasks.map((t, ti) => {
+         const key = `${currentType}-${pi}-${ti}`;
+         const done = checkState[key] || false;
+         return `<div class="task-item ${done?'completed':''}" id="task-${key}">
+           <div class="task-cb ${done?'done':''}" onclick="toggleTask('${key}')"></div>
+           <div>
+             <span class="task-text">${t.text}</span>
+             ${t.note ? `<span class="task-note">${t.note}</span>` : ''}
+           </div>
+         </div>`;
+       }).join('')}
+     </div>
+   `;
+   container.appendChild(div);
+ });
+}
+
+function toggleTask(key) {
+ checkState[key] = !checkState[key];
+ const item = document.getElementById(`task-${key}`);
+ const cb = item.querySelector('.task-cb');
+ if (checkState[key]) {
+   item.classList.add('completed');
+   cb.classList.add('done');
+ } else {
+   item.classList.remove('completed');
+   cb.classList.remove('done');
+ }
+ saveState();
+ updateProgress();
+}
+
+function updateProgress() {
+ const proj = PROJECTS[currentType];
+ let total = 0, done = 0;
+
+ proj.phases.forEach((phase, pi) => {
+   let pDone = 0;
+   phase.tasks.forEach((t, ti) => {
+     total++;
+     const key = `${currentType}-${pi}-${ti}`;
+     if (checkState[key]) { done++; pDone++; }
+   });
+   const pPct = phase.tasks.length > 0 ? Math.round((pDone / phase.tasks.length) * 100) : 0;
+   const el = document.getElementById(`phasePct-${pi}`);
+   if (el) el.textContent = pPct + '%';
+ });
+
+ const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+ document.getElementById('progressTitle').textContent = PROJECTS[currentType].name;
+ document.getElementById('progressPct').textContent = pct + '%';
+ document.getElementById('progressBar').style.width = pct + '%';
+ document.getElementById('statDone').textContent = done;
+ document.getElementById('statRemaining').textContent = total - done;
+ document.getElementById('statTotal').textContent = total;
+}
+
+function resetChecklist() {
+ if (!confirm('Opravdu resetovat všechny kroky pro tento typ projektu?')) return;
+ const proj = PROJECTS[currentType];
+ proj.phases.forEach((phase, pi) => {
+   phase.tasks.forEach((t, ti) => {
+     delete checkState[`${currentType}-${pi}-${ti}`];
+   });
+ });
+ saveState();
+ renderPhases();
+ updateProgress();
+ showToast('🔄 Checklist resetován');
+}
+
+function printChecklist() {
+ const proj = PROJECTS[currentType];
+ let text = `CHECKLIST: ${proj.name}\n${'='.repeat(40)}\n\n`;
+ proj.phases.forEach((phase, pi) => {
+   text += `${phase.icon} FÁZE ${pi+1}: ${phase.name}\n`;
+   phase.tasks.forEach((t, ti) => {
+     const key = `${currentType}-${pi}-${ti}`;
+     text += `  ${checkState[key] ? '✅' : '⬜'} ${t.text}\n`;
+   });
+   text += '\n';
+ });
+ const w = window.open('','','width=700,height=900');
+ w.document.write(`<pre style="font-family:monospace;font-size:14px;line-height:1.8;padding:2rem">${text}</pre>`);
+ w.document.close();
+ w.print();
+}
+
+function copyChecklist() {
+ const proj = PROJECTS[currentType];
+ let text = `CHECKLIST: ${proj.name}\n\n`;
+ proj.phases.forEach((phase, pi) => {
+   text += `${phase.icon} Fáze ${pi+1}: ${phase.name}\n`;
+   phase.tasks.forEach((t, ti) => {
+     const key = `${currentType}-${pi}-${ti}`;
+     text += `  ${checkState[key] ? '✅' : '☐'} ${t.text}\n`;
+   });
+   text += '\n';
+ });
+ navigator.clipboard.writeText(text).then(() => showToast('📋 Checklist zkopírován'));
+}
+
+function saveState() {
+ try { sessionStorage.setItem('kudli_checklists', JSON.stringify(checkState)); } catch(e) {}
+}
+function loadState() {
+ try {
+   const d = sessionStorage.getItem('kudli_checklists');
+   if (d) checkState = JSON.parse(d);
+ } catch(e) {}
+}
+
+function hexToRgb(hex) {
+ const r = parseInt(hex.slice(1,3),16);
+ const g = parseInt(hex.slice(3,5),16);
+ const b = parseInt(hex.slice(5,7),16);
+ return `${r},${g},${b}`;
+}
+
+function showToast(msg) {
+ const t = document.getElementById('toast');
+ t.textContent = msg;
+ t.classList.add('show');
+ setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+init();
+</script>
+</body>
+</html>
