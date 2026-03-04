@@ -25,14 +25,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #1a1a2e;
-            --accent: #e94560;
-            --accent-light: #ff6b81;
-            --bg: #f8f9fa;
-            --text: #333;
-            --text-light: #666;
-            --border: #e0e0e0;
-            --white: #ffffff;
+            --primary: #1A1A1A;
+            --accent: #1A1A1A;
+            --accent-light: #333;
+            --bg: #F5F3EE;
+            --text: #1A1A1A;
+            --text-light: #888;
+            --border: #DDD9D0;
+            --white: #FFFFFF;
         }
 
         * {
@@ -118,8 +118,8 @@
 
         /* ========== HERO SECTION ========== */
         .hero {
-            background: linear-gradient(135deg, var(--primary) 0%, #2d2d44 100%);
-            color: var(--white);
+            background: #F5F3EE;
+            color: var(--text);
             padding: 4rem 2rem;
             text-align: center;
         }
@@ -189,8 +189,8 @@
 
         .featured-article-tag {
             display: inline-block;
-            background-color: var(--accent);
-            color: white;
+            background-color: #1A1A1A;
+            color: #F5F3EE;
             padding: 0.35rem 0.9rem;
             border-radius: 20px;
             font-size: 0.8rem;
@@ -238,13 +238,13 @@
         }
 
         .featured-image {
-            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            background: #DDD9D0;
             border-radius: 6px;
             min-height: 250px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: #888;
             font-size: 3rem;
         }
 
@@ -273,12 +273,12 @@
         }
 
         .article-image {
-            background: linear-gradient(135deg, var(--accent-light), var(--accent));
+            background: #DDD9D0;
             height: 200px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: #888;
             font-size: 2.5rem;
         }
 
@@ -371,12 +371,13 @@
             width: 80px;
             height: 80px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            background: #DDD9D0;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 2.5rem;
             margin: 0 auto 1rem;
+            color: #888;
         }
 
         .author-bio p {
@@ -410,8 +411,8 @@
         }
 
         .cta-section {
-            background: linear-gradient(135deg, var(--accent), var(--accent-light));
-            color: white;
+            background: #1A1A1A;
+            color: #F5F3EE;
             padding: 1.5rem;
             border-radius: 8px;
             text-align: center;
@@ -422,25 +423,25 @@
             margin-bottom: 1rem;
             border: none;
             padding: 0;
-            color: white;
+            color: #F5F3EE;
         }
 
         .cta-btn {
             display: inline-block;
-            background-color: white;
-            color: var(--accent);
+            background-color: #F5F3EE;
+            color: #1A1A1A;
             padding: 0.6rem 1.4rem;
             border-radius: 6px;
             text-decoration: none;
             font-weight: 600;
             font-size: 0.9rem;
             transition: all 0.3s ease;
-            border: 2px solid white;
+            border: 2px solid #F5F3EE;
         }
 
         .cta-btn:hover {
             background-color: transparent;
-            color: white;
+            color: #F5F3EE;
         }
 
         /* ========== ARTICLE DETAIL VIEW ========== */
@@ -791,7 +792,7 @@
     <!-- HEADER & NAV -->
     <header>
         <nav>
-            <a href="index.html" class="logo">Kudli<span>.</span> marketing</a>
+            <a href="index.html" class="logo"><img src="logo.svg" alt="Kudli. marketing" style="height:24px;vertical-align:middle"></a>
             <ul id="nav-menu">
                 <li><a href="index.html">← Zpět</a></li>
                 <li><a href="index.html#sluzby">Služby</a></li>
@@ -1630,8 +1631,8 @@
         });
     </script>
 
-<footer style="text-align:center;padding:20px;font-size:12px;color:#666;border-top:1px solid #eee;margin-top:40px;">
-  © 2026 <a href="index.html" style="color:#666;">Kudli. marketing</a>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#888;border-top:1px solid #DDD9D0;margin-top:40px;">
+  © 2026 <a href="index.html" style="color:#888;">Kudli. marketing</a>
 </footer>
 </body>
 </html>

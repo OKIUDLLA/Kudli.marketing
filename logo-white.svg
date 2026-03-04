@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 120" height="40">
-  <text x="10" y="72" font-family="'Segoe UI',system-ui,sans-serif" font-weight="900" font-size="64" fill="#ffffff" letter-spacing="-2">Kudli</text>
-  <circle cx="247" cy="65" r="7" fill="#e94560"/>
-  <circle cx="247" cy="35" r="5" fill="#e94560" opacity="0.5"/>
-  <text x="268" y="72" font-family="'Segoe UI',system-ui,sans-serif" font-weight="400" font-size="32" fill="rgba(255,255,255,0.7)" letter-spacing="2">marketing</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 200" height="40">
+  <text x="28" y="120" font-family="'Arial Black','Helvetica Neue',Impact,system-ui,sans-serif" font-weight="900" font-size="100" fill="#ffffff" letter-spacing="-4">Kudli</text>
+  <circle cx="308" cy="112" r="10" fill="#ffffff"/>
+  <circle cx="308" cy="72" r="10" fill="#ffffff"/>
+  <text x="118" y="165" font-family="'Helvetica Neue',Arial,system-ui,sans-serif" font-weight="400" font-size="40" fill="rgba(255,255,255,0.7)" letter-spacing="10">marketing</text>
 </svg>

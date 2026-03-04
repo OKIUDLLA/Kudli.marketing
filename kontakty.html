@@ -26,37 +26,37 @@
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+:root{--bg:#F5F3EE;--card:#FFFFFF;--accent:#1A1A1A;--accent-light:#333;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#1A1A1A;--muted:#888}
+body{font-family:-apple-system,'Helvetica Neue',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid #DDD9D0;flex-wrap:wrap;gap:1rem}
 .top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}.top-bar .logo span{color:var(--accent)}
 .container{max-width:1000px;margin:0 auto;padding:2rem 1.5rem}
 h1{font-size:1.6rem;font-weight:800;margin-bottom:0.3rem}h1 em{color:var(--accent);font-style:normal}
 .subtitle{color:var(--muted);margin-bottom:2rem;font-size:0.95rem}
 
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.75rem;margin-bottom:2rem}
-.stat{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.stat{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid #DDD9D0}
 .stat .num{font-size:1.6rem;font-weight:800}.stat .label{font-size:0.75rem;color:var(--muted);margin-top:0.2rem}
 
 .toolbar{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
-.toolbar input,.toolbar select{background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.55rem 1rem;border-radius:10px;font-size:0.85rem;font-family:inherit}
+.toolbar input,.toolbar select{background:var(--card);border:1px solid #DDD9D0;color:var(--text);padding:0.55rem 1rem;border-radius:10px;font-size:0.85rem;font-family:inherit}
 .toolbar input{flex:1;min-width:200px}
-.btn{background:var(--accent);color:#fff;border:none;padding:0.6rem 1.25rem;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:inherit;transition:all 0.3s}
+.btn{background:var(--accent);color:#F5F3EE;border:none;padding:0.6rem 1.25rem;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:inherit;transition:all 0.3s}
 .btn:hover{background:var(--accent-light);transform:translateY(-1px)}
-.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.15);color:var(--text)}
+.btn-outline{background:transparent;border:1px solid #DDD9D0;color:var(--text)}
 .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
 .btn-sm{padding:0.35rem 0.75rem;font-size:0.78rem}
 
 .contacts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
-.contact-card{background:var(--card);border-radius:16px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s;position:relative}
-.contact-card:hover{border-color:rgba(233,69,96,0.3);transform:translateY(-2px);box-shadow:0 6px 25px rgba(0,0,0,0.2)}
+.contact-card{background:var(--card);border-radius:16px;padding:1.25rem;border:1px solid #DDD9D0;transition:all 0.3s;position:relative}
+.contact-card:hover{border-color:rgba(26,26,26,0.3);transform:translateY(-2px);box-shadow:0 6px 25px rgba(0,0,0,0.1)}
 .cc-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem}
 .avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;flex-shrink:0;color:#fff}
 .cc-name{font-weight:700;font-size:0.95rem}
 .cc-company{font-size:0.8rem;color:var(--muted)}
 .cc-details{display:flex;flex-direction:column;gap:0.3rem;margin-bottom:0.75rem}
-.cc-detail{display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:rgba(255,255,255,0.7)}
-.cc-detail a{color:var(--accent-light);text-decoration:none}
+.cc-detail{display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:#1A1A1A}
+.cc-detail a{color:#1A1A1A;text-decoration:none}
 .cc-detail a:hover{text-decoration:underline}
 .cc-tags{display:flex;flex-wrap:wrap;gap:0.3rem;margin-bottom:0.5rem}
 .tag{padding:0.15rem 0.5rem;border-radius:6px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
@@ -64,22 +64,22 @@ h1{font-size:1.6rem;font-weight:800;margin-bottom:0.3rem}h1 em{color:var(--accen
 .tag-lead{background:rgba(243,156,18,0.15);color:var(--orange)}
 .tag-partner{background:rgba(52,152,219,0.15);color:var(--blue)}
 .tag-supplier{background:rgba(155,89,182,0.15);color:var(--purple)}
-.cc-note{font-size:0.8rem;color:var(--muted);font-style:italic;padding-top:0.5rem;border-top:1px solid rgba(255,255,255,0.04)}
+.cc-note{font-size:0.8rem;color:var(--muted);font-style:italic;padding-top:0.5rem;border-top:1px solid #DDD9D0}
 .cc-actions{position:absolute;top:0.75rem;right:0.75rem;display:flex;gap:0.3rem}
 .cc-actions button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;padding:0.2rem;transition:color 0.2s}
 .cc-actions button:hover{color:var(--accent)}
 
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:100;padding:1rem}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:center;justify-content:center;z-index:100;padding:1rem}
 .modal-overlay.active{display:flex}
-.modal{background:var(--bg);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;max-width:500px;width:100%;max-height:90vh;overflow-y:auto}
+.modal{background:var(--bg);border:1px solid #DDD9D0;border-radius:20px;padding:2rem;max-width:500px;width:100%;max-height:90vh;overflow-y:auto}
 .modal h2{font-size:1.2rem;margin-bottom:1.5rem}
 .fg{margin-bottom:1rem}.fg label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;font-weight:600}
-.fg input,.fg select,.fg textarea{width:100%;background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.6rem 1rem;border-radius:10px;font-size:0.9rem;font-family:inherit}
+.fg input,.fg select,.fg textarea{width:100%;background:var(--card);border:1px solid #DDD9D0;color:var(--text);padding:0.6rem 1rem;border-radius:10px;font-size:0.9rem;font-family:inherit}
 .fg textarea{min-height:60px;resize:vertical}
 .fr{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
 .tag-select{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.3rem}
-.tag-opt{padding:0.3rem 0.7rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:0.8rem;transition:all 0.2s}
-.tag-opt.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.tag-opt{padding:0.3rem 0.7rem;border-radius:8px;border:1px solid #DDD9D0;cursor:pointer;font-size:0.8rem;transition:all 0.2s}
+.tag-opt.sel{background:var(--accent);border-color:var(--accent);color:#F5F3EE}
 .modal-actions{display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem}
 
 @media(max-width:768px){.contacts-grid{grid-template-columns:1fr}.fr{grid-template-columns:1fr}}
@@ -87,7 +87,7 @@ h1{font-size:1.6rem;font-weight:800;margin-bottom:0.3rem}h1 em{color:var(--accen
 </head>
 <body>
 <div class="top-bar">
- <a href="nastroje.html" class="logo">Kudli<span>.</span> marketing</a>
+ <a href="nastroje.html" class="logo"><img src="logo.svg" alt="Kudli. marketing" style="height:24px;vertical-align:middle"></a>
  <a href="nastroje.html" style="color:var(--muted);text-decoration:none;font-size:0.85rem">← Zpět na nástroje</a>
 </div>
 <div class="container">
@@ -258,8 +258,8 @@ function exportCSV() {
 
 render();
 </script>
-<footer style="text-align:center;padding:20px;font-size:12px;color:#666;border-top:1px solid #eee;margin-top:40px;">
-  © 2026 <a href="index.html" style="color:#666;">Kudli. marketing</a>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#888;border-top:1px solid #DDD9D0;margin-top:40px;">
+  © 2026 <a href="index.html" style="color:#888;">Kudli. marketing</a>
 </footer>
 </body>
 </html>

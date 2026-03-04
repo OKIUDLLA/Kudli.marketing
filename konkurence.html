@@ -14,20 +14,20 @@
     <link rel="canonical" href="https://www.kudlimarketing.cz/konkurence.html">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--text:#fff;--muted:rgba(255,255,255,0.5);--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6}
+:root{--bg:#F5F3EE;--card:#FFFFFF;--accent:#1A1A1A;--accent-light:#333;--text:#1A1A1A;--muted:#888};--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 a{color:var(--accent-light);text-decoration:none}
 
-.header{background:var(--card);border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.header{background:var(--card);border-bottom:1px solid rgba(0,0,0,0.06);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
 .header-left{display:flex;align-items:center;gap:1rem}
 .header h1{font-size:1.3rem;font-weight:700}
 .header h1 span{color:var(--accent)}
 .back-link{color:var(--muted);font-size:0.85rem}
 
 .btn{padding:0.55rem 1rem;border:none;border-radius:10px;font-size:0.82rem;cursor:pointer;font-weight:600;transition:all 0.3s;display:inline-flex;align-items:center;gap:0.4rem}
-.btn-primary{background:var(--accent);color:#fff}
+.btn-primary{background:var(--accent);color:#F5F3EE}
 .btn-primary:hover{background:var(--accent-light)}
-.btn-secondary{background:rgba(255,255,255,0.06);color:var(--text);border:1px solid rgba(255,255,255,0.1)}
+.btn-secondary{background:rgba(0,0,0,0.04);color:var(--text);border:1px solid rgba(0,0,0,0.06)}
 .btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
 .btn-sm{padding:0.35rem 0.7rem;font-size:0.78rem}
 .btn-danger{background:rgba(231,76,60,0.15);color:var(--red);border:1px solid rgba(231,76,60,0.2)}
@@ -36,12 +36,12 @@ a{color:var(--accent-light);text-decoration:none}
 
 /* Project selector */
 .project-bar{display:flex;gap:0.75rem;margin-bottom:1.5rem;align-items:center;flex-wrap:wrap}
-.project-bar select{padding:0.55rem 1rem;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:0.9rem;font-weight:600;min-width:200px}
+.project-bar select{padding:0.55rem 1rem;background:var(--card);border:1px solid rgba(0,0,0,0.06);border-radius:10px;color:#fff;font-size:0.9rem;font-weight:600;min-width:200px}
 .project-bar select:focus{outline:none;border-color:var(--accent)}
 
 /* Competitor grid */
 .comp-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(350px,1fr));gap:1rem;margin-bottom:2rem}
-.comp-card{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s;position:relative}
+.comp-card{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(0,0,0,0.06);transition:all 0.3s;position:relative}
 .comp-card:hover{border-color:rgba(255,255,255,0.15)}
 .comp-card.our{border-color:var(--accent);border-width:2px}
 .comp-card.our::after{content:'NÁŠ KLIENT';position:absolute;top:0.75rem;right:0.75rem;background:var(--accent);color:#fff;font-size:0.6rem;padding:0.15rem 0.5rem;border-radius:6px;font-weight:700}
@@ -51,14 +51,14 @@ a{color:var(--accent-light);text-decoration:none}
 .comp-name{font-weight:700;font-size:1rem}
 .comp-url{font-size:0.75rem;color:var(--muted)}
 .comp-actions{position:absolute;top:1rem;right:1rem;display:flex;gap:0.3rem}
-.comp-action{width:28px;height:28px;border:none;border-radius:6px;background:rgba(255,255,255,0.05);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.8rem;transition:all 0.3s}
+.comp-action{width:28px;height:28px;border:none;border-radius:6px;background:rgba(0,0,0,0.06);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.8rem;transition:all 0.3s}
 .comp-action:hover{background:rgba(233,69,96,0.15);color:var(--accent)}
 
 /* Score bars */
 .score-section{margin-bottom:0.75rem}
 .score-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.4rem}
 .score-label{font-size:0.75rem;color:var(--muted);min-width:90px}
-.score-bar{flex:1;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.score-bar{flex:1;height:8px;background:rgba(0,0,0,0.06);border-radius:4px;overflow:hidden}
 .score-bar-fill{height:100%;border-radius:4px;transition:width 0.8s}
 .score-val{font-size:0.75rem;font-weight:700;min-width:30px;text-align:right}
 
@@ -70,25 +70,25 @@ a{color:var(--accent-light);text-decoration:none}
 .comparison-section{margin-bottom:2rem}
 .comparison-section h2{font-size:1.1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
 .comparison-table{width:100%;border-collapse:collapse;font-size:0.85rem}
-.comparison-table th{text-align:left;padding:0.6rem 0.75rem;background:var(--card);border-bottom:1px solid rgba(255,255,255,0.06);font-weight:700;color:var(--muted);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;position:sticky;top:0}
+.comparison-table th{text-align:left;padding:0.6rem 0.75rem;background:var(--card);border-bottom:1px solid rgba(0,0,0,0.06);font-weight:700;color:var(--muted);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px;position:sticky;top:0}
 .comparison-table td{padding:0.55rem 0.75rem;border-bottom:1px solid rgba(255,255,255,0.03)}
-.comparison-table tr:hover td{background:rgba(255,255,255,0.02)}
+.comparison-table tr:hover td{background:rgba(0,0,0,0.02)}
 .comparison-table .cat-label{font-weight:600;color:var(--text)}
 .comparison-table .best{color:var(--green);font-weight:700}
 .comparison-table .worst{color:var(--red);opacity:0.6}
 .dot-score{display:flex;gap:2px}
-.dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.1)}
+.dot{width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,0.06)}
 .dot.filled{background:var(--accent)}
 
 /* Notes section */
-.notes-card{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);margin-bottom:1.5rem}
+.notes-card{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(0,0,0,0.06);margin-bottom:1.5rem}
 .notes-card h3{font-size:0.95rem;font-weight:700;margin-bottom:0.75rem}
-.notes-card textarea{width:100%;padding:0.6rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-family:inherit;font-size:0.85rem;min-height:80px;resize:vertical}
+.notes-card textarea{width:100%;padding:0.6rem;background:rgba(0,0,0,0.04);border:1px solid rgba(0,0,0,0.06);border-radius:8px;color:#fff;font-family:inherit;font-size:0.85rem;min-height:80px;resize:vertical}
 .notes-card textarea:focus{outline:none;border-color:var(--accent)}
 
 /* SWOT */
 .swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:1.5rem}
-.swot-card{border-radius:12px;padding:1rem;border:1px solid rgba(255,255,255,0.06)}
+.swot-card{border-radius:12px;padding:1rem;border:1px solid rgba(0,0,0,0.06)}
 .swot-card h4{font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;display:flex;align-items:center;gap:0.4rem}
 .swot-card ul{list-style:none;font-size:0.82rem;color:rgba(255,255,255,0.7)}
 .swot-card ul li{padding:0.2rem 0;display:flex;align-items:flex-start;gap:0.3rem}
@@ -100,15 +100,15 @@ a{color:var(--accent-light);text-decoration:none}
 /* Modal */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem}
 .modal-overlay.show{display:flex}
-.modal{background:var(--bg);border:1px solid rgba(255,255,255,0.1);border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+.modal{background:var(--bg);border:1px solid rgba(0,0,0,0.06);border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(0,0,0,0.06)}
 .modal-header h3{font-size:1.1rem;font-weight:700}
 .modal-close{background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer}
 .modal-body{padding:1.5rem}
-.modal-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:flex-end;gap:0.75rem}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid rgba(0,0,0,0.06);display:flex;justify-content:flex-end;gap:0.75rem}
 .form-group{margin-bottom:0.85rem}
 .form-group label{display:block;font-size:0.78rem;color:var(--muted);margin-bottom:0.3rem;font-weight:600}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.55rem 0.8rem;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.55rem 0.8rem;background:var(--card);border:1px solid rgba(0,0,0,0.06);border-radius:8px;color:#fff;font-size:0.85rem;font-family:inherit}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--accent)}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
 .score-input{display:flex;flex-direction:column;gap:0.2rem}
@@ -150,7 +150,7 @@ a{color:var(--accent-light);text-decoration:none}
   <!-- Comparison table -->
   <div class="comparison-section" id="comparisonSection" style="display:none">
     <h2>📊 Srovnání</h2>
-    <div style="overflow-x:auto;border-radius:12px;border:1px solid rgba(255,255,255,0.06)">
+    <div style="overflow-x:auto;border-radius:12px;border:1px solid rgba(0,0,0,0.06)">
       <table class="comparison-table" id="compTable"></table>
     </div>
   </div>
@@ -368,7 +368,7 @@ function renderComparison(project) {
   });
 
   // Total row
-  html += '<tr style="font-weight:700;border-top:2px solid rgba(255,255,255,0.1)"><td>PRŮMĚR</td>';
+  html += '<tr style="font-weight:700;border-top:2px solid rgba(0,0,0,0.06)"><td>PRŮMĚR</td>';
   comps.forEach(c => {
     const avg = CRITERIA.reduce((s, cr) => s + (c.scores?.[cr.id] || 0), 0) / CRITERIA.length;
     html += `<td style="color:${c.color || 'var(--accent)'};font-size:1.1rem">${avg.toFixed(1)}</td>`;

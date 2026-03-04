@@ -13,7 +13,7 @@
 <meta property="og:url" content="https://kudlimarketing.cz/onboarding.html">
     <link rel="canonical" href="https://www.kudlimarketing.cz/onboarding.html">
 <style>
-:root { --primary:#1a1a2e; --accent:#e94560; --accent-light:#ff6b81; --bg:#f8f9fa; --white:#fff; --text:#333; --gray:#666; --success:#2ecc71; --shadow:0 4px 20px rgba(0,0,0,0.08); }
+:root { --primary:#1A1A1A; --accent:#1A1A1A; --accent-light:#333; --bg:#F5F3EE; --white:#FFFFFF; --text:#1A1A1A; --gray:#888; --success:#2ecc71; --shadow:0 4px 20px rgba(0,0,0,0.06); }
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
 .container{max-width:720px;margin:0 auto;padding:2rem 1rem}
@@ -22,7 +22,7 @@ h1{font-size:2rem;font-weight:800;color:var(--primary);text-align:center;margin-
 
 /* Progress bar */
 .progress-wrap{background:#e0e0e0;border-radius:20px;height:8px;margin-bottom:2rem;overflow:hidden}
-.progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-light));border-radius:20px;transition:width 0.5s ease}
+.progress-bar{height:100%;background:var(--accent);border-radius:20px;transition:width 0.5s ease}
 .progress-label{text-align:center;font-size:0.85rem;color:var(--gray);margin-bottom:2rem}
 
 /* Steps */
@@ -32,7 +32,7 @@ h1{font-size:2rem;font-weight:800;color:var(--primary);text-align:center;margin-
 
 .card{background:var(--white);border-radius:16px;padding:2rem;box-shadow:var(--shadow);margin-bottom:1.5rem}
 .card h2{font-size:1.35rem;color:var(--primary);margin-bottom:0.25rem}
-.card .step-num{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:0.85rem;margin-bottom:0.75rem}
+.card .step-num{display:inline-block;background:var(--accent);color:#F5F3EE;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:0.85rem;margin-bottom:0.75rem}
 .card p.desc{color:var(--gray);font-size:0.95rem;margin-bottom:1.25rem}
 
 label{display:block;font-weight:600;font-size:0.9rem;color:var(--primary);margin-bottom:0.35rem;margin-top:1rem}
@@ -47,16 +47,16 @@ textarea{min-height:100px;resize:vertical}
 
 .btn-row{display:flex;gap:1rem;margin-top:1.5rem;justify-content:flex-end}
 .btn{padding:0.7rem 1.75rem;border-radius:10px;font-size:0.95rem;font-weight:600;cursor:pointer;border:none;transition:all 0.3s}
-.btn-next{background:var(--accent);color:white}
-.btn-next:hover{background:var(--accent-light);transform:translateY(-2px);box-shadow:0 6px 20px rgba(233,69,96,0.25)}
+.btn-next{background:var(--accent);color:#F5F3EE}
+.btn-next:hover{background:#333;transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,26,26,0.1)}
 .btn-back{background:transparent;color:var(--gray);border:2px solid #e0e0e0}
 .btn-back:hover{border-color:var(--primary);color:var(--primary)}
 
 /* Option cards */
 .option-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.75rem}
 .option-card{border:2px solid #e0e0e0;border-radius:12px;padding:1rem;cursor:pointer;transition:all 0.3s;text-align:center}
-.option-card:hover{border-color:var(--accent);background:rgba(233,69,96,0.03)}
-.option-card.selected{border-color:var(--accent);background:rgba(233,69,96,0.06)}
+.option-card:hover{border-color:var(--accent);background:rgba(26,26,26,0.02)}
+.option-card.selected{border-color:var(--accent);background:rgba(26,26,26,0.04)}
 .option-card .icon{font-size:1.75rem;margin-bottom:0.35rem}
 .option-card .name{font-weight:700;font-size:0.95rem;color:var(--primary)}
 .option-card .price{font-size:0.8rem;color:var(--accent);margin-top:0.15rem}

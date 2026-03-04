@@ -12,9 +12,9 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+:root{--bg:#F5F3EE;--card:#FFFFFF;--accent:#1A1A1A;--accent-light:#333;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#1A1A1A;--muted:#888}
 body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.top-bar{background:var(--card);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05)}
+.top-bar{background:var(--card);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06)}
 .top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
 .top-bar a:hover{color:var(--accent)}
 .container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
@@ -23,18 +23,18 @@ h1 em{color:var(--accent);font-style:normal}
 .subtitle{color:var(--muted);margin-bottom:2rem}
 
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
-.stat{background:var(--card);border-radius:12px;padding:1.25rem;text-align:center;border:1px solid rgba(255,255,255,0.05)}
+.stat{background:var(--card);border-radius:12px;padding:1.25rem;text-align:center;border:1px solid rgba(0,0,0,0.06)}
 .stat .num{font-size:1.75rem;font-weight:700}
 .stat .lbl{font-size:0.75rem;color:var(--muted);margin-top:0.25rem}
 
-.project-card{background:var(--card);border-radius:14px;padding:1.5rem;margin-bottom:1rem;border:1px solid rgba(255,255,255,0.05);position:relative}
+.project-card{background:var(--card);border-radius:14px;padding:1.5rem;margin-bottom:1rem;border:1px solid rgba(0,0,0,0.06);position:relative}
 .p-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem}
 .p-name{font-size:1.1rem;font-weight:600}
 .p-status{padding:0.2rem 0.65rem;border-radius:4px;font-size:0.7rem;font-weight:600}
 
 .budget-bar{margin-bottom:1rem}
 .budget-labels{display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:0.35rem}
-.budget-track{height:12px;background:rgba(255,255,255,0.08);border-radius:6px;overflow:hidden;position:relative}
+.budget-track{height:12px;background:rgba(0,0,0,0.06);border-radius:6px;overflow:hidden;position:relative}
 .budget-fill{height:100%;border-radius:6px;transition:width 0.5s ease}
 .budget-marker{position:absolute;top:-2px;width:2px;height:16px;background:var(--text);border-radius:1px}
 
@@ -47,9 +47,9 @@ h1 em{color:var(--accent);font-style:normal}
 .p-footer{display:flex;gap:0.5rem;flex-wrap:wrap}
 
 .btn{padding:0.5rem 1rem;border-radius:8px;border:none;cursor:pointer;font-size:0.8rem;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.3rem}
-.btn-primary{background:var(--accent);color:#fff}
+.btn-primary{background:var(--accent);color:#F5F3EE}
 .btn-primary:hover{background:var(--accent-light)}
-.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.1)}
+.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(0,0,0,0.06)}
 .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
 .btn-sm{padding:0.35rem 0.75rem;font-size:0.78rem}
 
@@ -62,12 +62,12 @@ h1 em{color:var(--accent);font-style:normal}
 .modal h2{font-size:1.25rem;margin-bottom:1.5rem}
 .form-group{margin-bottom:1rem}
 .form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.35rem}
-.form-group input,.form-group select{width:100%;padding:0.6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.9rem}
+.form-group input,.form-group select{width:100%;padding:0.6rem;border-radius:8px;border:1px solid rgba(0,0,0,0.06);background:rgba(0,0,0,0.06);color:var(--text);font-size:0.9rem}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
 .modal-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1.5rem}
 .item-inputs{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem}
 .item-row{display:grid;grid-template-columns:1fr 90px 90px 28px;gap:0.5rem;align-items:center}
-.item-row input{padding:0.4rem;border-radius:6px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.85rem}
+.item-row input{padding:0.4rem;border-radius:6px;border:1px solid rgba(0,0,0,0.06);background:rgba(0,0,0,0.06);color:var(--text);font-size:0.85rem}
 .remove-item{background:var(--red);color:#fff;border:none;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.8rem}
 
 @media print{body{background:#fff;color:#000}.top-bar,.btn,.modal-overlay,.delete-p{display:none!important}.container{max-width:100%;padding:0}.project-card{break-inside:avoid;border:1px solid #ccc;background:#fff;color:#000}.project-card *{color:#000!important}.budget-track{border:1px solid #ccc}}
@@ -220,7 +220,7 @@ function renderProjects(){
           const dColor = d<0?'var(--red)':d>0?'var(--green)':'var(--muted)';
           return `<div class="line-item"><span>${i.name}</span><span>${i.planned.toLocaleString('cs')} Kč</span><span>${i.actual.toLocaleString('cs')} Kč</span><span class="line-diff" style="color:${dColor}">${d>0?'+':''}${d.toLocaleString('cs')}</span></div>`;
         }).join('')}
-        <div class="line-item" style="font-weight:700;border-top:2px solid rgba(255,255,255,0.1)"><span>CELKEM</span><span>${t.planned.toLocaleString('cs')} Kč</span><span>${t.actual.toLocaleString('cs')} Kč</span><span class="line-diff" style="color:${t.diff<0?'var(--red)':'var(--green)'}">${t.diff>0?'+':''}${t.diff.toLocaleString('cs')}</span></div>
+        <div class="line-item" style="font-weight:700;border-top:2px solid rgba(0,0,0,0.06)"><span>CELKEM</span><span>${t.planned.toLocaleString('cs')} Kč</span><span>${t.actual.toLocaleString('cs')} Kč</span><span class="line-diff" style="color:${t.diff<0?'var(--red)':'var(--green)'}">${t.diff>0?'+':''}${t.diff.toLocaleString('cs')}</span></div>
       </div>
       <div class="p-footer">
         <button class="btn btn-outline btn-sm" onclick="editBudget(${p.id})">✏️ Upravit</button>

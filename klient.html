@@ -14,13 +14,13 @@
     <link rel="canonical" href="https://www.kudlimarketing.cz/klient.html">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-:root{--primary:#1a1a2e;--accent:#e94560;--accent-light:#ff6b81;--bg:#f4f6f9;--white:#fff;--text:#2d3748;--gray:#718096;--green:#48bb78;--yellow:#ecc94b;--blue:#4299e1;--shadow:0 2px 12px rgba(0,0,0,0.06)}
+:root{--primary:#1A1A1A;--accent:#1A1A1A;--accent-light:#333;--bg:#F5F3EE;--white:#FFFFFF;--text:#1A1A1A;--gray:#888;--green:#48bb78;--yellow:#ecc94b;--blue:#4299e1;--shadow:0 2px 12px rgba(0,0,0,0.06)}
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
-.topbar{background:var(--primary);color:white;padding:0.75rem 2rem;display:flex;justify-content:space-between;align-items:center}
+.topbar{background:#F5F3EE;color:var(--text);padding:0.75rem 2rem;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(0,0,0,0.06)}
 .topbar .logo{font-weight:700;font-size:1.1rem}
 .topbar .logo span{color:var(--accent)}
-.topbar .client-name{font-size:0.85rem;color:rgba(255,255,255,0.6)}
+.topbar .client-name{font-size:0.85rem;color:#888}
 .container{max-width:960px;margin:0 auto;padding:1.5rem 1rem}
 
 /* Status banner */
@@ -36,12 +36,12 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem}
 .progress-header h2{font-size:1.1rem;font-weight:700}
 .progress-pct{font-size:1.8rem;font-weight:700;color:var(--accent)}
-.progress-bar-wrap{background:#edf2f7;border-radius:10px;height:12px;overflow:hidden}
-.progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-light));border-radius:10px;transition:width 1s ease}
+.progress-bar-wrap{background:#f0f0f0;border-radius:10px;height:12px;overflow:hidden}
+.progress-bar-fill{height:100%;background:var(--accent);border-radius:10px;transition:width 1s ease}
 .progress-phases{display:grid;grid-template-columns:repeat(5,1fr);gap:0.5rem;margin-top:1.25rem}
-.phase{text-align:center;padding:0.75rem 0.25rem;border-radius:10px;font-size:0.7rem;font-weight:600;background:#edf2f7;color:var(--gray);transition:all 0.3s}
+.phase{text-align:center;padding:0.75rem 0.25rem;border-radius:10px;font-size:0.7rem;font-weight:600;background:#f0f0f0;color:var(--gray);transition:all 0.3s}
 .phase.done{background:rgba(72,187,120,0.1);color:var(--green)}
-.phase.active{background:rgba(233,69,96,0.1);color:var(--accent);border:2px solid var(--accent)}
+.phase.active{background:rgba(26,26,26,0.08);color:var(--accent);border:2px solid var(--accent)}
 .phase .phase-icon{font-size:1.25rem;display:block;margin-bottom:0.2rem}
 
 /* Grid */
@@ -52,13 +52,13 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .timeline-card{background:var(--white);border-radius:16px;padding:1.5rem 2rem;box-shadow:var(--shadow)}
 .timeline-card h2{font-size:1.1rem;font-weight:700;margin-bottom:1rem}
 .tl{position:relative;padding-left:1.75rem}
-.tl::before{content:'';position:absolute;left:6px;top:8px;bottom:8px;width:2px;background:#edf2f7}
+.tl::before{content:'';position:absolute;left:6px;top:8px;bottom:8px;width:2px;background:#f0f0f0}
 .tl-item{position:relative;padding-bottom:1.25rem}
 .tl-item:last-child{padding-bottom:0}
-.tl-dot{position:absolute;left:-1.75rem;top:4px;width:14px;height:14px;border-radius:50%;border:3px solid #edf2f7;background:var(--white)}
+.tl-dot{position:absolute;left:-1.75rem;top:4px;width:14px;height:14px;border-radius:50%;border:3px solid #f0f0f0;background:var(--white)}
 .tl-item.done .tl-dot{background:var(--green);border-color:rgba(72,187,120,0.3)}
-.tl-item.active .tl-dot{background:var(--accent);border-color:rgba(233,69,96,0.3);box-shadow:0 0 0 4px rgba(233,69,96,0.1)}
-.tl-item.pending .tl-dot{background:#cbd5e0;border-color:#edf2f7}
+.tl-item.active .tl-dot{background:var(--accent);border-color:rgba(26,26,26,0.1);box-shadow:0 0 0 4px rgba(26,26,26,0.08)}
+.tl-item.pending .tl-dot{background:#d0d0d0;border-color:#f0f0f0}
 .tl-date{font-size:0.7rem;color:var(--gray);text-transform:uppercase;letter-spacing:0.5px}
 .tl-title{font-size:0.9rem;font-weight:600;color:var(--primary)}
 .tl-desc{font-size:0.8rem;color:var(--gray)}
@@ -75,19 +75,19 @@ body{font-family:'DM Sans',system-ui,sans-serif;background:var(--bg);color:var(-
 .messages-card{background:var(--white);border-radius:16px;padding:1.5rem 2rem;box-shadow:var(--shadow);margin-bottom:1.5rem}
 .messages-card h2{font-size:1.1rem;font-weight:700;margin-bottom:1rem}
 .msg{padding:0.75rem 1rem;border-radius:12px;margin-bottom:0.75rem;font-size:0.85rem}
-.msg-ondra{background:rgba(233,69,96,0.06);border-left:3px solid var(--accent)}
-.msg-client{background:#f7fafc;border-left:3px solid #cbd5e0}
+.msg-ondra{background:rgba(26,26,26,0.04);border-left:3px solid var(--accent)}
+.msg-client{background:#FFFFFF;border-left:3px solid #d0d0d0}
 .msg-header{display:flex;justify-content:space-between;margin-bottom:0.25rem}
 .msg-name{font-weight:700;font-size:0.8rem}
 .msg-time{font-size:0.7rem;color:var(--gray)}
 .msg-text{color:var(--text);line-height:1.5}
 
 /* CTA */
-.cta-bar{background:var(--primary);border-radius:16px;padding:1.5rem 2rem;text-align:center;color:white}
+.cta-bar{background:#F5F3EE;border-radius:16px;padding:1.5rem 2rem;text-align:center;color:var(--text);border:1px solid rgba(0,0,0,0.06)}
 .cta-bar h3{font-size:1rem;margin-bottom:0.5rem}
-.cta-bar p{font-size:0.85rem;color:rgba(255,255,255,0.6);margin-bottom:1rem}
-.cta-btn{display:inline-block;background:var(--accent);color:white;padding:0.6rem 2rem;border-radius:10px;text-decoration:none;font-weight:600;font-size:0.9rem;transition:all 0.3s}
-.cta-btn:hover{background:var(--accent-light);transform:translateY(-2px)}
+.cta-bar p{font-size:0.85rem;color:#888;margin-bottom:1rem}
+.cta-btn{display:inline-block;background:var(--accent);color:#F5F3EE;padding:0.6rem 2rem;border-radius:10px;text-decoration:none;font-weight:600;font-size:0.9rem;transition:all 0.3s}
+.cta-btn:hover{background:#333;transform:translateY(-2px)}
 
 /* Demo notice */
 .demo-notice{background:#fff3cd;border-radius:10px;padding:0.75rem 1.25rem;margin-bottom:1.5rem;font-size:0.8rem;color:#856404;text-align:center}

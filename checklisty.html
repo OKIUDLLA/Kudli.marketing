@@ -14,13 +14,13 @@
     <link rel="canonical" href="https://www.kudlimarketing.cz/checklisty.html">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--text:#fff;--muted:rgba(255,255,255,0.5)}
+:root{--bg:#F5F3EE;--card:#FFFFFF;--accent:#1A1A1A;--accent-light:#333;--green:#2ecc71;--text:#1A1A1A;--muted:#888}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(0,0,0,0.06);flex-wrap:wrap;gap:1rem}
 .top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}
 .top-bar .logo span{color:var(--accent)}
-.top-bar .badge{background:rgba(233,69,96,0.15);color:var(--accent-light);padding:0.25rem 0.75rem;border-radius:15px;font-size:0.75rem;font-weight:600}
+.top-bar .badge{background:rgba(26,26,26,0.08);color:var(--accent);padding:0.25rem 0.75rem;border-radius:15px;font-size:0.75rem;font-weight:600}
 
 .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
 
@@ -31,7 +31,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 
 /* Project type selector */
 .type-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.75rem;margin-bottom:2rem}
-.type-btn{background:var(--card);border:2px solid rgba(255,255,255,0.08);border-radius:14px;padding:1rem;text-align:center;cursor:pointer;transition:all 0.3s;user-select:none}
+.type-btn{background:var(--card);border:2px solid rgba(0,0,0,0.06);border-radius:14px;padding:1rem;text-align:center;cursor:pointer;transition:all 0.3s;user-select:none}
 .type-btn:hover{border-color:rgba(233,69,96,0.4);transform:translateY(-2px)}
 .type-btn.active{border-color:var(--accent);background:rgba(233,69,96,0.1)}
 .type-btn .icon{font-size:1.8rem;margin-bottom:0.3rem}
@@ -39,17 +39,17 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 .type-btn .count{font-size:0.7rem;color:var(--muted);margin-top:0.15rem}
 
 /* Progress bar */
-.progress-section{background:var(--card);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;border:1px solid rgba(255,255,255,0.06)}
+.progress-section{background:var(--card);border-radius:14px;padding:1.25rem;margin-bottom:1.5rem;border:1px solid rgba(0,0,0,0.06)}
 .progress-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem}
 .progress-header .title{font-weight:700;font-size:1rem}
 .progress-header .pct{font-size:1.5rem;font-weight:800;color:var(--accent)}
-.progress-bar-bg{height:10px;background:rgba(255,255,255,0.08);border-radius:5px;overflow:hidden}
+.progress-bar-bg{height:10px;background:rgba(0,0,0,0.06);border-radius:5px;overflow:hidden}
 .progress-bar-fill{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent),var(--accent-light));transition:width 0.6s cubic-bezier(0.22,1,0.36,1)}
 .progress-stats{display:flex;gap:1.5rem;margin-top:0.75rem;font-size:0.8rem;color:var(--muted)}
 
 /* Checklist phases */
 .phase{margin-bottom:1.5rem}
-.phase-header{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 0;cursor:pointer;user-select:none;border-bottom:1px solid rgba(255,255,255,0.06)}
+.phase-header{display:flex;align-items:center;gap:0.75rem;padding:0.75rem 0;cursor:pointer;user-select:none;border-bottom:1px solid rgba(0,0,0,0.06)}
 .phase-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
 .phase-info{flex:1}
 .phase-info h3{font-size:0.95rem;font-weight:700}
@@ -73,12 +73,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 /* Actions */
 .actions{display:flex;gap:0.75rem;margin-top:1rem;flex-wrap:wrap}
 .btn{padding:0.55rem 1.25rem;border:none;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.3s}
-.btn-primary{background:var(--accent);color:#fff}
+.btn-primary{background:var(--accent);color:#F5F3EE}
 .btn-primary:hover{background:var(--accent-light);transform:translateY(-1px)}
-.btn-ghost{background:rgba(255,255,255,0.06);color:var(--text)}
-.btn-ghost:hover{background:rgba(255,255,255,0.12)}
+.btn-ghost{background:rgba(0,0,0,0.04);color:var(--text)}
+.btn-ghost:hover{background:rgba(0,0,0,0.08)}
 
-.toast{position:fixed;bottom:2rem;right:2rem;background:var(--green);color:#fff;padding:0.7rem 1.5rem;border-radius:10px;font-weight:600;font-size:0.85rem;transform:translateY(100px);opacity:0;transition:all 0.4s;z-index:100}
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--green);color:#F5F3EE;padding:0.7rem 1.5rem;border-radius:10px;font-weight:600;font-size:0.85rem;transform:translateY(100px);opacity:0;transition:all 0.4s;z-index:100}
 .toast.show{transform:translateY(0);opacity:1}
 
 @media(max-width:600px){
@@ -91,7 +91,7 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 
 <div class="top-bar">
  <div style="display:flex;align-items:center;gap:1.5rem">
-   <a href="index.html" class="logo">Kudli<span>.</span> marketing</a>
+   <a href="index.html" class="logo"><img src="logo.svg" alt="Kudli. marketing" style="height:24px;vertical-align:middle"></a>
    <span class="badge">INTERNÍ NÁSTROJ</span>
  </div>
  <a href="index.html" style="color:var(--muted);text-decoration:none;font-size:0.85rem">← Zpět</a>

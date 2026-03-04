@@ -12,9 +12,9 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+:root{--bg:#F5F3EE;--card:#FFFFFF;--accent:#1A1A1A;--accent-light:#333;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#1A1A1A;--muted:#888}
 body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.top-bar{background:var(--card);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05)}
+.top-bar{background:var(--card);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06)}
 .top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
 .top-bar a:hover{color:var(--accent)}
 .container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
@@ -23,24 +23,24 @@ h1 em{color:var(--accent);font-style:normal}
 .subtitle{color:var(--muted);margin-bottom:2rem}
 
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2rem}
-.stat{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.05)}
+.stat{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(0,0,0,0.06)}
 .stat .num{font-size:1.75rem;font-weight:700}
 .stat .lbl{font-size:0.75rem;color:var(--muted);margin-top:0.2rem}
 
 .week-nav{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:1.5rem}
-.week-nav button{background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.4rem 0.8rem;border-radius:8px;cursor:pointer;font-size:0.85rem}
+.week-nav button{background:var(--card);border:1px solid rgba(0,0,0,0.06);color:var(--text);padding:0.4rem 0.8rem;border-radius:8px;cursor:pointer;font-size:0.85rem}
 .week-nav button:hover{border-color:var(--accent)}
 .week-label{font-weight:600;font-size:0.95rem}
 
 .habit-table{width:100%;border-collapse:collapse;margin-bottom:1.5rem}
-.habit-table th{text-align:left;padding:0.6rem 0.5rem;font-size:0.75rem;color:var(--muted);border-bottom:1px solid rgba(255,255,255,0.05);font-weight:600}
+.habit-table th{text-align:left;padding:0.6rem 0.5rem;font-size:0.75rem;color:var(--muted);border-bottom:1px solid rgba(0,0,0,0.06);font-weight:600}
 .habit-table th.day{text-align:center;width:48px}
 .habit-table td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.03)}
 .habit-name{display:flex;align-items:center;gap:0.5rem;font-size:0.9rem}
 .habit-icon{font-size:1.1rem}
 .habit-streak{font-size:0.7rem;color:var(--orange);font-weight:600}
 .day-cell{text-align:center}
-.day-check{width:32px;height:32px;border-radius:8px;border:2px solid rgba(255,255,255,0.1);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:0.8rem;transition:all 0.15s;background:transparent}
+.day-check{width:32px;height:32px;border-radius:8px;border:2px solid rgba(0,0,0,0.06);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:0.8rem;transition:all 0.15s;background:transparent}
 .day-check:hover{border-color:var(--green);background:rgba(46,204,113,0.1)}
 .day-check.done{background:var(--green);border-color:var(--green);color:#fff}
 .day-check.today{border-color:var(--accent);box-shadow:0 0 0 2px rgba(233,69,96,0.2)}
@@ -52,9 +52,9 @@ h1 em{color:var(--accent);font-style:normal}
 .actions{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
 
 .btn{padding:0.5rem 1rem;border-radius:8px;border:none;cursor:pointer;font-size:0.8rem;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.3rem}
-.btn-primary{background:var(--accent);color:#fff}
+.btn-primary{background:var(--accent);color:#F5F3EE}
 .btn-primary:hover{background:var(--accent-light)}
-.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.1)}
+.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(0,0,0,0.06)}
 .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
 .btn-sm{padding:0.35rem 0.75rem}
 
@@ -64,10 +64,10 @@ h1 em{color:var(--accent);font-style:normal}
 .modal h2{font-size:1.25rem;margin-bottom:1.5rem}
 .form-group{margin-bottom:1rem}
 .form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.35rem}
-.form-group input,.form-group select{width:100%;padding:0.6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.9rem}
+.form-group input,.form-group select{width:100%;padding:0.6rem;border-radius:8px;border:1px solid rgba(0,0,0,0.06);background:rgba(0,0,0,0.06);color:var(--text);font-size:0.9rem}
 .modal-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1.5rem}
 
-.completion-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;margin-top:1rem;overflow:hidden}
+.completion-bar{height:6px;background:rgba(0,0,0,0.06);border-radius:3px;margin-top:1rem;overflow:hidden}
 .completion-fill{height:100%;border-radius:3px;transition:width 0.4s ease}
 
 @media(max-width:768px){.container{padding:1.5rem 0.75rem}h1{font-size:1.4rem}.stats{grid-template-columns:repeat(2,1fr)}.day-check{width:28px;height:28px;font-size:0.7rem}.habit-table th.day{width:36px}}

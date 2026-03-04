@@ -14,12 +14,12 @@
     <link rel="canonical" href="https://www.kudlimarketing.cz/pristupy.html">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--text:#fff;--muted:rgba(255,255,255,0.5);--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db}
+:root{--bg:#F5F3EE;--card:#FFFFFF;--accent:#1A1A1A;--accent-light:#333;--text:#1A1A1A;--muted:#888};--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 a{color:var(--accent-light);text-decoration:none}
 
 /* Header */
-.header{background:var(--card);border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.header{background:var(--card);border-bottom:1px solid rgba(0,0,0,0.06);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
 .header-left{display:flex;align-items:center;gap:1rem}
 .header h1{font-size:1.3rem;font-weight:700}
 .header h1 span{color:var(--accent)}
@@ -37,7 +37,7 @@ a{color:var(--accent-light);text-decoration:none}
 .lock-screen h2{font-size:1.6rem;margin-bottom:0.5rem}
 .lock-screen p{color:var(--muted);margin-bottom:2rem;max-width:400px}
 .pin-input-group{display:flex;gap:0.75rem;margin-bottom:1.5rem}
-.pin-digit{width:56px;height:64px;background:var(--card);border:2px solid rgba(255,255,255,0.1);border-radius:12px;color:#fff;font-size:1.8rem;text-align:center;font-weight:700;transition:border-color 0.3s}
+.pin-digit{width:56px;height:64px;background:var(--card);border:2px solid rgba(0,0,0,0.06);border-radius:12px;color:#fff;font-size:1.8rem;text-align:center;font-weight:700;transition:border-color 0.3s}
 .pin-digit:focus{outline:none;border-color:var(--accent)}
 .pin-digit.filled{border-color:var(--green)}
 .pin-error{color:var(--red);font-size:0.85rem;margin-bottom:1rem;display:none}
@@ -48,24 +48,24 @@ a{color:var(--accent-light);text-decoration:none}
 
 /* Stats */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:1.5rem}
-.stat-card{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06)}
+.stat-card{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(0,0,0,0.06)}
 .stat-card .val{font-size:1.8rem;font-weight:800}
 .stat-card .label{font-size:0.8rem;color:var(--muted);margin-top:0.25rem}
 
 /* Toolbar */
 .toolbar{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
 .search-box{flex:1;min-width:200px;position:relative}
-.search-box input{width:100%;padding:0.65rem 1rem 0.65rem 2.5rem;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:0.9rem}
+.search-box input{width:100%;padding:0.65rem 1rem 0.65rem 2.5rem;background:var(--card);border:1px solid rgba(0,0,0,0.06);border-radius:10px;color:#fff;font-size:0.9rem}
 .search-box input:focus{outline:none;border-color:var(--accent)}
 .search-box::before{content:'🔍';position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);font-size:0.85rem}
-.filter-btn{padding:0.65rem 1rem;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--muted);cursor:pointer;font-size:0.85rem;transition:all 0.3s}
+.filter-btn{padding:0.65rem 1rem;background:var(--card);border:1px solid rgba(0,0,0,0.06);border-radius:10px;color:var(--muted);cursor:pointer;font-size:0.85rem;transition:all 0.3s}
 .filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent)}
 
 /* Buttons */
 .btn{padding:0.6rem 1.2rem;border:none;border-radius:10px;font-size:0.85rem;cursor:pointer;font-weight:600;transition:all 0.3s;display:inline-flex;align-items:center;gap:0.4rem}
-.btn-primary{background:var(--accent);color:#fff}
+.btn-primary{background:var(--accent);color:#F5F3EE}
 .btn-primary:hover{background:var(--accent-light)}
-.btn-secondary{background:rgba(255,255,255,0.06);color:var(--text);border:1px solid rgba(255,255,255,0.1)}
+.btn-secondary{background:rgba(0,0,0,0.04);color:var(--text);border:1px solid rgba(0,0,0,0.06)}
 .btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
 .btn-danger{background:rgba(231,76,60,0.15);color:var(--red);border:1px solid rgba(231,76,60,0.2)}
 .btn-danger:hover{background:rgba(231,76,60,0.25)}
@@ -73,7 +73,7 @@ a{color:var(--accent-light);text-decoration:none}
 
 /* Client groups */
 .client-group{margin-bottom:1.5rem}
-.client-group-header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid rgba(255,255,255,0.06);margin-bottom:0.75rem;cursor:pointer}
+.client-group-header{display:flex;align-items:center;justify-content:space-between;padding:0.75rem 0;border-bottom:1px solid rgba(0,0,0,0.06);margin-bottom:0.75rem;cursor:pointer}
 .client-group-header h3{font-size:1rem;font-weight:700;display:flex;align-items:center;gap:0.5rem}
 .client-group-header .count{background:var(--accent);color:#fff;font-size:0.7rem;padding:0.15rem 0.5rem;border-radius:20px;font-weight:600}
 .client-group-header .toggle{color:var(--muted);transition:transform 0.3s}
@@ -81,7 +81,7 @@ a{color:var(--accent-light);text-decoration:none}
 
 /* Credential cards */
 .cred-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:0.75rem}
-.cred-card{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s;position:relative}
+.cred-card{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(0,0,0,0.06);transition:all 0.3s;position:relative}
 .cred-card:hover{border-color:rgba(255,255,255,0.15);transform:translateY(-1px)}
 .cred-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:0.75rem}
 .cred-service{display:flex;align-items:center;gap:0.6rem}
@@ -89,7 +89,7 @@ a{color:var(--accent-light);text-decoration:none}
 .cred-service h4{font-size:0.95rem;font-weight:600}
 .cred-service .type{font-size:0.75rem;color:var(--muted)}
 .cred-actions{display:flex;gap:0.4rem}
-.cred-action{width:30px;height:30px;border:none;border-radius:8px;background:rgba(255,255,255,0.05);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:all 0.3s}
+.cred-action{width:30px;height:30px;border:none;border-radius:8px;background:rgba(0,0,0,0.06);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.85rem;transition:all 0.3s}
 .cred-action:hover{background:rgba(233,69,96,0.15);color:var(--accent)}
 
 /* Credential fields */
@@ -108,9 +108,9 @@ a{color:var(--accent-light);text-decoration:none}
 .tag-domain{background:rgba(155,89,182,0.15);color:#b682d4}
 .tag-cms{background:rgba(243,156,18,0.15);color:var(--orange)}
 .tag-analytics{background:rgba(46,204,113,0.15);color:var(--green)}
-.tag-email{background:rgba(233,69,96,0.15);color:var(--accent-light)}
+.tag-email{background:rgba(26,26,26,0.08);color:var(--accent)}
 .tag-social{background:rgba(52,152,219,0.15);color:#74b9ff}
-.tag-other{background:rgba(255,255,255,0.08);color:var(--muted)}
+.tag-other{background:rgba(0,0,0,0.06);color:var(--muted)}
 
 /* Status indicators */
 .status-dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:0.4rem}
@@ -121,24 +121,24 @@ a{color:var(--accent-light);text-decoration:none}
 /* Modal */
 .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem}
 .modal-overlay.show{display:flex}
-.modal{background:var(--bg);border:1px solid rgba(255,255,255,0.1);border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+.modal{background:var(--bg);border:1px solid rgba(0,0,0,0.06);border-radius:16px;width:100%;max-width:560px;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(0,0,0,0.06)}
 .modal-header h3{font-size:1.1rem;font-weight:700}
 .modal-close{background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer}
 .modal-body{padding:1.5rem}
 .form-group{margin-bottom:1rem}
 .form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.4rem;font-weight:600}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.6rem 0.9rem;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:0.9rem;font-family:inherit}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.6rem 0.9rem;background:var(--card);border:1px solid rgba(0,0,0,0.06);border-radius:10px;color:#fff;font-size:0.9rem;font-family:inherit}
 .form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:var(--accent)}
 .form-group textarea{min-height:70px;resize:vertical}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
-.modal-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:flex-end;gap:0.75rem}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid rgba(0,0,0,0.06);display:flex;justify-content:flex-end;gap:0.75rem}
 
 /* Password generator */
 .pw-gen{display:flex;gap:0.5rem;margin-top:0.4rem}
 .pw-gen button{padding:0.3rem 0.6rem;background:rgba(233,69,96,0.1);border:1px solid rgba(233,69,96,0.2);border-radius:6px;color:var(--accent-light);font-size:0.75rem;cursor:pointer}
 .pw-gen button:hover{background:rgba(233,69,96,0.2)}
-.pw-strength{height:4px;border-radius:2px;background:rgba(255,255,255,0.1);margin-top:0.4rem;overflow:hidden}
+.pw-strength{height:4px;border-radius:2px;background:rgba(0,0,0,0.06);margin-top:0.4rem;overflow:hidden}
 .pw-strength-bar{height:100%;border-radius:2px;transition:width 0.3s,background 0.3s}
 
 /* Empty state */
@@ -159,7 +159,7 @@ a{color:var(--accent-light);text-decoration:none}
 </head>
 <body>
 
-<div style="background:#16213e;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05)">
+<div style="background:#16213e;padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06)">
   <a href="nastroje.html" style="color:rgba(255,255,255,0.5);text-decoration:none;font-size:0.85rem">← Zpět na nástroje</a>
   <span style="font-size:0.8rem;color:rgba(255,255,255,0.5)">Správa přístupů</span>
 </div>
@@ -332,7 +332,7 @@ a{color:var(--accent-light);text-decoration:none}
         <label>Potvrdit nový PIN</label>
         <input type="password" id="sConfirmPin" maxlength="4" placeholder="Zopakujte nový PIN">
       </div>
-      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06)">
+      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,0.06)">
         <h4 style="font-size:0.9rem;margin-bottom:0.75rem;color:var(--accent-light)">Data</h4>
         <div style="display:flex;gap:0.75rem;flex-wrap:wrap">
           <button class="btn btn-secondary btn-sm" onclick="importData()">📥 Import JSON</button>
@@ -340,9 +340,9 @@ a{color:var(--accent-light);text-decoration:none}
           <button class="btn btn-danger btn-sm" onclick="clearAll()">🗑️ Smazat vše</button>
         </div>
       </div>
-      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06)">
+      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,0.06)">
         <h4 style="font-size:0.9rem;margin-bottom:0.75rem;color:var(--accent-light)">Automatické zamčení</h4>
-        <select id="sAutoLock" style="width:100%;padding:0.6rem;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:#fff;font-size:0.9rem">
+        <select id="sAutoLock" style="width:100%;padding:0.6rem;background:var(--card);border:1px solid rgba(0,0,0,0.06);border-radius:10px;color:#fff;font-size:0.9rem">
           <option value="5">5 minut</option>
           <option value="15" selected>15 minut</option>
           <option value="30">30 minut</option>
@@ -557,7 +557,7 @@ function renderCredentials() {
             <span class="tag tag-${c.category}">${cat.icon} ${cat.label}</span>
             ${c.expiry ? `<span class="tag" style="background:${expiryStatus.bg};color:${expiryStatus.color}"><span class="status-dot ${expiryStatus.cls}"></span>${expiryStatus.text}</span>` : ''}
           </div>
-          ${c.notes ? `<div style="margin-top:0.6rem;font-size:0.78rem;color:var(--muted);padding:0.4rem 0.6rem;background:rgba(255,255,255,0.02);border-radius:6px">💡 ${c.notes}</div>` : ''}
+          ${c.notes ? `<div style="margin-top:0.6rem;font-size:0.78rem;color:var(--muted);padding:0.4rem 0.6rem;background:rgba(0,0,0,0.02);border-radius:6px">💡 ${c.notes}</div>` : ''}
         </div>`;
     });
 

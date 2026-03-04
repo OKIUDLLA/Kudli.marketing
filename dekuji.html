@@ -14,25 +14,25 @@
     <link rel="canonical" href="https://www.kudlimarketing.cz/dekuji.html">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#1a1a2e;color:#fff;min-height:100vh;display:flex;align-items:center;justify-content:center}
+body{font-family:-apple-system,'Helvetica Neue',system-ui,sans-serif;background:#F5F3EE;color:#1A1A1A;min-height:100vh;display:flex;align-items:center;justify-content:center}
 .container{text-align:center;padding:2rem;max-width:600px}
-.check{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#2ecc71,#27ae60);margin:0 auto 2rem;display:flex;align-items:center;justify-content:center;animation:pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275)}
+.check{width:100px;height:100px;border-radius:50%;background:#1A1A1A;margin:0 auto 2rem;display:flex;align-items:center;justify-content:center;animation:pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275)}
 @keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
 .check svg{width:50px;height:50px;animation:draw 0.6s ease 0.3s both}
 @keyframes draw{from{stroke-dashoffset:50}to{stroke-dashoffset:0}}
 .check svg path{stroke-dasharray:50;stroke-dashoffset:50}
-h1{font-size:2.5rem;font-weight:800;margin-bottom:0.75rem}
-h1 span{color:#e94560}
-p{color:rgba(255,255,255,0.6);font-size:1.1rem;margin-bottom:0.5rem;line-height:1.6}
-.highlight{color:rgba(255,255,255,0.9);font-weight:600;font-size:1.15rem;margin:1.5rem 0}
+h1{font-size:2.5rem;font-weight:800;margin-bottom:0.75rem;color:#1A1A1A}
+h1 span{color:#1A1A1A}
+p{color:#888;font-size:1.1rem;margin-bottom:0.5rem;line-height:1.6}
+.highlight{color:#1A1A1A;font-weight:600;font-size:1.15rem;margin:1.5rem 0}
 .timeline{text-align:left;margin:2rem auto;max-width:400px}
 .timeline-item{display:flex;gap:1rem;margin-bottom:1.25rem;align-items:flex-start}
-.timeline-dot{width:12px;height:12px;border-radius:50%;background:#e94560;flex-shrink:0;margin-top:6px}
-.timeline-text h4{font-size:0.95rem;color:#fff;margin-bottom:0.1rem}
-.timeline-text p{font-size:0.85rem;color:rgba(255,255,255,0.5);margin:0}
-.btn{display:inline-block;padding:0.85rem 2.5rem;background:#e94560;color:#fff;text-decoration:none;border-radius:10px;font-weight:600;margin-top:2rem;transition:all 0.3s}
-.btn:hover{background:#ff6b81;transform:translateY(-3px);box-shadow:0 10px 30px rgba(233,69,96,0.3)}
-.note{margin-top:2rem;font-size:0.85rem;color:rgba(255,255,255,0.3)}
+.timeline-dot{width:12px;height:12px;border-radius:50%;background:#1A1A1A;flex-shrink:0;margin-top:6px}
+.timeline-text h4{font-size:0.95rem;color:#1A1A1A;margin-bottom:0.1rem}
+.timeline-text p{font-size:0.85rem;color:#888;margin:0}
+.btn{display:inline-block;padding:0.85rem 2.5rem;background:#1A1A1A;color:#F5F3EE;text-decoration:none;border-radius:10px;font-weight:600;margin-top:2rem;transition:all 0.3s}
+.btn:hover{background:#333;transform:translateY(-3px);box-shadow:0 10px 30px rgba(0,0,0,0.15)}
+.note{margin-top:2rem;font-size:0.85rem;color:#888}
 @media(max-width:768px){h1{font-size:1.5rem}.icon{font-size:3rem}}
 @media(max-width:480px){.btn{width:100%;text-align:center;padding:0.75rem 1.5rem}}
 </style>
@@ -40,7 +40,7 @@ p{color:rgba(255,255,255,0.6);font-size:1.1rem;margin-bottom:0.5rem;line-height:
 <body>
 <div class="container">
   <div class="check">
-    <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
+    <svg viewBox="0 0 24 24" fill="none" stroke="#F5F3EE" stroke-width="3" stroke-linecap="round"><path d="M5 13l4 4L19 7"/></svg>
   </div>
   <h1>Děkuji za <span>poptávku!</span></h1>
   <p>Vaše poptávka byla úspěšně odeslána.</p>
@@ -64,8 +64,8 @@ p{color:rgba(255,255,255,0.6);font-size:1.1rem;margin-bottom:0.5rem;line-height:
   <a href="index.html" class="btn">Zpět na hlavní stránku</a>
   <p class="note">— Ondra Kudlička, Kudli. marketing | o.kudlicka@gmail.com</p>
 </div>
-<footer style="text-align:center;padding:20px;font-size:12px;color:#666;border-top:1px solid #eee;margin-top:40px;">
-  © 2026 <a href="index.html" style="color:#666;">Kudli. marketing</a>
+<footer style="text-align:center;padding:20px;font-size:12px;color:#888;border-top:1px solid #DDD9D0;margin-top:40px;">
+  © 2026 <a href="index.html" style="color:#888;">Kudli. marketing</a>
 </footer>
 </body>
 </html>

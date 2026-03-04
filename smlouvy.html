@@ -14,10 +14,10 @@
     <link rel="canonical" href="https://www.kudlimarketing.cz/smlouvy.html">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+:root{--bg:#F5F3EE;--card:#FFFFFF;--accent:#1A1A1A;--accent-light:#333;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#1A1A1A;--muted:#888}
 body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
 
-.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(0,0,0,0.06);flex-wrap:wrap;gap:1rem}
 .top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}
 .top-bar .logo span{color:var(--accent)}
 .top-bar a.back{color:var(--muted);text-decoration:none;font-size:0.85rem}
@@ -29,13 +29,13 @@ h1 em{color:var(--accent);font-style:normal}
 
 /* Stats */
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.75rem;margin-bottom:2rem}
-.stat-card{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.stat-card{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(0,0,0,0.06)}
 .stat-card .num{font-size:1.8rem;font-weight:800}
 .stat-card .label{font-size:0.75rem;color:var(--muted);margin-top:0.2rem}
 
 /* Toolbar */
 .toolbar{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
-.toolbar input,.toolbar select{background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.6rem 1rem;border-radius:10px;font-size:0.85rem;font-family:inherit}
+.toolbar input,.toolbar select{background:var(--card);border:1px solid rgba(0,0,0,0.06);color:var(--text);padding:0.6rem 1rem;border-radius:10px;font-size:0.85rem;font-family:inherit}
 .toolbar input{flex:1;min-width:200px}
 .toolbar select{min-width:140px}
 .btn{background:var(--accent);color:#fff;border:none;padding:0.6rem 1.25rem;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:inherit;transition:all 0.3s}
@@ -45,7 +45,7 @@ h1 em{color:var(--accent);font-style:normal}
 
 /* Contract cards */
 .contracts{display:flex;flex-direction:column;gap:1rem}
-.contract-card{background:var(--card);border-radius:16px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);position:relative;overflow:hidden;transition:all 0.3s;cursor:pointer}
+.contract-card{background:var(--card);border-radius:16px;padding:1.25rem;border:1px solid rgba(0,0,0,0.06);position:relative;overflow:hidden;transition:all 0.3s;cursor:pointer}
 .contract-card:hover{border-color:rgba(233,69,96,0.3);transform:translateY(-2px);box-shadow:0 6px 25px rgba(0,0,0,0.2)}
 .contract-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
 .contract-header{display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem}
@@ -59,7 +59,7 @@ h1 em{color:var(--accent);font-style:normal}
 .meta-item{display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--muted)}
 .meta-item strong{color:var(--text);font-weight:600}
 
-.contract-details{display:none;margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06)}
+.contract-details{display:none;margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(0,0,0,0.06)}
 .contract-card.open .contract-details{display:block}
 .detail-row{display:flex;justify-content:space-between;padding:0.4rem 0;font-size:0.85rem;border-bottom:1px solid rgba(255,255,255,0.03)}
 .detail-row:last-child{border:none}
@@ -74,11 +74,11 @@ h1 em{color:var(--accent);font-style:normal}
 /* Modal */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:100;padding:1rem}
 .modal-overlay.active{display:flex}
-.modal{background:var(--bg);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;max-width:550px;width:100%;max-height:90vh;overflow-y:auto}
+.modal{background:var(--bg);border:1px solid rgba(0,0,0,0.06);border-radius:20px;padding:2rem;max-width:550px;width:100%;max-height:90vh;overflow-y:auto}
 .modal h2{font-size:1.2rem;margin-bottom:1.5rem}
 .form-group{margin-bottom:1rem}
 .form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;font-weight:600}
-.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.6rem 1rem;border-radius:10px;font-size:0.9rem;font-family:inherit}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--card);border:1px solid rgba(0,0,0,0.06);color:var(--text);padding:0.6rem 1rem;border-radius:10px;font-size:0.9rem;font-family:inherit}
 .form-group textarea{min-height:80px;resize:vertical}
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
 .modal-actions{display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem}
@@ -107,7 +107,7 @@ h1 em{color:var(--accent);font-style:normal}
 <body>
 
 <div class="top-bar">
- <a href="nastroje.html" class="logo">Kudli<span>.</span> marketing</a>
+ <a href="nastroje.html" class="logo"><img src="logo.svg" alt="Kudli. marketing" style="height:24px;vertical-align:middle"></a>
  <a href="nastroje.html" class="back">← Zpět na nástroje</a>
 </div>
 

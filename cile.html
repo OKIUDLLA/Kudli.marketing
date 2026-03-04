@@ -12,9 +12,9 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+:root{--bg:#F5F3EE;--card:#FFFFFF;--accent:#1A1A1A;--accent-light:#333;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#1A1A1A;--muted:#888}
 body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
-.top-bar{background:var(--card);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05)}
+.top-bar{background:var(--card);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(0,0,0,0.06)}
 .top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
 .top-bar a:hover{color:var(--accent)}
 .container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
@@ -24,18 +24,18 @@ h1 em{color:var(--accent);font-style:normal}
 
 /* Quarter tabs */
 .quarter-tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
-.q-tab{padding:0.5rem 1.25rem;border-radius:8px;background:var(--card);border:1px solid rgba(255,255,255,0.05);cursor:pointer;font-size:0.9rem;color:var(--muted);transition:all 0.2s}
+.q-tab{padding:0.5rem 1.25rem;border-radius:8px;background:var(--card);border:1px solid rgba(0,0,0,0.06);cursor:pointer;font-size:0.9rem;color:var(--muted);transition:all 0.2s}
 .q-tab:hover{border-color:var(--accent)}
 .q-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
 
 /* Summary cards */
 .summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
-.sum-card{background:var(--card);border-radius:12px;padding:1.25rem;text-align:center;border:1px solid rgba(255,255,255,0.05)}
+.sum-card{background:var(--card);border-radius:12px;padding:1.25rem;text-align:center;border:1px solid rgba(0,0,0,0.06)}
 .sum-card .num{font-size:2rem;font-weight:700}
 .sum-card .lbl{color:var(--muted);font-size:0.8rem;margin-top:0.25rem}
 
 /* Goal card */
-.goal-card{background:var(--card);border-radius:12px;padding:1.5rem;margin-bottom:1rem;border:1px solid rgba(255,255,255,0.05);position:relative}
+.goal-card{background:var(--card);border-radius:12px;padding:1.5rem;margin-bottom:1rem;border:1px solid rgba(0,0,0,0.06);position:relative}
 .goal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
 .goal-title{font-size:1.1rem;font-weight:600}
 .goal-status{padding:0.25rem 0.75rem;border-radius:20px;font-size:0.75rem;font-weight:600}
@@ -51,7 +51,7 @@ h1 em{color:var(--accent);font-style:normal}
 .kr-check.done{background:var(--green);border-color:var(--green);color:#fff}
 .kr-info{flex:1}
 .kr-text{font-size:0.9rem;margin-bottom:0.35rem}
-.kr-bar-wrap{background:rgba(255,255,255,0.08);border-radius:6px;height:8px;overflow:hidden}
+.kr-bar-wrap{background:rgba(0,0,0,0.06);border-radius:6px;height:8px;overflow:hidden}
 .kr-bar{height:100%;border-radius:6px;transition:width 0.5s ease}
 .kr-meta{display:flex;justify-content:space-between;align-items:center;margin-top:0.2rem}
 .kr-pct{font-size:0.75rem;font-weight:600}
@@ -60,9 +60,9 @@ h1 em{color:var(--accent);font-style:normal}
 /* Actions */
 .actions{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
 .btn{padding:0.6rem 1.25rem;border-radius:8px;border:none;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem}
-.btn-primary{background:var(--accent);color:#fff}
+.btn-primary{background:var(--accent);color:#F5F3EE}
 .btn-primary:hover{background:var(--accent-light)}
-.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.1)}
+.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(0,0,0,0.06)}
 .btn-outline:hover{border-color:var(--accent);color:var(--accent)}
 .btn-sm{padding:0.35rem 0.75rem;font-size:0.8rem}
 
@@ -78,7 +78,7 @@ h1 em{color:var(--accent);font-style:normal}
 .modal h2{font-size:1.25rem;margin-bottom:1.5rem}
 .form-group{margin-bottom:1rem}
 .form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.35rem}
-.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.9rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.6rem;border-radius:8px;border:1px solid rgba(0,0,0,0.06);background:rgba(0,0,0,0.06);color:var(--text);font-size:0.9rem}
 .form-group textarea{resize:vertical;min-height:60px}
 .kr-inputs{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem}
 .kr-row{display:flex;gap:0.5rem;align-items:center}
@@ -92,7 +92,7 @@ h1 em{color:var(--accent);font-style:normal}
 
 /* Goal overall bar */
 .goal-overall{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;padding:0.75rem;background:rgba(255,255,255,0.03);border-radius:8px}
-.goal-overall-bar{flex:1;height:10px;background:rgba(255,255,255,0.08);border-radius:6px;overflow:hidden}
+.goal-overall-bar{flex:1;height:10px;background:rgba(0,0,0,0.06);border-radius:6px;overflow:hidden}
 .goal-overall-fill{height:100%;border-radius:6px;transition:width 0.5s ease}
 
 /* Delete */
