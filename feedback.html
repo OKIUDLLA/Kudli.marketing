@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Klientský feedback — Kudli. marketing</title>
+<meta name="description" content="Sledování spokojenosti klientů. NPS skóre, hodnocení projektů, trendy.">
+<meta property="og:title" content="Klientský feedback — Kudli. marketing">
+<meta property="og:description" content="Sledování spokojenosti klientů. NPS skóre, hodnocení projektů, trendy.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/feedback.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+.top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}
+.top-bar .logo span{color:var(--accent)}
+
+.container{max-width:1000px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.6rem;font-weight:800;margin-bottom:0.3rem}
+h1 em{color:var(--accent);font-style:normal}
+.subtitle{color:var(--muted);margin-bottom:2rem;font-size:0.95rem}
+
+/* NPS Hero */
+.nps-hero{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;margin-bottom:2rem}
+.nps-card{background:var(--card);border-radius:16px;padding:1.5rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.nps-score{font-size:3rem;font-weight:900}
+.nps-label{font-size:0.8rem;color:var(--muted);margin-top:0.3rem}
+.nps-bar{height:8px;background:rgba(255,255,255,0.06);border-radius:4px;margin-top:0.75rem;overflow:hidden;display:flex}
+.nps-bar div{height:100%;transition:width 1s}
+
+/* Category scores */
+.cat-scores{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0.75rem;margin-bottom:2rem}
+.cat-score-card{background:var(--card);border-radius:12px;padding:1rem;border:1px solid rgba(255,255,255,0.06)}
+.cat-score-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem}
+.cat-score-name{font-size:0.85rem;font-weight:600}
+.cat-score-val{font-size:1.2rem;font-weight:800}
+.cat-bar{height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+.cat-bar-fill{height:100%;border-radius:3px;transition:width 1s}
+
+/* Feedback entries */
+.toolbar{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.toolbar select{background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.5rem 0.8rem;border-radius:10px;font-size:0.85rem;font-family:inherit}
+.btn{background:var(--accent);color:#fff;border:none;padding:0.6rem 1.25rem;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:inherit;transition:all 0.3s}
+.btn:hover{background:var(--accent-light)}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.15);color:var(--text)}
+
+.feedback-list{display:flex;flex-direction:column;gap:1rem}
+.fb-card{background:var(--card);border-radius:16px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);position:relative;overflow:hidden}
+.fb-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+.fb-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.75rem;flex-wrap:wrap;gap:0.5rem}
+.fb-client{font-weight:700;font-size:1rem}
+.fb-project{font-size:0.8rem;color:var(--muted)}
+.fb-date{font-size:0.75rem;color:var(--muted)}
+.fb-nps{display:flex;align-items:center;gap:0.5rem}
+.fb-nps-score{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:0.9rem}
+.fb-nps-label{font-size:0.7rem;font-weight:600}
+
+.fb-ratings{display:flex;gap:1.25rem;margin-bottom:0.75rem;flex-wrap:wrap}
+.fb-rating{display:flex;flex-direction:column;align-items:center;gap:0.2rem}
+.fb-rating .stars{color:var(--orange);font-size:0.85rem;letter-spacing:1px}
+.fb-rating .cat{font-size:0.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+
+.fb-comment{font-size:0.9rem;line-height:1.6;color:rgba(255,255,255,0.8);padding:0.75rem;background:rgba(255,255,255,0.03);border-radius:10px;border-left:3px solid rgba(233,69,96,0.3)}
+.fb-actions{display:flex;gap:0.5rem;margin-top:0.75rem;flex-wrap:wrap}
+.fb-actions .btn{font-size:0.75rem;padding:0.35rem 0.85rem}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:100;padding:1rem}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;max-width:550px;width:100%;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:1.2rem;margin-bottom:1.5rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;font-weight:600}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.6rem 1rem;border-radius:10px;font-size:0.9rem;font-family:inherit}
+.form-group textarea{min-height:80px;resize:vertical}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.nps-picker{display:flex;gap:0.3rem;flex-wrap:wrap}
+.nps-picker button{width:36px;height:36px;border-radius:50%;border:2px solid rgba(255,255,255,0.1);background:none;color:var(--text);font-weight:700;cursor:pointer;font-size:0.85rem;transition:all 0.2s}
+.nps-picker button.selected{border-color:var(--accent);background:var(--accent);color:#fff}
+.nps-picker button:hover{border-color:var(--accent)}
+.star-picker{display:flex;gap:0.25rem;font-size:1.5rem;cursor:pointer}
+.star-picker span{opacity:0.3;transition:opacity 0.2s}
+.star-picker span.active{opacity:1;color:var(--orange)}
+.modal-actions{display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem}
+
+@media(max-width:768px){
+ .nps-hero{grid-template-columns:1fr}
+ .cat-scores{grid-template-columns:1fr 1fr}
+ .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+ <a href="nastroje.html" class="logo">Kudli<span>.</span> marketing</a>
+ <a href="nastroje.html" style="color:var(--muted);text-decoration:none;font-size:0.85rem">← Zpět na nástroje</a>
+</div>
+
+<div class="container">
+ <h1>Klientský <em>feedback</em></h1>
+ <p class="subtitle">Sleduj spokojenost klientů, NPS skóre a oblasti ke zlepšení</p>
+
+ <div class="nps-hero" id="npsHero"></div>
+ <div class="cat-scores" id="catScores"></div>
+
+ <div class="toolbar">
+   <select id="filterClient" onchange="render()">
+     <option value="">Všichni klienti</option>
+   </select>
+   <button class="btn" onclick="openModal()">+ Nový feedback</button>
+ </div>
+
+ <div class="feedback-list" id="feedbackList"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+ <div class="modal">
+   <h2>Nový feedback</h2>
+   <div class="form-row">
+     <div class="form-group"><label>Klient</label><input type="text" id="fClient" placeholder="Firma s.r.o."></div>
+     <div class="form-group"><label>Projekt</label><input type="text" id="fProject" placeholder="Redesign webu"></div>
+   </div>
+
+   <div class="form-group">
+     <label>NPS skóre (0–10): Jak pravděpodobně nás doporučíte?</label>
+     <div class="nps-picker" id="npsPicker"></div>
+   </div>
+
+   <div class="form-group"><label>Komunikace</label><div class="star-picker" data-cat="communication" id="starComm"></div></div>
+   <div class="form-group"><label>Kvalita práce</label><div class="star-picker" data-cat="quality" id="starQuality"></div></div>
+   <div class="form-group"><label>Dodržení termínů</label><div class="star-picker" data-cat="deadlines" id="starDeadlines"></div></div>
+   <div class="form-group"><label>Poměr cena/hodnota</label><div class="star-picker" data-cat="value" id="starValue"></div></div>
+
+   <div class="form-group"><label>Komentář / zpětná vazba</label><textarea id="fComment" placeholder="Co se klientovi líbilo, co zlepšit..."></textarea></div>
+
+   <div class="modal-actions">
+     <button class="btn btn-outline" onclick="closeModal()">Zrušit</button>
+     <button class="btn" onclick="saveFeedback()">Uložit</button>
+   </div>
+ </div>
+</div>
+
+<script>
+const CATEGORIES = ['communication','quality','deadlines','value'];
+const CAT_LABELS = { communication:'Komunikace', quality:'Kvalita', deadlines:'Termíny', value:'Cena/Hodnota' };
+
+let feedbacks = JSON.parse(sessionStorage.getItem('kudli_feedback') || 'null') || [
+ { id:1, client:'Kavárna Zrnko s.r.o.', project:'Redesign webu', date:'2026-02-28', nps:9, communication:5, quality:5, deadlines:4, value:5, comment:'Ondra odvedl skvělou práci. Web vypadá moderně a funguje rychle. Komunikace byla bezproblémová, vždy rychlé odpovědi. Jediné minus — drobné zpoždění u mobilní verze, ale vyřešeno do 24h.' },
+ { id:2, client:'MadeByHand.cz', project:'E-shop implementace', date:'2026-02-20', nps:10, communication:5, quality:5, deadlines:5, value:4, comment:'Naprosto profesionální přístup. E-shop funguje perfektně, integrace se Zásilkovnou bezchybná. Cena odpovídá kvalitě, i když pro malý projekt by byla lepší nižší vstupní cena.' },
+ { id:3, client:'BydlímTu s.r.o.', project:'AI Chatbot', date:'2026-02-15', nps:8, communication:4, quality:5, deadlines:4, value:5, comment:'Chatbot je úžasný, klienti ho milují. Někdy bych ocenil rychlejší odpovědi na emaily, ale kvalita práce je výborná. Určitě budeme pokračovat ve spolupráci.' },
+ { id:4, client:'Petr Novák', project:'Landing page', date:'2026-01-25', nps:10, communication:5, quality:4, deadlines:5, value:5, comment:'Rychlé dodání, krásný design. Jednoduchá spolupráce bez komplikací. Landing page konvertuje nad očekávání. Super práce!' },
+ { id:5, client:'Kavárna Zrnko s.r.o.', project:'SEO měsíční správa', date:'2026-03-01', nps:9, communication:5, quality:5, deadlines:5, value:4, comment:'Měsíční reporty jsou přehledné a vidíme reálné výsledky. Návštěvnost webu roste každý měsíc. Oceňuji proaktivní návrhy na zlepšení.' },
+];
+
+let modalNPS = -1;
+let modalStars = { communication:0, quality:0, deadlines:0, value:0 };
+
+function save() { sessionStorage.setItem('kudli_feedback', JSON.stringify(feedbacks)); }
+
+function getNPSColor(score) {
+ if (score >= 9) return 'var(--green)';
+ if (score >= 7) return 'var(--orange)';
+ return 'var(--red)';
+}
+
+function getNPSLabel(score) {
+ if (score >= 9) return 'Promoter';
+ if (score >= 7) return 'Pasivní';
+ return 'Detraktor';
+}
+
+function starsHTML(count) {
+ return '★'.repeat(count) + '<span style="opacity:0.2">' + '★'.repeat(5-count) + '</span>';
+}
+
+function renderNPS() {
+ if (feedbacks.length === 0) {
+   document.getElementById('npsHero').innerHTML = '<div class="nps-card" style="grid-column:1/-1"><div class="nps-label">Zatím žádný feedback</div></div>';
+   return;
+ }
+ const avg = feedbacks.reduce((s,f) => s + f.nps, 0) / feedbacks.length;
+ const promoters = feedbacks.filter(f => f.nps >= 9).length;
+ const passives = feedbacks.filter(f => f.nps >= 7 && f.nps < 9).length;
+ const detractors = feedbacks.filter(f => f.nps < 7).length;
+ const npsScore = Math.round(((promoters - detractors) / feedbacks.length) * 100);
+ const total = feedbacks.length;
+
+ document.getElementById('npsHero').innerHTML = `
+   <div class="nps-card">
+     <div class="nps-score" style="color:${getNPSColor(avg)}">${avg.toFixed(1)}</div>
+     <div class="nps-label">Průměrné hodnocení (0–10)</div>
+   </div>
+   <div class="nps-card">
+     <div class="nps-score" style="color:${npsScore >= 50 ? 'var(--green)' : npsScore >= 0 ? 'var(--orange)' : 'var(--red)'}">${npsScore > 0 ? '+' : ''}${npsScore}</div>
+     <div class="nps-label">NPS skóre (-100 až +100)</div>
+     <div class="nps-bar">
+       <div style="width:${(promoters/total)*100}%;background:var(--green)"></div>
+       <div style="width:${(passives/total)*100}%;background:var(--orange)"></div>
+       <div style="width:${(detractors/total)*100}%;background:var(--red)"></div>
+     </div>
+     <div style="display:flex;justify-content:space-between;font-size:0.7rem;margin-top:0.4rem;color:var(--muted)">
+       <span style="color:var(--green)">${promoters} promoterů</span>
+       <span style="color:var(--orange)">${passives} pasivních</span>
+       <span style="color:var(--red)">${detractors} detraktorů</span>
+     </div>
+   </div>
+   <div class="nps-card">
+     <div class="nps-score" style="color:var(--blue)">${total}</div>
+     <div class="nps-label">Celkem hodnocení</div>
+   </div>
+ `;
+}
+
+function renderCatScores() {
+ if (feedbacks.length === 0) { document.getElementById('catScores').innerHTML = ''; return; }
+ document.getElementById('catScores').innerHTML = CATEGORIES.map(cat => {
+   const avg = feedbacks.reduce((s,f) => s + (f[cat]||0), 0) / feedbacks.length;
+   const pct = (avg / 5) * 100;
+   const color = avg >= 4.5 ? 'var(--green)' : avg >= 3.5 ? 'var(--orange)' : 'var(--red)';
+   return `<div class="cat-score-card">
+     <div class="cat-score-header">
+       <span class="cat-score-name">${CAT_LABELS[cat]}</span>
+       <span class="cat-score-val" style="color:${color}">${avg.toFixed(1)}/5</span>
+     </div>
+     <div class="cat-bar"><div class="cat-bar-fill" style="width:${pct}%;background:${color}"></div></div>
+   </div>`;
+ }).join('');
+}
+
+function render() {
+ const filter = document.getElementById('filterClient').value;
+ renderNPS();
+ renderCatScores();
+
+ // Populate filter
+ const clients = [...new Set(feedbacks.map(f => f.client))];
+ const sel = document.getElementById('filterClient');
+ const current = sel.value;
+ sel.innerHTML = '<option value="">Všichni klienti</option>' + clients.map(c => `<option value="${c}" ${c===current?'selected':''}>${c}</option>`).join('');
+
+ let filtered = filter ? feedbacks.filter(f => f.client === filter) : feedbacks;
+ filtered.sort((a,b) => b.date.localeCompare(a.date));
+
+ const list = document.getElementById('feedbackList');
+ if (filtered.length === 0) {
+   list.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted)">Žádný feedback k zobrazení</div>';
+   return;
+ }
+
+ list.innerHTML = filtered.map(f => {
+   const color = getNPSColor(f.nps);
+   return `<div class="fb-card">
+     <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:${color}"></div>
+     <div class="fb-header">
+       <div>
+         <div class="fb-client">${f.client}</div>
+         <div class="fb-project">${f.project} · ${new Date(f.date).toLocaleDateString('cs-CZ')}</div>
+       </div>
+       <div class="fb-nps">
+         <div class="fb-nps-score" style="background:${color}22;color:${color}">${f.nps}</div>
+         <div class="fb-nps-label" style="color:${color}">${getNPSLabel(f.nps)}</div>
+       </div>
+     </div>
+     <div class="fb-ratings">
+       ${CATEGORIES.map(cat => `<div class="fb-rating">
+         <div class="stars">${starsHTML(f[cat]||0)}</div>
+         <div class="cat">${CAT_LABELS[cat]}</div>
+       </div>`).join('')}
+     </div>
+     ${f.comment ? `<div class="fb-comment">${f.comment}</div>` : ''}
+     <div class="fb-actions">
+       <button class="btn btn-outline" onclick="deleteFeedback(${f.id})">Smazat</button>
+     </div>
+   </div>`;
+ }).join('');
+}
+
+function openModal() {
+ modalNPS = -1;
+ modalStars = { communication:0, quality:0, deadlines:0, value:0 };
+ ['fClient','fProject','fComment'].forEach(id => document.getElementById(id).value = '');
+ renderNPSPicker();
+ renderStarPickers();
+ document.getElementById('modal').classList.add('active');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('active'); }
+
+function renderNPSPicker() {
+ document.getElementById('npsPicker').innerHTML = Array.from({length:11}, (_,i) =>
+   `<button class="${i===modalNPS?'selected':''}" onclick="modalNPS=${i};renderNPSPicker()" style="${i<=6?'color:var(--red)':i<=8?'color:var(--orange)':'color:var(--green)'}">${i}</button>`
+ ).join('');
+}
+
+function renderStarPickers() {
+ CATEGORIES.forEach(cat => {
+   const el = document.getElementById('star' + cat.charAt(0).toUpperCase() + cat.slice(1));
+   if (!el) return;
+   el.innerHTML = Array.from({length:5}, (_,i) =>
+     `<span class="${i < modalStars[cat] ? 'active' : ''}" onclick="modalStars['${cat}']=${i+1};renderStarPickers()">★</span>`
+   ).join('');
+ });
+}
+
+function saveFeedback() {
+ const client = document.getElementById('fClient').value.trim();
+ const project = document.getElementById('fProject').value.trim();
+ if (!client || modalNPS < 0) return alert('Vyplň klienta a NPS skóre.');
+
+ feedbacks.push({
+   id: Date.now(),
+   client, project,
+   date: new Date().toISOString().slice(0,10),
+   nps: modalNPS,
+   ...modalStars,
+   comment: document.getElementById('fComment').value.trim()
+ });
+ save(); closeModal(); render();
+}
+
+function deleteFeedback(id) {
+ if (!confirm('Smazat tento feedback?')) return;
+ feedbacks = feedbacks.filter(f => f.id !== id);
+ save(); render();
+}
+
+render();
+</script>
+</body>
+</html>

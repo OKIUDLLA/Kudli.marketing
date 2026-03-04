@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generátor nabídek — Kudli. marketing</title>
+<meta name="description" content="Generátor obchodních nabídek s live náhledem a tiskem do PDF.">
+<meta property="og:title" content="Generátor nabídek — Kudli. marketing">
+<meta property="og:description" content="Generátor obchodních nabídek s live náhledem a tiskem do PDF.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/generator-nabidek.html">
+<style>
+:root{--primary:#1a1a2e;--accent:#e94560;--accent-light:#ff6b81;--bg:#f8f9fa;--white:#fff;--text:#333;--gray:#666;--success:#2ecc71;--shadow:0 4px 20px rgba(0,0,0,0.08)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+.container{max-width:900px;margin:0 auto;padding:2rem 1rem}
+h1{font-size:2rem;font-weight:800;color:var(--primary);text-align:center;margin-bottom:0.25rem}
+.subtitle{text-align:center;color:var(--gray);margin-bottom:2rem}
+
+.grid{display:grid;grid-template-columns:1fr 340px;gap:2rem;align-items:start}
+@media(max-width:768px){.grid{grid-template-columns:1fr}}
+
+/* Form */
+.form-section{background:var(--white);border-radius:16px;padding:2rem;box-shadow:var(--shadow)}
+.form-section h2{font-size:1.2rem;color:var(--primary);margin-bottom:1rem;padding-bottom:0.5rem;border-bottom:2px solid var(--bg)}
+label{display:block;font-weight:600;font-size:0.85rem;color:var(--primary);margin:1rem 0 0.3rem}
+label:first-child{margin-top:0}
+input,textarea,select{width:100%;padding:0.65rem 0.9rem;border:2px solid #e0e0e0;border-radius:10px;font-size:0.9rem;font-family:inherit;transition:border 0.3s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)}
+textarea{min-height:80px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+/* Items table */
+.items-table{width:100%;border-collapse:collapse;margin-top:0.75rem}
+.items-table th{text-align:left;font-size:0.8rem;color:var(--gray);padding:0.4rem 0.5rem;border-bottom:2px solid var(--bg)}
+.items-table td{padding:0.5rem;font-size:0.85rem;vertical-align:middle}
+.items-table input{padding:0.45rem 0.6rem;font-size:0.85rem}
+.items-table .price-cell{text-align:right;font-weight:600;color:var(--primary);min-width:90px}
+.btn-remove{background:none;border:none;color:#e74c3c;cursor:pointer;font-size:1.1rem;padding:0.2rem 0.5rem;border-radius:6px;transition:background 0.2s}
+.btn-remove:hover{background:rgba(231,76,60,0.1)}
+.btn-add{display:inline-flex;align-items:center;gap:0.3rem;background:var(--bg);border:2px dashed #ccc;padding:0.5rem 1rem;border-radius:10px;font-size:0.85rem;color:var(--gray);cursor:pointer;transition:all 0.3s;margin-top:0.75rem}
+.btn-add:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Sidebar preview */
+.preview{background:var(--white);border-radius:16px;padding:1.5rem;box-shadow:var(--shadow);position:sticky;top:1rem}
+.preview h3{font-size:1rem;color:var(--primary);margin-bottom:1rem}
+.preview-row{display:flex;justify-content:space-between;padding:0.5rem 0;font-size:0.85rem;border-bottom:1px solid #f0f0f0}
+.preview-row:last-of-type{border:none}
+.preview-label{color:var(--gray)}
+.preview-value{font-weight:600;color:var(--primary)}
+.preview-total{display:flex;justify-content:space-between;padding:1rem 0 0.5rem;margin-top:0.5rem;border-top:2px solid var(--primary);font-size:1.1rem;font-weight:700}
+.preview-total .amount{color:var(--accent);font-size:1.3rem}
+
+.btn-row{display:flex;gap:0.75rem;margin-top:1.25rem;flex-wrap:wrap}
+.btn{padding:0.7rem 1.5rem;border-radius:10px;font-size:0.9rem;font-weight:600;cursor:pointer;border:none;transition:all 0.3s;text-align:center;flex:1}
+.btn-primary{background:var(--accent);color:white}
+.btn-primary:hover{background:var(--accent-light);transform:translateY(-2px);box-shadow:0 6px 20px rgba(233,69,96,0.25)}
+.btn-secondary{background:var(--bg);color:var(--primary);border:2px solid #e0e0e0}
+.btn-secondary:hover{border-color:var(--primary)}
+
+/* Print styles */
+.print-only{display:none}
+@media print{
+  body{background:white;font-size:11pt}
+  .no-print{display:none!important}
+  .print-only{display:block!important}
+  .container{max-width:100%;padding:0}
+  .grid{display:block}
+  .form-section,.preview{box-shadow:none;border:none;padding:0}
+  .preview{position:static;page-break-before:always}
+}
+
+/* Generated offer */
+.offer-output{display:none;background:var(--white);border-radius:16px;padding:2.5rem;box-shadow:var(--shadow);margin-top:2rem}
+.offer-output.active{display:block;animation:fadeIn 0.4s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.offer-header{text-align:center;margin-bottom:2rem;padding-bottom:1.5rem;border-bottom:3px solid var(--accent)}
+.offer-header h2{font-size:1.8rem;color:var(--primary)}
+.offer-header p{color:var(--gray);font-size:0.9rem}
+.offer-section{margin-bottom:1.5rem}
+.offer-section h3{font-size:1.1rem;color:var(--primary);margin-bottom:0.75rem;padding-bottom:0.35rem;border-bottom:1px solid #eee}
+.offer-table{width:100%;border-collapse:collapse}
+.offer-table th{background:var(--primary);color:white;padding:0.7rem 1rem;text-align:left;font-size:0.85rem}
+.offer-table td{padding:0.6rem 1rem;border-bottom:1px solid #eee;font-size:0.9rem}
+.offer-table tr:last-child td{border:none}
+.offer-table .total-row td{font-weight:700;font-size:1.05rem;border-top:2px solid var(--primary);padding-top:0.8rem}
+.offer-footer{text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid #eee;color:var(--gray);font-size:0.85rem}
+
+.back-link{display:block;text-align:center;margin-top:1.5rem;color:var(--accent);text-decoration:none;font-size:0.9rem}
+.back-link:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1 class="no-print">Generátor nabídek</h1>
+  <p class="subtitle no-print">Vytvořte profesionální cenovou nabídku pro klienta během pár minut</p>
+
+  <div class="grid no-print" id="formView">
+    <!-- LEFT: Form -->
+    <div>
+      <div class="form-section" style="margin-bottom:1.5rem">
+        <h2>Klient</h2>
+        <div class="row">
+          <div><label>Firma / Jméno</label><input type="text" id="clientName" placeholder="Název firmy"></div>
+          <div><label>IČO</label><input type="text" id="clientIco" placeholder="12345678"></div>
+        </div>
+        <div class="row">
+          <div><label>Kontaktní osoba</label><input type="text" id="clientContact" placeholder="Jan Novák"></div>
+          <div><label>Email</label><input type="email" id="clientEmail" placeholder="jan@firma.cz"></div>
+        </div>
+      </div>
+
+      <div class="form-section" style="margin-bottom:1.5rem">
+        <h2>Projekt</h2>
+        <label>Název projektu</label>
+        <input type="text" id="projectName" placeholder="Redesign firemního webu">
+        <label>Popis projektu</label>
+        <textarea id="projectDesc" placeholder="Stručný popis toho, co bude vytvořeno..."></textarea>
+        <div class="row">
+          <div><label>Typ projektu</label>
+            <select id="projectType">
+              <option value="Web na míru">Web na míru</option>
+              <option value="E-shop">E-shop</option>
+              <option value="Landing page">Landing page</option>
+              <option value="Webová aplikace">Webová aplikace</option>
+              <option value="Automatizace">Automatizace</option>
+              <option value="AI řešení">AI řešení</option>
+              <option value="Konzultace">Konzultace</option>
+            </select>
+          </div>
+          <div><label>Termín dodání</label><input type="text" id="deadline" placeholder="4 týdny od zahájení"></div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2>Položky nabídky</h2>
+        <table class="items-table">
+          <thead><tr><th style="width:50%">Položka</th><th style="width:15%">Počet</th><th style="width:25%">Cena/ks</th><th></th></tr></thead>
+          <tbody id="itemsBody">
+            <tr>
+              <td><input type="text" value="Grafický návrh" class="item-name"></td>
+              <td><input type="number" value="1" min="1" class="item-qty" style="width:60px"></td>
+              <td><input type="number" value="5000" min="0" class="item-price"></td>
+              <td><button class="btn-remove" onclick="removeItem(this)">×</button></td>
+            </tr>
+            <tr>
+              <td><input type="text" value="Frontend vývoj" class="item-name"></td>
+              <td><input type="number" value="1" min="1" class="item-qty" style="width:60px"></td>
+              <td><input type="number" value="12000" min="0" class="item-price"></td>
+              <td><button class="btn-remove" onclick="removeItem(this)">×</button></td>
+            </tr>
+            <tr>
+              <td><input type="text" value="Responzivní úpravy" class="item-name"></td>
+              <td><input type="number" value="1" min="1" class="item-qty" style="width:60px"></td>
+              <td><input type="number" value="4000" min="0" class="item-price"></td>
+              <td><button class="btn-remove" onclick="removeItem(this)">×</button></td>
+            </tr>
+            <tr>
+              <td><input type="text" value="SEO optimalizace" class="item-name"></td>
+              <td><input type="number" value="1" min="1" class="item-qty" style="width:60px"></td>
+              <td><input type="number" value="5000" min="0" class="item-price"></td>
+              <td><button class="btn-remove" onclick="removeItem(this)">×</button></td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="btn-add" onclick="addItem()">+ Přidat položku</button>
+      </div>
+    </div>
+
+    <!-- RIGHT: Preview -->
+    <div>
+      <div class="preview">
+        <h3>Náhled nabídky</h3>
+        <div id="previewItems"></div>
+        <div class="preview-total">
+          <span>Celkem bez DPH</span>
+          <span class="amount" id="previewTotal">26 000 Kč</span>
+        </div>
+        <p style="font-size:0.75rem;color:var(--gray);margin-top:0.5rem">* Nejsem plátce DPH</p>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="generateOffer()">Vytvořit nabídku</button>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-secondary" onclick="copyAsText()">Kopírovat text</button>
+          <button class="btn btn-secondary" onclick="window.print()">Tisk / PDF</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Generated Offer -->
+  <div class="offer-output" id="offerOutput">
+    <div class="offer-header">
+      <h2>CENOVÁ NABÍDKA</h2>
+      <p id="offerMeta"></p>
+    </div>
+    <div class="offer-section">
+      <h3>Dodavatel</h3>
+      <p>Ondřej Kudlička — Kudli. marketing<br>Hubrova 2263/7, 628 00 Brno<br>IČO: 07271751 · Účet: 1486382014/3030<br>Email: o.kudlicka@gmail.com</p>
+    </div>
+    <div class="offer-section">
+      <h3>Odběratel</h3>
+      <p id="offerClient"></p>
+    </div>
+    <div class="offer-section">
+      <h3>Předmět nabídky</h3>
+      <p id="offerProject"></p>
+    </div>
+    <div class="offer-section">
+      <h3>Cenová kalkulace</h3>
+      <table class="offer-table">
+        <thead><tr><th>Položka</th><th>Počet</th><th>Cena/ks</th><th style="text-align:right">Celkem</th></tr></thead>
+        <tbody id="offerItems"></tbody>
+      </table>
+    </div>
+    <div class="offer-section">
+      <h3>Platební podmínky</h3>
+      <p>Záloha 50% při zahájení prací, zbývajících 50% při předání díla.<br>Splatnost faktur: 14 dní.<br>Nejsem plátce DPH — ceny jsou konečné.</p>
+    </div>
+    <div class="offer-section">
+      <h3>Harmonogram</h3>
+      <p id="offerTimeline"></p>
+    </div>
+    <div class="offer-section">
+      <h3>Platnost nabídky</h3>
+      <p id="offerValidity"></p>
+    </div>
+    <div class="offer-footer">
+      <p>Kudli. marketing | o.kudlicka@gmail.com</p>
+    </div>
+    <div class="btn-row no-print" style="justify-content:center;margin-top:1.5rem">
+      <button class="btn btn-secondary" onclick="backToForm()">← Zpět k úpravám</button>
+      <button class="btn btn-secondary" onclick="copyAsText()">Kopírovat text</button>
+      <button class="btn btn-primary" onclick="window.print()">Tisk / Uložit PDF</button>
+    </div>
+  </div>
+
+  <a href="index.html" class="back-link no-print">← Zpět na hlavní stránku</a>
+</div>
+
+<script>
+function fmt(n){return n.toLocaleString('cs-CZ')+' Kč'}
+
+function getItems(){
+  const rows=[...document.querySelectorAll('#itemsBody tr')];
+  return rows.map(r=>({
+    name:r.querySelector('.item-name').value,
+    qty:parseInt(r.querySelector('.item-qty').value)||1,
+    price:parseInt(r.querySelector('.item-price').value)||0
+  })).filter(i=>i.name&&i.price>0);
+}
+
+function updatePreview(){
+  const items=getItems();
+  let html='';
+  let total=0;
+  items.forEach(i=>{
+    const sub=i.qty*i.price;
+    total+=sub;
+    html+=`<div class="preview-row"><span class="preview-label">${i.name}${i.qty>1?' ×'+i.qty:''}</span><span class="preview-value">${fmt(sub)}</span></div>`;
+  });
+  document.getElementById('previewItems').innerHTML=html;
+  document.getElementById('previewTotal').textContent=fmt(total);
+}
+
+function addItem(){
+  const tbody=document.getElementById('itemsBody');
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><input type="text" class="item-name" placeholder="Název položky"></td>
+    <td><input type="number" value="1" min="1" class="item-qty" style="width:60px"></td>
+    <td><input type="number" value="0" min="0" class="item-price"></td>
+    <td><button class="btn-remove" onclick="removeItem(this)">×</button></td>`;
+  tbody.appendChild(tr);
+  tr.querySelectorAll('input').forEach(i=>i.addEventListener('input',updatePreview));
+}
+
+function removeItem(btn){
+  btn.closest('tr').remove();
+  updatePreview();
+}
+
+function generateOffer(){
+  const items=getItems();
+  let total=0;
+  let tbody='';
+  items.forEach(i=>{
+    const sub=i.qty*i.price;
+    total+=sub;
+    tbody+=`<tr><td>${i.name}</td><td>${i.qty}</td><td>${fmt(i.price)}</td><td style="text-align:right">${fmt(sub)}</td></tr>`;
+  });
+  tbody+=`<tr class="total-row"><td colspan="3">Celkem</td><td style="text-align:right">${fmt(total)}</td></tr>`;
+  document.getElementById('offerItems').innerHTML=tbody;
+
+  const cn=document.getElementById('clientName').value||'[Název firmy]';
+  const ci=document.getElementById('clientIco').value;
+  const cc=document.getElementById('clientContact').value;
+  const ce=document.getElementById('clientEmail').value;
+  document.getElementById('offerClient').innerHTML=`${cn}${ci?'<br>IČO: '+ci:''}${cc?'<br>Kontakt: '+cc:''}${ce?'<br>Email: '+ce:''}`;
+
+  const pn=document.getElementById('projectName').value||'[Název projektu]';
+  const pd=document.getElementById('projectDesc').value||'[Popis projektu]';
+  const pt=document.getElementById('projectType').value;
+  document.getElementById('offerProject').innerHTML=`<strong>${pn}</strong> (${pt})<br>${pd}`;
+
+  const dl=document.getElementById('deadline').value||'Dle dohody';
+  document.getElementById('offerTimeline').textContent=`Předpokládaný termín dodání: ${dl}. Zahájení prací po obdržení zálohy.`;
+
+  const today=new Date();
+  const validity=new Date(today);validity.setDate(today.getDate()+30);
+  const num=`NAB-${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}${String(today.getDate()).padStart(2,'0')}`;
+  document.getElementById('offerMeta').textContent=`Číslo: ${num} | Datum: ${today.toLocaleDateString('cs-CZ')}`;
+  document.getElementById('offerValidity').textContent=`Tato nabídka je platná do ${validity.toLocaleDateString('cs-CZ')} (30 dní).`;
+
+  document.getElementById('formView').style.display='none';
+  document.getElementById('offerOutput').classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function backToForm(){
+  document.getElementById('formView').style.display='grid';
+  document.getElementById('offerOutput').classList.remove('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function copyAsText(){
+  const items=getItems();
+  let total=0;
+  let lines=items.map(i=>{const s=i.qty*i.price;total+=s;return`- ${i.name}${i.qty>1?' ×'+i.qty+'':', '} ${fmt(s)}`});
+  const text=`CENOVÁ NABÍDKA\n\nKlient: ${document.getElementById('clientName').value||'—'}\nProjekt: ${document.getElementById('projectName').value||'—'} (${document.getElementById('projectType').value})\n\n${document.getElementById('projectDesc').value||''}\n\nPoložky:\n${lines.join('\n')}\n\nCELKEM: ${fmt(total)}\n\nPlatební podmínky: 50% záloha, 50% při předání\nTermín: ${document.getElementById('deadline').value||'Dle dohody'}\n\nKudli. marketing | o.kudlicka@gmail.com`;
+  navigator.clipboard.writeText(text).then(()=>alert('Nabídka zkopírována do schránky!'));
+}
+
+// Init
+document.querySelectorAll('#itemsBody input').forEach(i=>i.addEventListener('input',updatePreview));
+updatePreview();
+</script>
+</body>
+</html>

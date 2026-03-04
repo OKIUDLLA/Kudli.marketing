@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Profitabilita projektů — Kudli. marketing</title>
+<meta name="description" content="Sledování ziskovosti freelance projektů — hodinová sazba, náklady, marže.">
+<meta property="og:title" content="Profitabilita projektů — Kudli. marketing">
+<meta property="og:description" content="Sledování ziskovosti freelance projektů — hodinová sazba, náklady, marže.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/profitabilita.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--text:#fff;--muted:rgba(255,255,255,0.5);--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:var(--accent-light);text-decoration:none}
+
+.header{background:var(--card);border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.header-left{display:flex;align-items:center;gap:1rem}
+.header h1{font-size:1.3rem;font-weight:700}
+.header h1 span{color:var(--accent)}
+.back-link{color:var(--muted);font-size:0.85rem}
+
+.btn{padding:0.55rem 1rem;border:none;border-radius:10px;font-size:0.82rem;cursor:pointer;font-weight:600;transition:all 0.3s;display:inline-flex;align-items:center;gap:0.4rem}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-secondary{background:rgba(255,255,255,0.06);color:var(--text);border:1px solid rgba(255,255,255,0.1)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:0.35rem 0.7rem;font-size:0.78rem}
+
+.main{max-width:1000px;margin:0 auto;padding:1.5rem 2rem}
+
+/* KPI cards */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:0.75rem;margin-bottom:1.5rem}
+.kpi{background:var(--card);border-radius:14px;padding:1rem;border:1px solid rgba(255,255,255,0.06);text-align:center}
+.kpi .val{font-size:1.5rem;font-weight:800}
+.kpi .lbl{font-size:0.72rem;color:var(--muted);margin-top:0.15rem}
+.kpi .sub{font-size:0.75rem;margin-top:0.3rem;font-weight:600}
+
+/* Target rate */
+.target-bar{background:var(--card);border-radius:12px;padding:1rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;border:1px solid rgba(255,255,255,0.06)}
+.target-bar label{font-size:0.82rem;font-weight:600;color:var(--muted)}
+.target-bar input{width:80px;padding:0.4rem 0.6rem;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:#fff;font-size:0.9rem;text-align:right;font-weight:700}
+.target-bar input:focus{outline:none;border-color:var(--accent)}
+.target-bar .unit{font-size:0.82rem;color:var(--muted)}
+
+/* Project cards */
+.project-list{display:flex;flex-direction:column;gap:0.75rem;margin-bottom:2rem}
+.project-card{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);cursor:pointer;transition:all 0.3s}
+.project-card:hover{border-color:rgba(255,255,255,0.15);transform:translateY(-1px)}
+.pc-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:0.75rem}
+.pc-info h3{font-size:1rem;font-weight:700}
+.pc-info .client{font-size:0.8rem;color:var(--muted)}
+.pc-rate{text-align:right}
+.pc-rate .hourly{font-size:1.3rem;font-weight:800}
+.pc-rate .label{font-size:0.7rem;color:var(--muted)}
+
+.pc-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem;margin-bottom:0.75rem}
+.pc-metric{text-align:center}
+.pc-metric .mv{font-size:1rem;font-weight:700}
+.pc-metric .ml{font-size:0.68rem;color:var(--muted)}
+
+.pc-bar{height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden;margin-bottom:0.5rem}
+.pc-bar-fill{height:100%;border-radius:4px;transition:width 0.8s}
+
+.pc-footer{display:flex;justify-content:space-between;align-items:center;font-size:0.78rem;color:var(--muted)}
+.pc-status{padding:0.15rem 0.5rem;border-radius:6px;font-size:0.65rem;font-weight:700}
+.status-active{background:rgba(46,204,113,0.15);color:var(--green)}
+.status-completed{background:rgba(52,152,219,0.15);color:var(--blue)}
+.status-overbudget{background:rgba(231,76,60,0.15);color:var(--red)}
+
+/* Modal */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg);border:1px solid rgba(255,255,255,0.1);border-radius:16px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto}
+.modal-header{padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between;align-items:center}
+.modal-header h3{font-size:1.1rem;font-weight:700}
+.modal-close{background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer}
+.modal-body{padding:1.5rem}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:space-between}
+.form-group{margin-bottom:0.85rem}
+.form-group label{display:block;font-size:0.78rem;color:var(--muted);margin-bottom:0.3rem;font-weight:600}
+.form-group input,.form-group select{width:100%;padding:0.55rem 0.8rem;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:0.85rem}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--accent)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+
+@media(max-width:600px){
+  .main{padding:1rem}
+  .kpis{grid-template-columns:1fr 1fr}
+  .pc-metrics{grid-template-columns:1fr 1fr}
+  .form-row{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <a href="nastroje.html" class="back-link">← Nástroje</a>
+    <h1>💰 Profitabilita <span>projektů</span></h1>
+  </div>
+  <div style="display:flex;gap:0.75rem">
+    <button class="btn btn-secondary btn-sm" onclick="loadDemo()">🎯 Demo</button>
+    <button class="btn btn-secondary btn-sm" onclick="exportCSV()">📤 CSV</button>
+    <button class="btn btn-primary" onclick="openModal()">+ Nový projekt</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="target-bar">
+    <label>🎯 Cílová hodinová sazba:</label>
+    <input type="number" id="targetRate" value="500" oninput="saveTarget();render()">
+    <span class="unit">Kč/hod</span>
+    <span style="flex:1"></span>
+    <span style="font-size:0.78rem;color:var(--muted)">Projekty pod touto sazbou budou označeny červeně</span>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="project-list" id="projectList"></div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="projModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="projModalTitle">Nový projekt</h3>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="fId">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Název projektu</label>
+          <input type="text" id="fName" placeholder="Redesign webu">
+        </div>
+        <div class="form-group">
+          <label>Klient</label>
+          <input type="text" id="fClient" placeholder="Firma s.r.o.">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Cena projektu (Kč)</label>
+          <input type="number" id="fPrice" placeholder="20000">
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="fStatus">
+            <option value="active">🟢 Aktivní</option>
+            <option value="completed">🔵 Dokončen</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Odpracované hodiny</label>
+          <input type="number" id="fHours" step="0.5" value="0">
+        </div>
+        <div class="form-group">
+          <label>Odhadované hodiny</label>
+          <input type="number" id="fEstimate" step="0.5" value="0">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Náklady (hosting, licence, tools...)</label>
+          <input type="number" id="fCosts" value="0">
+        </div>
+        <div class="form-group">
+          <label>Datum zahájení</label>
+          <input type="date" id="fStart">
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary btn-sm" id="deleteBtn" style="display:none;background:rgba(231,76,60,0.15);color:var(--red);border:1px solid rgba(231,76,60,0.2)" onclick="deleteProject()">🗑️ Smazat</button>
+      <div style="display:flex;gap:0.75rem">
+        <button class="btn btn-secondary" onclick="closeModal()">Zrušit</button>
+        <button class="btn btn-primary" onclick="saveProject()">💾 Uložit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let projects = [];
+let targetRate = 500;
+
+function init() {
+  const saved = sessionStorage.getItem('kudli_profit');
+  if (saved) {
+    const d = JSON.parse(saved);
+    projects = d.projects || [];
+    targetRate = d.targetRate || 500;
+  }
+  if (projects.length === 0) { loadDemo(); return; }
+  document.getElementById('targetRate').value = targetRate;
+  render();
+}
+
+function save() {
+  sessionStorage.setItem('kudli_profit', JSON.stringify({ projects, targetRate }));
+}
+
+function saveTarget() {
+  targetRate = parseInt(document.getElementById('targetRate').value) || 500;
+  save();
+}
+
+function render() {
+  renderKPIs();
+  renderProjects();
+}
+
+function renderKPIs() {
+  const totalRevenue = projects.reduce((s, p) => s + (p.price || 0), 0);
+  const totalCosts = projects.reduce((s, p) => s + (p.costs || 0), 0);
+  const totalHours = projects.reduce((s, p) => s + (p.hours || 0), 0);
+  const netProfit = totalRevenue - totalCosts;
+  const avgRate = totalHours > 0 ? Math.round(netProfit / totalHours) : 0;
+  const profitMargin = totalRevenue > 0 ? Math.round((netProfit / totalRevenue) * 100) : 0;
+  const completed = projects.filter(p => p.status === 'completed').length;
+
+  const rateColor = avgRate >= targetRate ? 'var(--green)' : avgRate >= targetRate * 0.7 ? 'var(--orange)' : 'var(--red)';
+
+  document.getElementById('kpis').innerHTML = `
+    <div class="kpi"><div class="val" style="color:var(--accent)">${fmtK(totalRevenue)}</div><div class="lbl">Celkové tržby</div></div>
+    <div class="kpi"><div class="val" style="color:var(--green)">${fmtK(netProfit)}</div><div class="lbl">Čistý zisk</div><div class="sub" style="color:${profitMargin >= 70 ? 'var(--green)' : 'var(--orange)'}">Marže ${profitMargin}%</div></div>
+    <div class="kpi"><div class="val" style="color:${rateColor}">${avgRate} Kč</div><div class="lbl">Prům. hod. sazba</div><div class="sub" style="color:${rateColor}">Cíl: ${targetRate} Kč</div></div>
+    <div class="kpi"><div class="val" style="color:var(--blue)">${totalHours}h</div><div class="lbl">Celkem hodin</div><div class="sub">${projects.length} projektů (${completed} hotových)</div></div>
+  `;
+}
+
+function fmtK(v) {
+  if (Math.abs(v) >= 1000) return Math.round(v / 1000) + 'K Kč';
+  return v.toLocaleString('cs') + ' Kč';
+}
+
+function renderProjects() {
+  const sorted = [...projects].sort((a, b) => {
+    if (a.status !== b.status) return a.status === 'active' ? -1 : 1;
+    return getHourlyRate(b) - getHourlyRate(a);
+  });
+
+  document.getElementById('projectList').innerHTML = sorted.map(p => {
+    const rate = getHourlyRate(p);
+    const rateColor = rate >= targetRate ? 'var(--green)' : rate >= targetRate * 0.7 ? 'var(--orange)' : 'var(--red)';
+    const net = (p.price || 0) - (p.costs || 0);
+    const margin = p.price > 0 ? Math.round((net / p.price) * 100) : 0;
+    const progress = p.estimate > 0 ? Math.min(100, Math.round((p.hours / p.estimate) * 100)) : 0;
+    const progressColor = progress > 100 ? 'var(--red)' : progress > 80 ? 'var(--orange)' : 'var(--green)';
+    const overBudget = p.estimate > 0 && p.hours > p.estimate;
+
+    let statusCls = p.status === 'completed' ? 'status-completed' : overBudget ? 'status-overbudget' : 'status-active';
+    let statusText = p.status === 'completed' ? 'Dokončen' : overBudget ? 'Překročen odhad!' : 'Aktivní';
+
+    return `
+    <div class="project-card" onclick="editProject('${p.id}')">
+      <div class="pc-top">
+        <div class="pc-info">
+          <h3>${p.name}</h3>
+          <div class="client">${p.client}${p.start ? ' · od ' + new Date(p.start).toLocaleDateString('cs') : ''}</div>
+        </div>
+        <div class="pc-rate">
+          <div class="hourly" style="color:${rateColor}">${rate} Kč/h</div>
+          <div class="label">${rate >= targetRate ? '✅ nad cílem' : '⚠️ pod cílem'}</div>
+        </div>
+      </div>
+      <div class="pc-metrics">
+        <div class="pc-metric"><div class="mv">${p.price?.toLocaleString('cs')} Kč</div><div class="ml">Cena</div></div>
+        <div class="pc-metric"><div class="mv">${p.hours}h / ${p.estimate || '?'}h</div><div class="ml">Hodiny</div></div>
+        <div class="pc-metric"><div class="mv" style="color:${margin >= 70 ? 'var(--green)' : 'var(--orange)'}">${net.toLocaleString('cs')} Kč</div><div class="ml">Čistý zisk</div></div>
+        <div class="pc-metric"><div class="mv">${margin}%</div><div class="ml">Marže</div></div>
+      </div>
+      ${p.estimate > 0 ? `<div class="pc-bar"><div class="pc-bar-fill" style="width:${Math.min(progress, 100)}%;background:${progressColor}"></div></div>` : ''}
+      <div class="pc-footer">
+        <span class="pc-status ${statusCls}">${statusText}</span>
+        <span>${p.costs > 0 ? 'Náklady: ' + p.costs.toLocaleString('cs') + ' Kč' : 'Bez externích nákladů'}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function getHourlyRate(p) {
+  if (!p.hours || p.hours === 0) return 0;
+  return Math.round(((p.price || 0) - (p.costs || 0)) / p.hours);
+}
+
+// Modal
+function openModal() {
+  editingId = null;
+  document.getElementById('projModalTitle').textContent = 'Nový projekt';
+  document.getElementById('fId').value = '';
+  document.getElementById('fName').value = '';
+  document.getElementById('fClient').value = '';
+  document.getElementById('fPrice').value = '';
+  document.getElementById('fStatus').value = 'active';
+  document.getElementById('fHours').value = 0;
+  document.getElementById('fEstimate').value = 0;
+  document.getElementById('fCosts').value = 0;
+  document.getElementById('fStart').value = new Date().toISOString().split('T')[0];
+  document.getElementById('deleteBtn').style.display = 'none';
+  document.getElementById('projModal').classList.add('show');
+}
+
+let editingId = null;
+function editProject(id) {
+  const p = projects.find(x => x.id === id);
+  if (!p) return;
+  editingId = id;
+  document.getElementById('projModalTitle').textContent = 'Upravit projekt';
+  document.getElementById('fName').value = p.name;
+  document.getElementById('fClient').value = p.client;
+  document.getElementById('fPrice').value = p.price;
+  document.getElementById('fStatus').value = p.status;
+  document.getElementById('fHours').value = p.hours;
+  document.getElementById('fEstimate').value = p.estimate || 0;
+  document.getElementById('fCosts').value = p.costs || 0;
+  document.getElementById('fStart').value = p.start || '';
+  document.getElementById('deleteBtn').style.display = 'inline-flex';
+  document.getElementById('projModal').classList.add('show');
+}
+
+function closeModal() { document.getElementById('projModal').classList.remove('show'); }
+
+function saveProject() {
+  const name = document.getElementById('fName').value.trim();
+  const client = document.getElementById('fClient').value.trim();
+  if (!name || !client) { alert('Vyplňte název a klienta'); return; }
+
+  const data = {
+    name, client,
+    price: parseInt(document.getElementById('fPrice').value) || 0,
+    status: document.getElementById('fStatus').value,
+    hours: parseFloat(document.getElementById('fHours').value) || 0,
+    estimate: parseFloat(document.getElementById('fEstimate').value) || 0,
+    costs: parseInt(document.getElementById('fCosts').value) || 0,
+    start: document.getElementById('fStart').value,
+  };
+
+  if (editingId) {
+    const idx = projects.findIndex(p => p.id === editingId);
+    if (idx >= 0) projects[idx] = { ...projects[idx], ...data };
+  } else {
+    data.id = 'p' + Date.now();
+    projects.push(data);
+  }
+  save(); closeModal(); render();
+}
+
+function deleteProject() {
+  if (!editingId || !confirm('Smazat projekt?')) return;
+  projects = projects.filter(p => p.id !== editingId);
+  save(); closeModal(); render();
+}
+
+function exportCSV() {
+  let csv = 'Projekt,Klient,Cena,Hodiny,Odhad,Náklady,Čistý zisk,Hod. sazba,Marže %,Status\n';
+  projects.forEach(p => {
+    const net = (p.price||0) - (p.costs||0);
+    const rate = getHourlyRate(p);
+    const margin = p.price > 0 ? Math.round((net/p.price)*100) : 0;
+    csv += `"${p.name}","${p.client}",${p.price},${p.hours},${p.estimate||0},${p.costs||0},${net},${rate},${margin}%,${p.status}\n`;
+  });
+  const blob = new Blob(['\ufeff' + csv], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'profitabilita-projektu.csv';
+  a.click();
+}
+
+function loadDemo() {
+  targetRate = 500;
+  document.getElementById('targetRate').value = 500;
+  projects = [
+    { id:'p1', name:'Redesign webu', client:'Kavárna U Mlýna', price:20000, hours:32, estimate:35, costs:500, status:'active', start:'2026-02-15' },
+    { id:'p2', name:'Shopify e-shop', client:'E-shop TechGear', price:35000, hours:48, estimate:45, costs:2400, status:'active', start:'2026-02-10' },
+    { id:'p3', name:'Landing page', client:'Reality Premium', price:8000, hours:10, estimate:12, costs:0, status:'completed', start:'2026-01-20' },
+    { id:'p4', name:'SEO audit + optimalizace', client:'Kavárna U Mlýna', price:5000, hours:6, estimate:8, costs:0, status:'completed', start:'2026-02-01' },
+    { id:'p5', name:'AI Chatbot', client:'Reality Premium', price:15000, hours:0, estimate:20, costs:1200, status:'active', start:'2026-03-01' },
+    { id:'p6', name:'Logo + brand identity', client:'Startup XY', price:12000, hours:18, estimate:15, costs:200, status:'completed', start:'2026-01-10' },
+  ];
+  save(); render();
+}
+
+init();
+</script>
+</body>
+</html>

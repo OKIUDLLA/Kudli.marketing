@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adresář kontaktů — Kudli. marketing</title>
+<meta name="description" content="Interní adresář obchodních kontaktů, leadů a partnerů s tagy a poznámkami.">
+<meta property="og:title" content="Adresář kontaktů — Kudli. marketing">
+<meta property="og:description" content="Interní adresář obchodních kontaktů, leadů a partnerů s tagy a poznámkami.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/kontakty.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+.top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}.top-bar .logo span{color:var(--accent)}
+.container{max-width:1000px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.6rem;font-weight:800;margin-bottom:0.3rem}h1 em{color:var(--accent);font-style:normal}
+.subtitle{color:var(--muted);margin-bottom:2rem;font-size:0.95rem}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.75rem;margin-bottom:2rem}
+.stat{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.stat .num{font-size:1.6rem;font-weight:800}.stat .label{font-size:0.75rem;color:var(--muted);margin-top:0.2rem}
+
+.toolbar{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
+.toolbar input,.toolbar select{background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.55rem 1rem;border-radius:10px;font-size:0.85rem;font-family:inherit}
+.toolbar input{flex:1;min-width:200px}
+.btn{background:var(--accent);color:#fff;border:none;padding:0.6rem 1.25rem;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:inherit;transition:all 0.3s}
+.btn:hover{background:var(--accent-light);transform:translateY(-1px)}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.15);color:var(--text)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:0.35rem 0.75rem;font-size:0.78rem}
+
+.contacts-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
+.contact-card{background:var(--card);border-radius:16px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);transition:all 0.3s;position:relative}
+.contact-card:hover{border-color:rgba(233,69,96,0.3);transform:translateY(-2px);box-shadow:0 6px 25px rgba(0,0,0,0.2)}
+.cc-header{display:flex;align-items:center;gap:0.75rem;margin-bottom:0.75rem}
+.avatar{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;flex-shrink:0;color:#fff}
+.cc-name{font-weight:700;font-size:0.95rem}
+.cc-company{font-size:0.8rem;color:var(--muted)}
+.cc-details{display:flex;flex-direction:column;gap:0.3rem;margin-bottom:0.75rem}
+.cc-detail{display:flex;align-items:center;gap:0.5rem;font-size:0.82rem;color:rgba(255,255,255,0.7)}
+.cc-detail a{color:var(--accent-light);text-decoration:none}
+.cc-detail a:hover{text-decoration:underline}
+.cc-tags{display:flex;flex-wrap:wrap;gap:0.3rem;margin-bottom:0.5rem}
+.tag{padding:0.15rem 0.5rem;border-radius:6px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+.tag-client{background:rgba(46,204,113,0.15);color:var(--green)}
+.tag-lead{background:rgba(243,156,18,0.15);color:var(--orange)}
+.tag-partner{background:rgba(52,152,219,0.15);color:var(--blue)}
+.tag-supplier{background:rgba(155,89,182,0.15);color:var(--purple)}
+.cc-note{font-size:0.8rem;color:var(--muted);font-style:italic;padding-top:0.5rem;border-top:1px solid rgba(255,255,255,0.04)}
+.cc-actions{position:absolute;top:0.75rem;right:0.75rem;display:flex;gap:0.3rem}
+.cc-actions button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;padding:0.2rem;transition:color 0.2s}
+.cc-actions button:hover{color:var(--accent)}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:100;padding:1rem}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;max-width:500px;width:100%;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:1.2rem;margin-bottom:1.5rem}
+.fg{margin-bottom:1rem}.fg label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;font-weight:600}
+.fg input,.fg select,.fg textarea{width:100%;background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.6rem 1rem;border-radius:10px;font-size:0.9rem;font-family:inherit}
+.fg textarea{min-height:60px;resize:vertical}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.tag-select{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.3rem}
+.tag-opt{padding:0.3rem 0.7rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);cursor:pointer;font-size:0.8rem;transition:all 0.2s}
+.tag-opt.sel{background:var(--accent);border-color:var(--accent);color:#fff}
+.modal-actions{display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem}
+
+@media(max-width:768px){.contacts-grid{grid-template-columns:1fr}.fr{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="top-bar">
+ <a href="nastroje.html" class="logo">Kudli<span>.</span> marketing</a>
+ <a href="nastroje.html" style="color:var(--muted);text-decoration:none;font-size:0.85rem">← Zpět na nástroje</a>
+</div>
+<div class="container">
+ <h1>Adresář <em>kontaktů</em></h1>
+ <p class="subtitle">Klienti, leady, partneři a dodavatelé na jednom místě</p>
+ <div class="stats" id="stats"></div>
+ <div class="toolbar">
+   <input type="text" id="search" placeholder="Hledat jméno, firmu, email..." oninput="render()">
+   <select id="filterTag" onchange="render()"><option value="">Všechny typy</option><option value="client">Klienti</option><option value="lead">Leady</option><option value="partner">Partneři</option><option value="supplier">Dodavatelé</option></select>
+   <button class="btn" onclick="openModal()">+ Nový kontakt</button>
+   <button class="btn btn-outline btn-sm" onclick="exportCSV()">📤 CSV</button>
+ </div>
+ <div class="contacts-grid" id="grid"></div>
+</div>
+
+<div class="modal-overlay" id="modal">
+ <div class="modal">
+   <h2 id="modalTitle">Nový kontakt</h2>
+   <div class="fr">
+     <div class="fg"><label>Jméno</label><input id="fName" placeholder="Jan Novák"></div>
+     <div class="fg"><label>Firma</label><input id="fCompany" placeholder="Firma s.r.o."></div>
+   </div>
+   <div class="fr">
+     <div class="fg"><label>Email</label><input id="fEmail" type="email" placeholder="jan@firma.cz"></div>
+     <div class="fg"><label>Telefon</label><input id="fPhone" placeholder="+420 ..."></div>
+   </div>
+   <div class="fg"><label>Web / LinkedIn</label><input id="fWeb" placeholder="https://..."></div>
+   <div class="fg">
+     <label>Typ kontaktu</label>
+     <div class="tag-select" id="tagSelect"></div>
+   </div>
+   <div class="fg"><label>Poznámka</label><textarea id="fNote" placeholder="Jak jste se poznali, co řeší..."></textarea></div>
+   <div class="modal-actions">
+     <button class="btn btn-outline" onclick="closeModal()">Zrušit</button>
+     <button class="btn" onclick="saveContact()">Uložit</button>
+   </div>
+ </div>
+</div>
+
+<script>
+const TAGS = [
+ { id:'client', label:'Klient', cls:'tag-client' },
+ { id:'lead', label:'Lead', cls:'tag-lead' },
+ { id:'partner', label:'Partner', cls:'tag-partner' },
+ { id:'supplier', label:'Dodavatel', cls:'tag-supplier' }
+];
+const COLORS = ['#e94560','#3498db','#2ecc71','#f39c12','#9b59b6','#e67e22','#1abc9c','#e74c3c','#2980b9','#8e44ad'];
+
+let contacts = JSON.parse(sessionStorage.getItem('kudli_contacts') || 'null') || [
+ { id:1, name:'Martin Dvořák', company:'Kavárna Zrnko s.r.o.', email:'martin@zrnko.cz', phone:'+420 602 345 678', web:'https://zrnko.cz', tags:['client'], note:'Majitel kavárny. Redesign webu + měsíční SEO správa. Platí včas, skvělá spolupráce.' },
+ { id:2, name:'Petra Horáčková', company:'MadeByHand.cz', email:'petra@madebyhand.cz', phone:'+420 777 123 456', web:'https://madebyhand.cz', tags:['client'], note:'Zakladatelka e-shopu řemeslných výrobků. Projekt e-shop + multi-vendor platforma.' },
+ { id:3, name:'Tomáš Marek', company:'BydlímTu s.r.o.', email:'tomas@bydlimtu.cz', phone:'+420 608 987 654', web:'https://linkedin.com/in/tomasmarek', tags:['client'], note:'Ředitel realitní kanceláře. AI chatbot + webové stránky. Velký potenciál pro upsell.' },
+ { id:4, name:'Petr Novák', company:'FitLife coaching', email:'petr@fitlife.cz', phone:'+420 603 111 222', web:'', tags:['client'], note:'Fitness trenér. Jednoduchá landing page, rychlý projekt. Možný referral.' },
+ { id:5, name:'Jana Šimková', company:'CreativeStudio.cz', email:'jana@creativestudio.cz', phone:'+420 724 555 666', web:'https://creativestudio.cz', tags:['partner'], note:'Grafická designérka. Spolupráce na designech pro klienty. Kvalitní práce, rychlá.' },
+ { id:6, name:'Lukáš Beneš', company:'CopyKing', email:'lukas@copyking.cz', phone:'+420 605 222 333', web:'', tags:['partner'], note:'Copywriter. Spolupráce na textech pro weby a landing pages.' },
+ { id:7, name:'Markéta Procházková', company:'Bloom Digital', email:'marketa@bloomdigital.cz', phone:'+420 731 444 555', web:'https://linkedin.com/in/marketaprochazkova', tags:['lead'], note:'Kontakt z networking eventu. Poptává redesign webu pro svou agenturu. Follow-up březen.' },
+ { id:8, name:'David Krejčí', company:'AutoMax s.r.o.', email:'david@automax.cz', phone:'+420 602 666 777', web:'', tags:['lead'], note:'Poptávka přes onboarding formulář. Chce web pro autobazar + integraci s TipCars.' },
+ { id:9, name:'Ing. Eva Nováková', company:'Účetnictví EN', email:'eva@ucetnictvi-en.cz', phone:'+420 777 888 999', web:'', tags:['supplier'], note:'Účetní pro OSVČ. Zpracování daňového přiznání, konzultace DPH.' },
+ { id:10, name:'Filip Hájek', company:'WebHosting.cz', email:'filip@webhosting.cz', phone:'', web:'https://webhosting.cz', tags:['supplier'], note:'Kontakt na providerovi. Pomoc s DNS, SSL certifikáty.' },
+];
+let editId = null;
+let selectedTags = [];
+
+function save() { sessionStorage.setItem('kudli_contacts', JSON.stringify(contacts)); }
+function getInitials(name) { return name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase(); }
+function getColor(name) { let h = 0; for(let c of name) h = ((h<<5)-h)+c.charCodeAt(0); return COLORS[Math.abs(h)%COLORS.length]; }
+
+function renderStats() {
+ const clients = contacts.filter(c => c.tags.includes('client')).length;
+ const leads = contacts.filter(c => c.tags.includes('lead')).length;
+ const partners = contacts.filter(c => c.tags.includes('partner')).length;
+ document.getElementById('stats').innerHTML = `
+   <div class="stat"><div class="num" style="color:var(--accent)">${contacts.length}</div><div class="label">Celkem kontaktů</div></div>
+   <div class="stat"><div class="num" style="color:var(--green)">${clients}</div><div class="label">Klientů</div></div>
+   <div class="stat"><div class="num" style="color:var(--orange)">${leads}</div><div class="label">Leadů</div></div>
+   <div class="stat"><div class="num" style="color:var(--blue)">${partners}</div><div class="label">Partnerů</div></div>
+ `;
+}
+
+function render() {
+ renderStats();
+ const q = document.getElementById('search').value.toLowerCase();
+ const ft = document.getElementById('filterTag').value;
+ let filtered = contacts.filter(c => {
+   if (q && !c.name.toLowerCase().includes(q) && !c.company.toLowerCase().includes(q) && !(c.email||'').toLowerCase().includes(q)) return false;
+   if (ft && !c.tags.includes(ft)) return false;
+   return true;
+ });
+ filtered.sort((a,b) => a.name.localeCompare(b.name, 'cs'));
+
+ const grid = document.getElementById('grid');
+ if (!filtered.length) { grid.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted);grid-column:1/-1">Žádné kontakty</div>'; return; }
+
+ grid.innerHTML = filtered.map(c => {
+   const col = getColor(c.name);
+   return `<div class="contact-card">
+     <div class="cc-actions">
+       <button onclick="editContact(${c.id})" title="Upravit">✏️</button>
+       <button onclick="deleteContact(${c.id})" title="Smazat">🗑️</button>
+     </div>
+     <div class="cc-header">
+       <div class="avatar" style="background:${col}">${getInitials(c.name)}</div>
+       <div><div class="cc-name">${c.name}</div><div class="cc-company">${c.company}</div></div>
+     </div>
+     <div class="cc-details">
+       ${c.email ? `<div class="cc-detail">📧 <a href="mailto:${c.email}">${c.email}</a></div>` : ''}
+       ${c.phone ? `<div class="cc-detail">📱 ${c.phone}</div>` : ''}
+       ${c.web ? `<div class="cc-detail">🌐 <a href="${c.web}" target="_blank">${c.web.replace(/https?:\/\//,'').slice(0,35)}</a></div>` : ''}
+     </div>
+     <div class="cc-tags">${c.tags.map(t => { const tag = TAGS.find(x=>x.id===t); return tag ? `<span class="tag ${tag.cls}">${tag.label}</span>` : ''; }).join('')}</div>
+     ${c.note ? `<div class="cc-note">${c.note}</div>` : ''}
+   </div>`;
+ }).join('');
+}
+
+function openModal(id) {
+ editId = id || null;
+ document.getElementById('modalTitle').textContent = id ? 'Upravit kontakt' : 'Nový kontakt';
+ if (id) {
+   const c = contacts.find(x => x.id === id);
+   document.getElementById('fName').value = c.name;
+   document.getElementById('fCompany').value = c.company;
+   document.getElementById('fEmail').value = c.email || '';
+   document.getElementById('fPhone').value = c.phone || '';
+   document.getElementById('fWeb').value = c.web || '';
+   document.getElementById('fNote').value = c.note || '';
+   selectedTags = [...c.tags];
+ } else {
+   ['fName','fCompany','fEmail','fPhone','fWeb','fNote'].forEach(id => document.getElementById(id).value = '');
+   selectedTags = [];
+ }
+ renderTagSelect();
+ document.getElementById('modal').classList.add('active');
+}
+function closeModal() { document.getElementById('modal').classList.remove('active'); editId = null; }
+
+function renderTagSelect() {
+ document.getElementById('tagSelect').innerHTML = TAGS.map(t =>
+   `<span class="tag-opt ${selectedTags.includes(t.id)?'sel':''}" onclick="toggleTag('${t.id}')">${t.label}</span>`
+ ).join('');
+}
+function toggleTag(id) { selectedTags.includes(id) ? selectedTags = selectedTags.filter(t=>t!==id) : selectedTags.push(id); renderTagSelect(); }
+
+function saveContact() {
+ const data = {
+   name: document.getElementById('fName').value.trim(),
+   company: document.getElementById('fCompany').value.trim(),
+   email: document.getElementById('fEmail').value.trim(),
+   phone: document.getElementById('fPhone').value.trim(),
+   web: document.getElementById('fWeb').value.trim(),
+   tags: [...selectedTags],
+   note: document.getElementById('fNote').value.trim()
+ };
+ if (!data.name) return alert('Vyplň jméno kontaktu.');
+ if (editId) { const i = contacts.findIndex(c=>c.id===editId); contacts[i] = {...contacts[i],...data}; }
+ else { data.id = Date.now(); contacts.push(data); }
+ save(); closeModal(); render();
+}
+function editContact(id) { openModal(id); }
+function deleteContact(id) { if(!confirm('Smazat kontakt?'))return; contacts=contacts.filter(c=>c.id!==id); save(); render(); }
+
+function exportCSV() {
+ const h = 'Jméno,Firma,Email,Telefon,Web,Typ,Poznámka\n';
+ const r = contacts.map(c => `"${c.name}","${c.company}","${c.email||''}","${c.phone||''}","${c.web||''}","${c.tags.join(';')}","${(c.note||'').replace(/"/g,"'")}"`).join('\n');
+ const blob = new Blob(['\uFEFF'+h+r],{type:'text/csv;charset=utf-8'});
+ const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='kontakty.csv'; a.click();
+}
+
+render();
+</script>
+</body>
+</html>

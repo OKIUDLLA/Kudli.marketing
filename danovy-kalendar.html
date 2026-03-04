@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Daňový kalendář OSVČ — Kudli. marketing</title>
+<meta name="description" content="Přehled všech daňových termínů a povinností pro OSVČ. Zálohy, přehledy, přiznání na jednom místě.">
+<meta property="og:title" content="Daňový kalendář OSVČ — Kudli. marketing">
+<meta property="og:description" content="Přehled všech daňových termínů a povinností pro OSVČ.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/danovy-kalendar.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:0.75rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+.top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
+.top-bar a:hover{color:var(--text)}
+
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+
+h1{font-size:1.8rem;font-weight:800;margin-bottom:0.3rem}
+h1 em{color:var(--accent);font-style:normal}
+.sub{color:var(--muted);margin-bottom:2rem;font-size:0.95rem}
+
+/* Year selector */
+.year-nav{display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem}
+.year-nav button{background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.4rem 0.8rem;border-radius:8px;cursor:pointer;font-size:0.9rem}
+.year-nav button:hover{border-color:var(--accent)}
+.year-nav .current-year{font-size:1.3rem;font-weight:800;color:var(--accent)}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.75rem;margin-bottom:2rem}
+.stat{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.stat .num{font-size:1.5rem;font-weight:800}
+.stat .label{font-size:0.75rem;color:var(--muted);margin-top:0.2rem}
+
+/* Category filter */
+.filters{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.filter-btn{padding:0.35rem 0.75rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--muted);cursor:pointer;font-size:0.8rem;transition:all 0.2s}
+.filter-btn:hover,.filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Timeline */
+.timeline{position:relative;padding-left:2rem}
+.timeline::before{content:'';position:absolute;left:0.6rem;top:0;bottom:0;width:2px;background:rgba(255,255,255,0.08)}
+
+.month-group{margin-bottom:2rem}
+.month-label{font-size:0.85rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.75rem;position:relative;padding-left:0.5rem}
+.month-label::before{content:'';position:absolute;left:-1.65rem;top:50%;transform:translateY(-50%);width:10px;height:10px;border-radius:50%;background:var(--accent)}
+
+.event{background:var(--card);border-radius:12px;padding:1rem 1.25rem;margin-bottom:0.5rem;border:1px solid rgba(255,255,255,0.06);display:flex;align-items:flex-start;gap:1rem;transition:all 0.2s;cursor:pointer}
+.event:hover{border-color:rgba(233,69,96,0.3);transform:translateX(3px)}
+.event.done{opacity:0.5}
+.event.done .event-title{text-decoration:line-through}
+.event.urgent{border-left:3px solid var(--red)}
+.event.upcoming{border-left:3px solid var(--orange)}
+.event.future{border-left:3px solid var(--blue)}
+.event.done-border{border-left:3px solid var(--green)}
+
+.event-check{width:22px;height:22px;border-radius:6px;border:2px solid rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;margin-top:0.1rem;font-size:0.75rem;transition:all 0.2s}
+.event-check.checked{background:var(--green);border-color:var(--green)}
+
+.event-content{flex:1}
+.event-title{font-weight:700;font-size:0.95rem;margin-bottom:0.2rem}
+.event-desc{font-size:0.8rem;color:var(--muted);line-height:1.4;margin-bottom:0.3rem}
+.event-meta{display:flex;gap:0.75rem;flex-wrap:wrap}
+.event-date{font-size:0.75rem;color:var(--orange);font-weight:600}
+.event-cat{font-size:0.65rem;padding:0.15rem 0.5rem;border-radius:4px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px}
+.cat-dan{background:rgba(231,76,60,0.15);color:var(--red)}
+.cat-soc{background:rgba(52,152,219,0.15);color:var(--blue)}
+.cat-zdrav{background:rgba(46,204,113,0.15);color:var(--green)}
+.cat-admin{background:rgba(155,89,182,0.15);color:var(--purple)}
+.cat-dph{background:rgba(243,156,18,0.15);color:var(--orange)}
+
+/* Add event */
+.add-section{background:var(--card);border-radius:16px;padding:1.5rem;margin-top:2rem;border:1px solid rgba(255,255,255,0.06)}
+.add-section h3{font-size:1rem;margin-bottom:1rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem}
+.form-row.full{grid-template-columns:1fr}
+input,select,textarea{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.6rem 0.8rem;border-radius:8px;font-size:0.85rem;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent)}
+textarea{resize:vertical;min-height:60px}
+.btn{padding:0.6rem 1.5rem;border-radius:8px;border:none;cursor:pointer;font-weight:700;font-size:0.85rem;transition:all 0.2s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-secondary{background:rgba(255,255,255,0.1);color:var(--text)}
+.btn-secondary:hover{background:rgba(255,255,255,0.15)}
+.btn-row{display:flex;gap:0.5rem;margin-top:0.5rem}
+
+/* Responsive */
+@media(max-width:768px){
+ .container{padding:1.5rem 1rem}
+ h1{font-size:1.4rem}
+ .form-row{grid-template-columns:1fr}
+ .stats{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+ .filters{gap:0.3rem}
+ .filter-btn{font-size:0.7rem;padding:0.3rem 0.5rem}
+ .event{flex-direction:column;gap:0.5rem}
+}
+
+/* Print */
+@media print{
+ body{background:#fff;color:#000}
+ .top-bar,.add-section,.filters,.year-nav button,.btn{display:none!important}
+ .container{max-width:100%;padding:0}
+ .event{border:1px solid #ccc;background:#fff;color:#000;break-inside:avoid}
+ .event *{color:#000!important}
+ .stat{border:1px solid #ccc;background:#fff;color:#000}
+ .stat *{color:#000!important}
+ .timeline::before{background:#ccc}
+ .month-label{color:#e94560!important}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+ <a href="nastroje.html">&larr; Zpět na nástroje</a>
+ <span style="font-size:0.8rem;color:var(--muted)">Daňový kalendář OSVČ</span>
+</div>
+
+<div class="container">
+
+<h1>Daňový <em>kalendář</em> OSVČ</h1>
+<p class="sub">Všechny termíny, zálohy a povinnosti na jednom místě — IČO 07271751</p>
+
+<div class="year-nav">
+ <button onclick="changeYear(-1)">&larr;</button>
+ <span class="current-year" id="yearLabel">2026</span>
+ <button onclick="changeYear(1)">&rarr;</button>
+</div>
+
+<div class="stats">
+ <div class="stat"><div class="num" style="color:var(--red)" id="statTotal">0</div><div class="label">Celkem termínů</div></div>
+ <div class="stat"><div class="num" style="color:var(--green)" id="statDone">0</div><div class="label">Splněno</div></div>
+ <div class="stat"><div class="num" style="color:var(--orange)" id="statUpcoming">0</div><div class="label">Blíží se</div></div>
+ <div class="stat"><div class="num" style="color:var(--accent)" id="statOverdue">0</div><div class="label">Po termínu</div></div>
+</div>
+
+<div class="filters">
+ <button class="filter-btn active" onclick="filterCat('all')">Vše</button>
+ <button class="filter-btn" onclick="filterCat('dan')">Daně</button>
+ <button class="filter-btn" onclick="filterCat('soc')">Sociální</button>
+ <button class="filter-btn" onclick="filterCat('zdrav')">Zdravotní</button>
+ <button class="filter-btn" onclick="filterCat('dph')">DPH</button>
+ <button class="filter-btn" onclick="filterCat('admin')">Administrativa</button>
+</div>
+
+<div class="timeline" id="timeline"></div>
+
+<div class="add-section">
+ <h3>+ Přidat termín</h3>
+ <div class="form-row">
+  <input type="text" id="newTitle" placeholder="Název termínu">
+  <input type="date" id="newDate">
+ </div>
+ <div class="form-row">
+  <select id="newCat">
+   <option value="dan">Daně</option>
+   <option value="soc">Sociální pojištění</option>
+   <option value="zdrav">Zdravotní pojištění</option>
+   <option value="dph">DPH</option>
+   <option value="admin">Administrativa</option>
+  </select>
+  <input type="text" id="newAmount" placeholder="Částka (nepovinné)">
+ </div>
+ <div class="form-row full">
+  <textarea id="newDesc" placeholder="Poznámka (nepovinné)"></textarea>
+ </div>
+ <div class="btn-row">
+  <button class="btn btn-primary" onclick="addEvent()">Přidat</button>
+  <button class="btn btn-secondary" onclick="exportCSV()">Export CSV</button>
+ </div>
+</div>
+
+</div>
+
+<script>
+let currentYear = 2026;
+let activeFilter = 'all';
+
+const catLabels = {dan:'Daně',soc:'Sociální',zdrav:'Zdravotní',dph:'DPH',admin:'Administrativa'};
+const months = ['Leden','Únor','Březen','Duben','Květen','Červen','Červenec','Srpen','Září','Říjen','Listopad','Prosinec'];
+
+function getKey(){ return 'kudli_tax_'+currentYear; }
+
+function getDefaultEvents(year){
+ return [
+  {id:1,title:'Přehled OSSZ za '+(year-1),desc:'Odevzdat přehled o příjmech a výdajích na OSSZ. Formulář na ePortálu ČSSZ.',date:year+'-05-02',cat:'soc',amount:'',done:false},
+  {id:2,title:'Přehled ZP za '+(year-1),desc:'Odevzdat přehled o příjmech a výdajích na zdravotní pojišťovnu (VZP).',date:year+'-05-02',cat:'zdrav',amount:'',done:false},
+  {id:3,title:'Daňové přiznání za '+(year-1),desc:'Podat přiznání k dani z příjmů FO. Paušální výdaje 60 % (živnost volná).',date:year+'-04-01',cat:'dan',amount:'',done:false},
+  {id:4,title:'Záloha na sociální pojištění — Q1',desc:'Měsíční záloha na OSSZ. Min. záloha pro hlavní činnost.',date:year+'-01-20',cat:'soc',amount:'3 852 Kč',done:false},
+  {id:5,title:'Záloha na sociální pojištění — Q2',desc:'Měsíční záloha na OSSZ.',date:year+'-04-20',cat:'soc',amount:'3 852 Kč',done:false},
+  {id:6,title:'Záloha na zdravotní pojištění — Q1',desc:'Měsíční záloha na VZP. Min. záloha pro OSVČ.',date:year+'-01-08',cat:'zdrav',amount:'2 968 Kč',done:false},
+  {id:7,title:'Záloha na zdravotní pojištění — Q2',desc:'Měsíční záloha na VZP.',date:year+'-04-08',cat:'zdrav',amount:'2 968 Kč',done:false},
+  {id:8,title:'Záloha na daň z příjmů',desc:'Pololetní záloha na daň (pokud daň přesáhla 30 000 Kč).',date:year+'-06-15',cat:'dan',amount:'',done:false},
+  {id:9,title:'Záloha na sociální pojištění — Q3',desc:'Měsíční záloha na OSSZ.',date:year+'-07-20',cat:'soc',amount:'3 852 Kč',done:false},
+  {id:10,title:'Záloha na zdravotní pojištění — Q3',desc:'Měsíční záloha na VZP.',date:year+'-07-08',cat:'zdrav',amount:'2 968 Kč',done:false},
+  {id:11,title:'Záloha na sociální pojištění — Q4',desc:'Měsíční záloha na OSSZ.',date:year+'-10-20',cat:'soc',amount:'3 852 Kč',done:false},
+  {id:12,title:'Záloha na zdravotní pojištění — Q4',desc:'Měsíční záloha na VZP.',date:year+'-10-08',cat:'zdrav',amount:'2 968 Kč',done:false},
+  {id:13,title:'Záloha na daň z příjmů — 2. pololetí',desc:'Druhá pololetní záloha na daň z příjmů.',date:year+'-12-15',cat:'dan',amount:'',done:false},
+  {id:14,title:'Silvestrovská kontrola',desc:'Zkontrolovat všechny příjmy, výdaje a evidence za celý rok. Příprava na přiznání.',date:year+'-12-31',cat:'admin',amount:'',done:false},
+  {id:15,title:'Kontrolní hlášení (pokud plátce DPH)',desc:'Měsíční kontrolní hlášení k DPH. Platí jen pro plátce DPH.',date:year+'-02-25',cat:'dph',amount:'',done:false},
+  {id:16,title:'Archivace dokladů za '+(year-1),desc:'Zajistit archivaci všech faktur a dokladů po dobu 10 let (daňové) / 5 let (účetní).',date:year+'-03-31',cat:'admin',amount:'',done:false}
+ ];
+}
+
+function loadEvents(){
+ const saved = sessionStorage.getItem(getKey());
+ if(saved) return JSON.parse(saved);
+ const defaults = getDefaultEvents(currentYear);
+ sessionStorage.setItem(getKey(), JSON.stringify(defaults));
+ return defaults;
+}
+
+function saveEvents(events){
+ sessionStorage.setItem(getKey(), JSON.stringify(events));
+}
+
+function changeYear(delta){
+ currentYear += delta;
+ document.getElementById('yearLabel').textContent = currentYear;
+ render();
+}
+
+function filterCat(cat){
+ activeFilter = cat;
+ document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+ event.target.classList.add('active');
+ render();
+}
+
+function toggleDone(id){
+ const events = loadEvents();
+ const ev = events.find(e => e.id === id);
+ if(ev){ ev.done = !ev.done; saveEvents(events); render(); }
+}
+
+function deleteEvent(id){
+ let events = loadEvents();
+ events = events.filter(e => e.id !== id);
+ saveEvents(events);
+ render();
+}
+
+function getStatus(dateStr, done){
+ if(done) return 'done-border';
+ const now = new Date();
+ const d = new Date(dateStr+'T00:00:00');
+ const diff = (d - now) / (1000*60*60*24);
+ if(diff < 0) return 'urgent';
+ if(diff < 14) return 'upcoming';
+ return 'future';
+}
+
+function render(){
+ const events = loadEvents();
+ const filtered = activeFilter === 'all' ? events : events.filter(e => e.cat === activeFilter);
+ const sorted = [...filtered].sort((a,b) => a.date.localeCompare(b.date));
+
+ // Group by month
+ const groups = {};
+ sorted.forEach(ev => {
+  const m = parseInt(ev.date.split('-')[1]) - 1;
+  if(!groups[m]) groups[m] = [];
+  groups[m].push(ev);
+ });
+
+ let html = '';
+ for(let m = 0; m < 12; m++){
+  if(!groups[m]) continue;
+  html += `<div class="month-group"><div class="month-label">${months[m]} ${currentYear}</div>`;
+  groups[m].forEach(ev => {
+   const status = getStatus(ev.date, ev.done);
+   const checked = ev.done ? 'checked' : '';
+   html += `<div class="event ${status} ${ev.done?'done':''}">
+    <div class="event-check ${checked}" onclick="toggleDone(${ev.id})">${ev.done?'✓':''}</div>
+    <div class="event-content">
+     <div class="event-title">${ev.title}</div>
+     <div class="event-desc">${ev.desc}</div>
+     <div class="event-meta">
+      <span class="event-date">📅 ${formatDate(ev.date)}</span>
+      <span class="event-cat cat-${ev.cat}">${catLabels[ev.cat]}</span>
+      ${ev.amount ? `<span style="font-size:0.75rem;color:var(--green);font-weight:600">💰 ${ev.amount}</span>` : ''}
+      <span style="font-size:0.7rem;color:var(--muted);cursor:pointer;margin-left:auto" onclick="deleteEvent(${ev.id})">🗑️</span>
+     </div>
+    </div>
+   </div>`;
+  });
+  html += '</div>';
+ }
+
+ if(!html) html = '<p style="color:var(--muted);text-align:center;padding:2rem">Žádné termíny pro tento rok a filtr.</p>';
+ document.getElementById('timeline').innerHTML = html;
+
+ // Stats
+ const all = loadEvents();
+ const now = new Date();
+ document.getElementById('statTotal').textContent = all.length;
+ document.getElementById('statDone').textContent = all.filter(e => e.done).length;
+ document.getElementById('statUpcoming').textContent = all.filter(e => !e.done && (new Date(e.date+'T00:00:00') - now)/(1000*60*60*24) < 14 && (new Date(e.date+'T00:00:00') - now) >= 0).length;
+ document.getElementById('statOverdue').textContent = all.filter(e => !e.done && new Date(e.date+'T00:00:00') < now).length;
+}
+
+function formatDate(d){
+ const parts = d.split('-');
+ return parts[2]+'. '+parseInt(parts[1])+'. '+parts[0];
+}
+
+function addEvent(){
+ const title = document.getElementById('newTitle').value.trim();
+ const date = document.getElementById('newDate').value;
+ const cat = document.getElementById('newCat').value;
+ const amount = document.getElementById('newAmount').value.trim();
+ const desc = document.getElementById('newDesc').value.trim();
+ if(!title || !date) return alert('Vyplň název a datum.');
+
+ const events = loadEvents();
+ const id = events.length ? Math.max(...events.map(e=>e.id))+1 : 1;
+ events.push({id, title, desc: desc||'Vlastní termín', date, cat, amount, done:false});
+ saveEvents(events);
+
+ document.getElementById('newTitle').value = '';
+ document.getElementById('newDate').value = '';
+ document.getElementById('newAmount').value = '';
+ document.getElementById('newDesc').value = '';
+ render();
+}
+
+function exportCSV(){
+ const events = loadEvents();
+ let csv = 'Název;Datum;Kategorie;Částka;Popis;Splněno\n';
+ events.sort((a,b) => a.date.localeCompare(b.date)).forEach(e => {
+  csv += `"${e.title}";"${e.date}";"${catLabels[e.cat]}";"${e.amount}";"${e.desc}";"${e.done?'Ano':'Ne'}"\n`;
+ });
+ const blob = new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+ const a = document.createElement('a');
+ a.href = URL.createObjectURL(blob);
+ a.download = 'danovy-kalendar-'+currentYear+'.csv';
+ a.click();
+}
+
+render();
+</script>
+</body>
+</html>

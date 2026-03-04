@@ -1,0 +1,6 @@
+.DS_Store
+*.swp
+*.swo
+*~
+Kudli.marketing/
+push-to-github.sh

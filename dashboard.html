@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Dashboard | Kudli. marketing</title>
+<meta name="description" content="Hlavní přehled freelance businessu — příjmy, klienti, úkoly, cíle na jednom místě.">
+<meta property="og:title" content="Dashboard | Kudli. marketing">
+<meta property="og:description" content="Centrální přehled všech klíčových metrik.">
+<meta property="og:image" content="og-image.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.top-bar{background:var(--card);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05)}
+.top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
+.top-bar a:hover{color:var(--accent)}
+.container{max-width:1200px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.75rem;margin-bottom:0.25rem}
+h1 em{color:var(--accent);font-style:normal}
+.subtitle{color:var(--muted);margin-bottom:2rem}
+.greeting{font-size:1.1rem;color:var(--muted);margin-bottom:0.5rem}
+.greeting strong{color:var(--text)}
+
+/* KPI row */
+.kpi-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1rem;margin-bottom:2rem}
+.kpi{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(255,255,255,0.05);position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;top:0;left:0;width:100%;height:3px}
+.kpi-icon{font-size:1.5rem;margin-bottom:0.5rem}
+.kpi-value{font-size:2rem;font-weight:700;line-height:1}
+.kpi-label{font-size:0.8rem;color:var(--muted);margin-top:0.3rem}
+.kpi-change{font-size:0.75rem;font-weight:600;margin-top:0.35rem;display:inline-block;padding:0.15rem 0.5rem;border-radius:4px}
+.kpi-up{background:rgba(46,204,113,0.15);color:var(--green)}
+.kpi-down{background:rgba(231,76,60,0.15);color:var(--red)}
+.kpi-neutral{background:rgba(255,255,255,0.05);color:var(--muted)}
+
+/* Grid layout */
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+.grid-3{display:grid;grid-template-columns:2fr 1fr;gap:1.5rem;margin-bottom:1.5rem}
+
+/* Card */
+.card{background:var(--card);border-radius:14px;padding:1.5rem;border:1px solid rgba(255,255,255,0.05)}
+.card-title{font-size:1rem;font-weight:600;margin-bottom:1rem;display:flex;align-items:center;justify-content:space-between}
+.card-title a{font-size:0.8rem;color:var(--accent);text-decoration:none}
+.card-title a:hover{text-decoration:underline}
+
+/* Revenue chart */
+.chart-bars{display:flex;align-items:flex-end;gap:6px;height:140px;padding-top:10px}
+.chart-bar{flex:1;border-radius:4px 4px 0 0;position:relative;min-width:0;transition:height 0.5s ease}
+.chart-bar:hover{opacity:0.8}
+.chart-label{position:absolute;bottom:-20px;left:50%;transform:translateX(-50%);font-size:0.6rem;color:var(--muted);white-space:nowrap}
+.chart-val{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:0.6rem;color:var(--muted);white-space:nowrap}
+
+/* Tasks list */
+.task-item{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+.task-item:last-child{border:none}
+.task-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--muted);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.6rem;transition:all 0.2s}
+.task-check.done{background:var(--green);border-color:var(--green);color:#fff}
+.task-text{font-size:0.85rem;flex:1}
+.task-text.done-text{text-decoration:line-through;opacity:0.5}
+.task-priority{padding:0.15rem 0.4rem;border-radius:4px;font-size:0.65rem;font-weight:600}
+.p-high{background:rgba(231,76,60,0.15);color:var(--red)}
+.p-mid{background:rgba(243,156,18,0.15);color:var(--orange)}
+.p-low{background:rgba(52,152,219,0.15);color:var(--blue)}
+
+/* Client list */
+.client-row{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.03)}
+.client-row:last-child{border:none}
+.client-avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0}
+.client-info{flex:1}
+.client-name{font-size:0.85rem;font-weight:600}
+.client-detail{font-size:0.7rem;color:var(--muted)}
+.client-status{padding:0.2rem 0.5rem;border-radius:4px;font-size:0.65rem;font-weight:600}
+
+/* OKR progress */
+.okr-item{margin-bottom:0.75rem}
+.okr-label{display:flex;justify-content:space-between;align-items:center;font-size:0.85rem;margin-bottom:0.35rem}
+.okr-bar{height:8px;background:rgba(255,255,255,0.08);border-radius:6px;overflow:hidden}
+.okr-fill{height:100%;border-radius:6px;transition:width 0.5s ease}
+
+/* Quick links */
+.quick-links{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:0.5rem}
+.quick-link{display:flex;flex-direction:column;align-items:center;gap:0.35rem;padding:0.75rem;border-radius:10px;background:rgba(255,255,255,0.03);text-decoration:none;color:var(--text);font-size:0.75rem;text-align:center;transition:all 0.2s;border:1px solid transparent}
+.quick-link:hover{background:rgba(233,69,96,0.1);border-color:rgba(233,69,96,0.2)}
+.quick-link .ql-icon{font-size:1.3rem}
+
+/* Activity feed */
+.activity-item{display:flex;gap:0.75rem;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.03);font-size:0.8rem}
+.activity-item:last-child{border:none}
+.activity-dot{width:8px;height:8px;border-radius:50%;margin-top:6px;flex-shrink:0}
+.activity-time{color:var(--muted);font-size:0.7rem;margin-top:0.15rem}
+
+/* Weather-like status */
+.biz-status{display:flex;align-items:center;gap:1rem;padding:1rem;background:rgba(46,204,113,0.08);border-radius:10px;margin-bottom:1.5rem;border:1px solid rgba(46,204,113,0.15)}
+.biz-status-icon{font-size:2rem}
+.biz-status-text{font-size:0.9rem}
+.biz-status-text strong{display:block;margin-bottom:0.15rem}
+
+@media(max-width:768px){
+  .container{padding:1.5rem 0.75rem}
+  h1{font-size:1.4rem}
+  .kpi-row{grid-template-columns:repeat(2,1fr)}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+  .chart-bars{height:100px}
+  .quick-links{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:480px){
+  .container{padding:1rem 0.5rem}
+  .kpi-row{grid-template-columns:1fr 1fr}
+  .quick-links{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="nastroje.html">← Zpět na nástroje</a>
+  <span style="font-size:0.8rem;color:var(--muted)">Dashboard</span>
+</div>
+
+<div class="container">
+  <div class="greeting" id="greeting"></div>
+  <h1>📊 Business <em>Dashboard</em></h1>
+  <p class="subtitle">Vše důležité na jednom místě</p>
+
+  <div class="biz-status" id="bizStatus"></div>
+
+  <div class="kpi-row" id="kpiRow"></div>
+
+  <div class="grid-3">
+    <div class="card">
+      <div class="card-title">Měsíční příjmy (2026) <a href="finance.html">Zobrazit vše →</a></div>
+      <div class="chart-bars" id="revenueChart"></div>
+      <div style="height:24px"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Cíle Q1 2026 <a href="cile.html">OKR →</a></div>
+      <div id="okrList"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Nejbližší úkoly <a href="deadliny.html">Všechny →</a></div>
+      <div id="tasksList"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Aktivní klienti <a href="crm.html">CRM →</a></div>
+      <div id="clientsList"></div>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">Poslední aktivita</div>
+      <div id="activityFeed"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Rychlé zkratky</div>
+      <div class="quick-links" id="quickLinks"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Greeting
+function setGreeting(){
+  const h = new Date().getHours();
+  let g = 'Dobrý den';
+  if(h<12) g='Dobré ráno';
+  else if(h<18) g='Dobré odpoledne';
+  else g='Dobrý večer';
+  document.getElementById('greeting').innerHTML = `${g}, <strong>Ondřeji</strong> 👋`;
+}
+setGreeting();
+
+// Business status
+function bizStatus(){
+  const statuses = [
+    {icon:'☀️',title:'Business je na dobré cestě',text:'3 aktivní klienti, 2 nabídky v řešení, 68% cílů Q1 splněno.', bg:'rgba(46,204,113,0.08)',border:'rgba(46,204,113,0.15)'},
+  ];
+  const s = statuses[0];
+  document.getElementById('bizStatus').innerHTML = `
+    <div class="biz-status-icon">${s.icon}</div>
+    <div class="biz-status-text"><strong>${s.title}</strong>${s.text}</div>
+  `;
+}
+bizStatus();
+
+// KPIs
+function renderKPIs(){
+  const kpis = [
+    {icon:'💰',value:'32 400 Kč',label:'Příjem tento měsíc',change:'+18%',dir:'up',color:'var(--green)'},
+    {icon:'👥',value:'3',label:'Aktivní klienti',change:'+1 nový',dir:'up',color:'var(--blue)'},
+    {icon:'📋',value:'5',label:'Otevřených úkolů',change:'2 dnes',dir:'neutral',color:'var(--orange)'},
+    {icon:'⏱️',value:'42 h',label:'Odpracováno tento měsíc',change:'Ø 520 Kč/h',dir:'neutral',color:'var(--purple)'},
+    {icon:'📧',value:'2',label:'Nabídky v řešení',change:'45 000 Kč',dir:'up',color:'var(--accent)'},
+    {icon:'⭐',value:'9.2',label:'NPS skóre',change:'Výborné',dir:'up',color:'var(--green)'}
+  ];
+  document.getElementById('kpiRow').innerHTML = kpis.map(k=>`
+    <div class="kpi" style="border-top:3px solid ${k.color}">
+      <div class="kpi-icon">${k.icon}</div>
+      <div class="kpi-value" style="color:${k.color}">${k.value}</div>
+      <div class="kpi-label">${k.label}</div>
+      <span class="kpi-change kpi-${k.dir}">${k.change}</span>
+    </div>
+  `).join('');
+}
+renderKPIs();
+
+// Revenue chart
+function renderRevenue(){
+  const months = ['Led','Úno','Bře','Dub','Kvě','Čer','Čec','Srp','Zář','Říj','Lis','Pro'];
+  const values = [0,18500,32400,0,0,0,0,0,0,0,0,0];
+  const max = Math.max(...values,1);
+  const now = new Date().getMonth();
+  document.getElementById('revenueChart').innerHTML = months.map((m,i)=>{
+    const h = values[i]>0 ? Math.max(8,(values[i]/max)*100) : 4;
+    const color = i===now ? 'var(--accent)' : i<now ? 'var(--green)' : 'rgba(255,255,255,0.08)';
+    const val = values[i]>0 ? (values[i]/1000).toFixed(0)+'k' : '';
+    return `<div class="chart-bar" style="height:${h}%;background:${color}">
+      ${val?`<span class="chart-val">${val}</span>`:''}
+      <span class="chart-label">${m}</span>
+    </div>`;
+  }).join('');
+}
+renderRevenue();
+
+// OKR
+function renderOKR(){
+  const okrs = [
+    {name:'Získat 5 platících klientů',progress:60,color:'var(--blue)'},
+    {name:'Obrat 40 000 Kč/měsíc',progress:81,color:'var(--green)'},
+    {name:'Online přítomnost',progress:44,color:'var(--accent)'},
+    {name:'Zvládnout automatizace',progress:53,color:'var(--purple)'},
+    {name:'Optimalizovat procesy',progress:87,color:'var(--orange)'}
+  ];
+  document.getElementById('okrList').innerHTML = okrs.map(o=>`
+    <div class="okr-item">
+      <div class="okr-label"><span>${o.name}</span><span style="font-weight:700;color:${o.color}">${o.progress}%</span></div>
+      <div class="okr-bar"><div class="okr-fill" style="width:${o.progress}%;background:${o.color}"></div></div>
+    </div>
+  `).join('');
+}
+renderOKR();
+
+// Tasks
+function renderTasks(){
+  const tasks = [
+    {text:'Odeslat nabídku pro Kavárna U Mlýna',priority:'high',done:false},
+    {text:'Dokončit landing page MadeByHand',priority:'high',done:false},
+    {text:'Připravit měsíční report BydlímTu',priority:'mid',done:false},
+    {text:'Follow-up email Petra Nováka',priority:'mid',done:false},
+    {text:'Aktualizovat portfolio web',priority:'low',done:true},
+    {text:'Nahrát nový blog článek',priority:'low',done:false}
+  ];
+  document.getElementById('tasksList').innerHTML = tasks.map((t,i)=>{
+    const pCls = t.priority==='high'?'p-high':t.priority==='mid'?'p-mid':'p-low';
+    const pLabel = t.priority==='high'?'Vysoká':t.priority==='mid'?'Střední':'Nízká';
+    return `<div class="task-item">
+      <div class="task-check ${t.done?'done':''}" onclick="this.classList.toggle('done');this.innerHTML=this.classList.contains('done')?'✓':'';this.nextElementSibling.classList.toggle('done-text')">${t.done?'✓':''}</div>
+      <span class="task-text ${t.done?'done-text':''}">${t.text}</span>
+      <span class="task-priority ${pCls}">${pLabel}</span>
+    </div>`;
+  }).join('');
+}
+renderTasks();
+
+// Clients
+function renderClients(){
+  const clients = [
+    {name:'Kavárna U Mlýna',detail:'Landing page · 8 900 Kč',status:'Aktivní',statusColor:'var(--green)',avatar:'KM',avatarBg:'#e94560'},
+    {name:'MadeByHand',detail:'Firemní web · 19 900 Kč',status:'Aktivní',statusColor:'var(--green)',avatar:'MH',avatarBg:'#3498db'},
+    {name:'BydlímTu',detail:'SEO + PPC · 12 000 Kč/měs',status:'Retainer',statusColor:'var(--blue)',avatar:'BT',avatarBg:'#2ecc71'},
+    {name:'Petr Novák',detail:'Konzultace · nabídka odeslána',status:'Lead',statusColor:'var(--orange)',avatar:'PN',avatarBg:'#9b59b6'},
+    {name:'FitLife Studio',detail:'Sociální sítě · jednání',status:'Lead',statusColor:'var(--orange)',avatar:'FL',avatarBg:'#f39c12'}
+  ];
+  document.getElementById('clientsList').innerHTML = clients.map(c=>`
+    <div class="client-row">
+      <div class="client-avatar" style="background:${c.avatarBg}">${c.avatar}</div>
+      <div class="client-info">
+        <div class="client-name">${c.name}</div>
+        <div class="client-detail">${c.detail}</div>
+      </div>
+      <span class="client-status" style="background:${c.statusColor}22;color:${c.statusColor}">${c.status}</span>
+    </div>
+  `).join('');
+}
+renderClients();
+
+// Activity feed
+function renderActivity(){
+  const items = [
+    {text:'Nabídka odeslána — Kavárna U Mlýna',time:'Dnes 14:30',color:'var(--accent)'},
+    {text:'Faktura #2026003 uhrazena — BydlímTu',time:'Dnes 10:15',color:'var(--green)'},
+    {text:'Nový lead: FitLife Studio',time:'Včera 16:45',color:'var(--blue)'},
+    {text:'Blog článek publikován: SEO tipy 2026',time:'Včera 09:00',color:'var(--purple)'},
+    {text:'Měsíční report odeslán — MadeByHand',time:'28.2. 2026',color:'var(--orange)'},
+    {text:'Smlouva podepsána — BydlímTu retainer',time:'27.2. 2026',color:'var(--green)'},
+    {text:'Kickoff schůzka — MadeByHand',time:'25.2. 2026',color:'var(--blue)'}
+  ];
+  document.getElementById('activityFeed').innerHTML = items.map(a=>`
+    <div class="activity-item">
+      <div class="activity-dot" style="background:${a.color}"></div>
+      <div style="flex:1">
+        <div>${a.text}</div>
+        <div class="activity-time">${a.time}</div>
+      </div>
+    </div>
+  `).join('');
+}
+renderActivity();
+
+// Quick links
+function renderQuickLinks(){
+  const links = [
+    {icon:'📄',label:'Nová faktura',href:'faktura.html'},
+    {icon:'📝',label:'Nová nabídka',href:'generator-nabidek.html'},
+    {icon:'👤',label:'CRM',href:'crm.html'},
+    {icon:'💰',label:'Finance',href:'finance.html'},
+    {icon:'⏱️',label:'Timesheet',href:'timesheet.html'},
+    {icon:'📊',label:'Analytika',href:'analytika.html'},
+    {icon:'📅',label:'Deadliny',href:'deadliny.html'},
+    {icon:'📋',label:'Šablony',href:'sablony.html'},
+    {icon:'🎯',label:'Cíle',href:'cile.html'},
+    {icon:'📧',label:'Kampaně',href:'kampane.html'}
+  ];
+  document.getElementById('quickLinks').innerHTML = links.map(l=>`
+    <a href="${l.href}" class="quick-link">
+      <span class="ql-icon">${l.icon}</span>
+      ${l.label}
+    </a>
+  `).join('');
+}
+renderQuickLinks();
+</script>
+</body>
+</html>

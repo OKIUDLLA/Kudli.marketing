@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Cíle & OKR | Kudli. marketing</title>
+<meta name="description" content="Sledování čtvrtletních cílů, klíčových výsledků a KPI pro freelance business.">
+<meta property="og:title" content="Cíle & OKR | Kudli. marketing">
+<meta property="og:description" content="Sledování čtvrtletních cílů a klíčových výsledků.">
+<meta property="og:image" content="og-image.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.top-bar{background:var(--card);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05)}
+.top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
+.top-bar a:hover{color:var(--accent)}
+.container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.75rem;margin-bottom:0.25rem}
+h1 em{color:var(--accent);font-style:normal}
+.subtitle{color:var(--muted);margin-bottom:2rem}
+
+/* Quarter tabs */
+.quarter-tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.q-tab{padding:0.5rem 1.25rem;border-radius:8px;background:var(--card);border:1px solid rgba(255,255,255,0.05);cursor:pointer;font-size:0.9rem;color:var(--muted);transition:all 0.2s}
+.q-tab:hover{border-color:var(--accent)}
+.q-tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Summary cards */
+.summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
+.sum-card{background:var(--card);border-radius:12px;padding:1.25rem;text-align:center;border:1px solid rgba(255,255,255,0.05)}
+.sum-card .num{font-size:2rem;font-weight:700}
+.sum-card .lbl{color:var(--muted);font-size:0.8rem;margin-top:0.25rem}
+
+/* Goal card */
+.goal-card{background:var(--card);border-radius:12px;padding:1.5rem;margin-bottom:1rem;border:1px solid rgba(255,255,255,0.05);position:relative}
+.goal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.goal-title{font-size:1.1rem;font-weight:600}
+.goal-status{padding:0.25rem 0.75rem;border-radius:20px;font-size:0.75rem;font-weight:600}
+.status-on-track{background:rgba(46,204,113,0.15);color:var(--green)}
+.status-at-risk{background:rgba(243,156,18,0.15);color:var(--orange)}
+.status-behind{background:rgba(231,76,60,0.15);color:var(--red)}
+.status-done{background:rgba(46,204,113,0.15);color:var(--green)}
+
+/* Key results */
+.kr-list{display:flex;flex-direction:column;gap:0.75rem}
+.kr-item{display:flex;align-items:center;gap:1rem}
+.kr-check{width:20px;height:20px;border-radius:50%;border:2px solid var(--muted);cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:0.7rem;transition:all 0.2s}
+.kr-check.done{background:var(--green);border-color:var(--green);color:#fff}
+.kr-info{flex:1}
+.kr-text{font-size:0.9rem;margin-bottom:0.35rem}
+.kr-bar-wrap{background:rgba(255,255,255,0.08);border-radius:6px;height:8px;overflow:hidden}
+.kr-bar{height:100%;border-radius:6px;transition:width 0.5s ease}
+.kr-meta{display:flex;justify-content:space-between;align-items:center;margin-top:0.2rem}
+.kr-pct{font-size:0.75rem;font-weight:600}
+.kr-target{font-size:0.75rem;color:var(--muted)}
+
+/* Actions */
+.actions{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.btn{padding:0.6rem 1.25rem;border-radius:8px;border:none;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.1)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:0.35rem 0.75rem;font-size:0.8rem}
+
+/* Goal progress ring */
+.progress-ring{position:relative;width:48px;height:48px;flex-shrink:0}
+.progress-ring svg{transform:rotate(-90deg)}
+.progress-ring .pct{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:0.7rem;font-weight:700}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:16px;padding:2rem;width:90%;max-width:550px;max-height:85vh;overflow-y:auto}
+.modal h2{font-size:1.25rem;margin-bottom:1.5rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.35rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.9rem}
+.form-group textarea{resize:vertical;min-height:60px}
+.kr-inputs{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem}
+.kr-row{display:flex;gap:0.5rem;align-items:center}
+.kr-row input{flex:1}
+.kr-row input[type="number"]{width:70px;flex:none}
+.remove-kr{background:var(--red);color:#fff;border:none;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.9rem}
+.modal-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1.5rem}
+
+/* Category tag */
+.cat-tag{padding:0.15rem 0.5rem;border-radius:4px;font-size:0.7rem;font-weight:600;margin-left:0.5rem}
+
+/* Goal overall bar */
+.goal-overall{display:flex;align-items:center;gap:1rem;margin-bottom:1rem;padding:0.75rem;background:rgba(255,255,255,0.03);border-radius:8px}
+.goal-overall-bar{flex:1;height:10px;background:rgba(255,255,255,0.08);border-radius:6px;overflow:hidden}
+.goal-overall-fill{height:100%;border-radius:6px;transition:width 0.5s ease}
+
+/* Delete */
+.delete-goal{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;opacity:0.5;transition:opacity 0.2s}
+.delete-goal:hover{opacity:1;color:var(--red)}
+
+@media(max-width:768px){
+  .container{padding:1.5rem 0.75rem}
+  h1{font-size:1.4rem}
+  .summary{grid-template-columns:repeat(2,1fr)}
+  .kr-item{flex-direction:column;align-items:flex-start}
+  .progress-ring{display:none}
+}
+@media(max-width:480px){
+  .container{padding:1rem 0.5rem}
+  .summary{grid-template-columns:1fr 1fr}
+  .btn{width:100%;justify-content:center}
+  .actions{flex-direction:column}
+  .q-tab{flex:1;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="nastroje.html">← Zpět na nástroje</a>
+  <span style="font-size:0.8rem;color:var(--muted)">Cíle & OKR</span>
+</div>
+
+<div class="container">
+  <h1>🎯 Cíle & <em>OKR</em></h1>
+  <p class="subtitle">Čtvrtletní cíle, klíčové výsledky a měření pokroku</p>
+
+  <div class="quarter-tabs" id="qTabs"></div>
+
+  <div class="summary" id="summary"></div>
+
+  <div class="actions">
+    <button class="btn btn-primary" onclick="openModal()">+ Nový cíl</button>
+    <button class="btn btn-outline" onclick="exportCSV()">📥 Export CSV</button>
+  </div>
+
+  <div id="goalsList"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">Nový cíl</h2>
+    <input type="hidden" id="editId">
+    <div class="form-group">
+      <label>Název cíle</label>
+      <input type="text" id="gName" placeholder="Např. Získat prvních 5 klientů">
+    </div>
+    <div class="form-group">
+      <label>Kategorie</label>
+      <select id="gCat">
+        <option value="revenue">💰 Příjmy</option>
+        <option value="clients">👥 Klienti</option>
+        <option value="marketing">📣 Marketing</option>
+        <option value="skills">📚 Rozvoj</option>
+        <option value="operations">⚙️ Provoz</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Čtvrtletí</label>
+      <select id="gQuarter"></select>
+    </div>
+    <div class="form-group">
+      <label>Klíčové výsledky (KR)</label>
+      <div class="kr-inputs" id="krInputs"></div>
+      <button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="addKrInput()">+ Přidat KR</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveGoal()">Uložit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CAT_COLORS = {revenue:'#2ecc71',clients:'#3498db',marketing:'#e94560',skills:'#9b59b6',operations:'#f39c12'};
+const CAT_LABELS = {revenue:'Příjmy',clients:'Klienti',marketing:'Marketing',skills:'Rozvoj',operations:'Provoz'};
+
+function getQuarters(){
+  const qs = [];
+  for(let y=2026;y<=2027;y++){
+    for(let q=1;q<=4;q++) qs.push(`Q${q} ${y}`);
+  }
+  return qs;
+}
+
+function currentQuarter(){
+  const now = new Date();
+  const q = Math.ceil((now.getMonth()+1)/3);
+  return `Q${q} ${now.getFullYear()}`;
+}
+
+let activeQ = currentQuarter();
+
+function defaultGoals(){
+  return [
+    {id:1, name:'Získat prvních 5 platících klientů', cat:'clients', quarter:'Q1 2026', krs:[
+      {text:'Oslovit 30 potenciálních klientů',target:30,current:18,done:false},
+      {text:'Odeslat 15 nabídek',target:15,current:9,done:false},
+      {text:'Uzavřít 5 zakázek',target:5,current:3,done:false}
+    ]},
+    {id:2, name:'Dosáhnout měsíčního obratu 40 000 Kč', cat:'revenue', quarter:'Q1 2026', krs:[
+      {text:'Landing page zakázky (3×)',target:3,current:2,done:false},
+      {text:'Retainer smlouva (1×)',target:1,current:0,done:false},
+      {text:'Průměrná zakázka nad 10 000 Kč',target:10000,current:8500,done:false}
+    ]},
+    {id:3, name:'Vybudovat online přítomnost', cat:'marketing', quarter:'Q1 2026', krs:[
+      {text:'Publikovat 12 blogových článků',target:12,current:6,done:false},
+      {text:'Získat 200 návštěv/měsíc na webu',target:200,current:85,done:false},
+      {text:'Spustit 3 email kampaně',target:3,current:1,done:false}
+    ]},
+    {id:4, name:'Zvládnout základy automatizace', cat:'skills', quarter:'Q1 2026', krs:[
+      {text:'Dokončit Make.com kurz',target:1,current:1,done:true},
+      {text:'Nastavit 5 automatizací pro klienty',target:5,current:2,done:false},
+      {text:'Certifikace Google Analytics',target:1,current:0,done:false}
+    ]},
+    {id:5, name:'Optimalizovat interní procesy', cat:'operations', quarter:'Q1 2026', krs:[
+      {text:'Dokončit portfolio web (skóre 95%+)',target:95,current:91,done:false},
+      {text:'Nastavit fakturační workflow',target:1,current:1,done:true},
+      {text:'Připravit šablony smluv (3 typy)',target:3,current:3,done:true}
+    ]},
+    {id:6, name:'Rozšířit klientskou základnu na 10', cat:'clients', quarter:'Q2 2026', krs:[
+      {text:'Získat 5 nových klientů přes referral',target:5,current:0,done:false},
+      {text:'Spustit referral program',target:1,current:0,done:false},
+      {text:'Udržet retenci stávajících klientů 100%',target:100,current:0,done:false}
+    ]},
+    {id:7, name:'Dosáhnout obratu 80 000 Kč/měsíc', cat:'revenue', quarter:'Q2 2026', krs:[
+      {text:'Zvýšit průměrnou cenu zakázky o 20%',target:20,current:0,done:false},
+      {text:'Uzavřít 2 retainer smlouvy',target:2,current:0,done:false},
+      {text:'Spustit prémiový balíček služeb',target:1,current:0,done:false}
+    ]}
+  ];
+}
+
+let goals = JSON.parse(sessionStorage.getItem('okr_goals')) || defaultGoals();
+let nextId = Math.max(...goals.map(g=>g.id),0)+1;
+
+function save(){sessionStorage.setItem('okr_goals',JSON.stringify(goals))}
+
+function goalProgress(g){
+  if(!g.krs.length) return 0;
+  const sum = g.krs.reduce((a,kr)=>{
+    const p = kr.done ? 100 : Math.min(100, (kr.current/kr.target)*100);
+    return a+p;
+  },0);
+  return Math.round(sum/g.krs.length);
+}
+
+function goalStatus(g){
+  const p = goalProgress(g);
+  if(p>=100) return {cls:'status-done',text:'Splněno'};
+  if(p>=60) return {cls:'status-on-track',text:'Na dobré cestě'};
+  if(p>=30) return {cls:'status-at-risk',text:'Ohroženo'};
+  return {cls:'status-behind',text:'Pozadu'};
+}
+
+function renderTabs(){
+  const quarters = [...new Set(goals.map(g=>g.quarter))].sort();
+  if(!quarters.includes(activeQ)) quarters.push(activeQ);
+  quarters.sort();
+  document.getElementById('qTabs').innerHTML = quarters.map(q=>
+    `<div class="q-tab ${q===activeQ?'active':''}" onclick="setQ('${q}')">${q}</div>`
+  ).join('');
+}
+
+function setQ(q){activeQ=q;render()}
+
+function renderSummary(){
+  const filtered = goals.filter(g=>g.quarter===activeQ);
+  const total = filtered.length;
+  const avgP = total ? Math.round(filtered.reduce((a,g)=>a+goalProgress(g),0)/total) : 0;
+  const done = filtered.filter(g=>goalProgress(g)>=100).length;
+  const totalKr = filtered.reduce((a,g)=>a+g.krs.length,0);
+  const doneKr = filtered.reduce((a,g)=>a+g.krs.filter(k=>k.done).length,0);
+  document.getElementById('summary').innerHTML = `
+    <div class="sum-card"><div class="num" style="color:var(--accent)">${total}</div><div class="lbl">Cílů celkem</div></div>
+    <div class="sum-card"><div class="num" style="color:var(--green)">${avgP}%</div><div class="lbl">Průměrný pokrok</div></div>
+    <div class="sum-card"><div class="num" style="color:var(--blue)">${done}/${total}</div><div class="lbl">Splněných cílů</div></div>
+    <div class="sum-card"><div class="num" style="color:var(--purple)">${doneKr}/${totalKr}</div><div class="lbl">Hotových KR</div></div>
+  `;
+}
+
+function renderGoals(){
+  const filtered = goals.filter(g=>g.quarter===activeQ);
+  if(!filtered.length){
+    document.getElementById('goalsList').innerHTML = '<div style="text-align:center;color:var(--muted);padding:3rem">Žádné cíle pro toto čtvrtletí. Přidejte první cíl.</div>';
+    return;
+  }
+  document.getElementById('goalsList').innerHTML = filtered.map(g=>{
+    const p = goalProgress(g);
+    const s = goalStatus(g);
+    const col = CAT_COLORS[g.cat]||'#999';
+    return `
+    <div class="goal-card">
+      <button class="delete-goal" onclick="deleteGoal(${g.id})" title="Smazat">✕</button>
+      <div class="goal-header">
+        <div style="display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap">
+          <span class="goal-title">${g.name}</span>
+          <span class="cat-tag" style="background:${col}22;color:${col}">${CAT_LABELS[g.cat]||g.cat}</span>
+        </div>
+        <span class="goal-status ${s.cls}">${s.text}</span>
+      </div>
+      <div class="goal-overall">
+        <div class="goal-overall-bar"><div class="goal-overall-fill" style="width:${p}%;background:${col}"></div></div>
+        <span style="font-weight:700;font-size:0.9rem;min-width:3rem;text-align:right">${p}%</span>
+      </div>
+      <div class="kr-list">
+        ${g.krs.map((kr,i)=>{
+          const krP = kr.done ? 100 : Math.min(100,Math.round((kr.current/kr.target)*100));
+          const barCol = krP>=100?'var(--green)':krP>=50?col:'var(--orange)';
+          return `
+          <div class="kr-item">
+            <div class="kr-check ${kr.done?'done':''}" onclick="toggleKr(${g.id},${i})">${kr.done?'✓':''}</div>
+            <div class="kr-info">
+              <div class="kr-text" style="${kr.done?'text-decoration:line-through;opacity:0.6':''}">${kr.text}</div>
+              <div class="kr-bar-wrap"><div class="kr-bar" style="width:${krP}%;background:${barCol}"></div></div>
+              <div class="kr-meta">
+                <span class="kr-pct" style="color:${barCol}">${krP}%</span>
+                <span class="kr-target">${kr.current} / ${kr.target}</span>
+              </div>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+      <div style="margin-top:0.75rem;display:flex;gap:0.5rem">
+        <button class="btn btn-outline btn-sm" onclick="editGoal(${g.id})">✏️ Upravit</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function render(){renderTabs();renderSummary();renderGoals()}
+
+function toggleKr(gId,kIdx){
+  const g = goals.find(x=>x.id===gId);
+  if(!g) return;
+  g.krs[kIdx].done = !g.krs[kIdx].done;
+  if(g.krs[kIdx].done) g.krs[kIdx].current = g.krs[kIdx].target;
+  save();render();
+}
+
+function deleteGoal(id){
+  if(!confirm('Opravdu smazat tento cíl?')) return;
+  goals = goals.filter(g=>g.id!==id);
+  save();render();
+}
+
+function openModal(id){
+  document.getElementById('editId').value = id||'';
+  document.getElementById('modalTitle').textContent = id ? 'Upravit cíl' : 'Nový cíl';
+  const qSel = document.getElementById('gQuarter');
+  qSel.innerHTML = getQuarters().map(q=>`<option value="${q}">${q}</option>`).join('');
+  if(id){
+    const g = goals.find(x=>x.id===id);
+    document.getElementById('gName').value = g.name;
+    document.getElementById('gCat').value = g.cat;
+    qSel.value = g.quarter;
+    renderKrInputs(g.krs);
+  } else {
+    document.getElementById('gName').value = '';
+    document.getElementById('gCat').value = 'clients';
+    qSel.value = activeQ;
+    renderKrInputs([{text:'',target:1,current:0,done:false}]);
+  }
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show')}
+
+function renderKrInputs(krs){
+  document.getElementById('krInputs').innerHTML = krs.map((kr,i)=>`
+    <div class="kr-row">
+      <input type="text" placeholder="Klíčový výsledek" value="${kr.text}" data-kr="${i}" class="kr-t">
+      <input type="number" placeholder="Cíl" value="${kr.target}" data-kr="${i}" class="kr-target-in" min="1" style="width:80px">
+      <input type="number" placeholder="Stav" value="${kr.current}" data-kr="${i}" class="kr-current-in" min="0" style="width:80px">
+      <button class="remove-kr" onclick="this.parentElement.remove()">✕</button>
+    </div>
+  `).join('');
+}
+
+function addKrInput(){
+  const wrap = document.getElementById('krInputs');
+  const idx = wrap.children.length;
+  const row = document.createElement('div');
+  row.className = 'kr-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Klíčový výsledek" class="kr-t">
+    <input type="number" placeholder="Cíl" value="1" class="kr-target-in" min="1" style="width:80px">
+    <input type="number" placeholder="Stav" value="0" class="kr-current-in" min="0" style="width:80px">
+    <button class="remove-kr" onclick="this.parentElement.remove()">✕</button>
+  `;
+  wrap.appendChild(row);
+}
+
+function saveGoal(){
+  const name = document.getElementById('gName').value.trim();
+  if(!name) return alert('Vyplňte název cíle');
+  const cat = document.getElementById('gCat').value;
+  const quarter = document.getElementById('gQuarter').value;
+  const rows = document.querySelectorAll('#krInputs .kr-row');
+  const krs = [];
+  rows.forEach(r=>{
+    const t = r.querySelector('.kr-t').value.trim();
+    const target = parseInt(r.querySelector('.kr-target-in').value)||1;
+    const current = parseInt(r.querySelector('.kr-current-in').value)||0;
+    if(t) krs.push({text:t,target,current,done:current>=target});
+  });
+  const editId = document.getElementById('editId').value;
+  if(editId){
+    const g = goals.find(x=>x.id===parseInt(editId));
+    g.name=name;g.cat=cat;g.quarter=quarter;g.krs=krs;
+  } else {
+    goals.push({id:nextId++,name,cat,quarter,krs});
+  }
+  save();closeModal();render();
+}
+
+function editGoal(id){openModal(id)}
+
+function exportCSV(){
+  const filtered = goals.filter(g=>g.quarter===activeQ);
+  let csv = 'Cíl,Kategorie,Čtvrtletí,Pokrok,Status,KR,KR Stav,KR Cíl\n';
+  filtered.forEach(g=>{
+    const s = goalStatus(g);
+    g.krs.forEach(kr=>{
+      csv += `"${g.name}","${CAT_LABELS[g.cat]}","${g.quarter}","${goalProgress(g)}%","${s.text}","${kr.text}","${kr.current}","${kr.target}"\n`;
+    });
+  });
+  const blob = new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `okr-${activeQ.replace(' ','-')}.csv`;
+  a.click();
+}
+
+render();
+</script>
+</body>
+</html>

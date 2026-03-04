@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Timesheet — Kudli. marketing</title>
+<meta name="description" content="Logování času na projektech. Měsíční přehledy, hodinové sazby, export pro fakturaci.">
+<meta property="og:title" content="Timesheet — Kudli. marketing">
+<meta property="og:description" content="Logování času na projektech. Měsíční přehledy, hodinové sazby, export pro fakturaci.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/timesheet.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+.top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}
+.top-bar .logo span{color:var(--accent)}
+
+.container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.6rem;font-weight:800;margin-bottom:0.3rem}
+h1 em{color:var(--accent);font-style:normal}
+.subtitle{color:var(--muted);margin-bottom:2rem;font-size:0.95rem}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.75rem;margin-bottom:2rem}
+.stat{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.stat .num{font-size:1.8rem;font-weight:800}
+.stat .label{font-size:0.75rem;color:var(--muted);margin-top:0.2rem}
+
+/* Timer */
+.timer-section{background:var(--card);border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.06);margin-bottom:2rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
+.timer-display{font-size:2.5rem;font-weight:900;font-variant-numeric:tabular-nums;min-width:180px;text-align:center}
+.timer-controls{display:flex;flex-direction:column;gap:0.5rem;flex:1;min-width:250px}
+.timer-row{display:flex;gap:0.5rem}
+.timer-controls input,.timer-controls select{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.5rem 0.8rem;border-radius:10px;font-size:0.85rem;font-family:inherit;flex:1}
+.btn{background:var(--accent);color:#fff;border:none;padding:0.6rem 1.25rem;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:inherit;transition:all 0.3s}
+.btn:hover{background:var(--accent-light);transform:translateY(-1px)}
+.btn-green{background:var(--green)}
+.btn-green:hover{background:#27ae60}
+.btn-orange{background:var(--orange)}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.15);color:var(--text)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:0.4rem 0.8rem;font-size:0.78rem}
+
+/* Toolbar */
+.toolbar{display:flex;gap:0.75rem;margin-bottom:1rem;flex-wrap:wrap;align-items:center}
+.toolbar select,.toolbar input{background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.5rem 0.8rem;border-radius:10px;font-size:0.85rem;font-family:inherit}
+
+/* Entries table */
+.entries-table{width:100%;border-collapse:collapse;margin-bottom:1rem}
+.entries-table th{text-align:left;padding:0.6rem 0.75rem;font-size:0.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.entries-table td{padding:0.65rem 0.75rem;font-size:0.85rem;border-bottom:1px solid rgba(255,255,255,0.03)}
+.entries-table tr:hover{background:rgba(255,255,255,0.02)}
+.project-dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:0.5rem}
+.hours-cell{font-weight:700;font-variant-numeric:tabular-nums}
+.amount-cell{color:var(--green);font-weight:600}
+
+/* Day group */
+.day-header{background:rgba(255,255,255,0.03);padding:0.5rem 0.75rem;font-size:0.8rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,0.06)}
+.day-total{text-align:right;padding:0.4rem 0.75rem;font-size:0.8rem;color:var(--muted);border-bottom:2px solid rgba(255,255,255,0.06)}
+
+/* Weekly bar chart */
+.week-chart{background:var(--card);border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.06);margin-bottom:2rem}
+.week-chart h3{font-size:0.95rem;font-weight:700;margin-bottom:1rem}
+.bars{display:flex;gap:0.5rem;align-items:flex-end;height:120px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:0.3rem}
+.bar{width:100%;border-radius:6px 6px 0 0;background:var(--accent);min-height:2px;transition:height 0.5s}
+.bar-label{font-size:0.7rem;color:var(--muted)}
+.bar-value{font-size:0.7rem;font-weight:700}
+
+@media(max-width:768px){
+ .timer-section{flex-direction:column;text-align:center}
+ .timer-display{font-size:2rem;min-width:auto}
+ .entries-table{font-size:0.8rem}
+ .entries-table th:nth-child(4),.entries-table td:nth-child(4){display:none}
+}
+@media(max-width:480px){
+ .stats{grid-template-columns:1fr 1fr}
+}
+@media print{
+ body{background:#fff;color:#000}
+ .top-bar,.btn,.modal-overlay,.filters,.timer-section{display:none!important}
+ .container{max-width:100%;padding:0}
+ .entry-card,.stats .stat{break-inside:avoid;border:1px solid #ccc;background:#fff;color:#000}
+ .entry-card *,.stats .stat *{color:#000!important}
+ .chart-container{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+ <a href="nastroje.html" class="logo">Kudli<span>.</span> marketing</a>
+ <a href="nastroje.html" style="color:var(--muted);text-decoration:none;font-size:0.85rem">← Zpět na nástroje</a>
+</div>
+
+<div class="container">
+ <h1>Time<em>sheet</em></h1>
+ <p class="subtitle">Loguj čas na projektech, sleduj hodinovou sazbu a exportuj pro fakturaci</p>
+
+ <div class="stats" id="stats"></div>
+
+ <!-- Timer -->
+ <div class="timer-section">
+   <div class="timer-display" id="timerDisplay">00:00:00</div>
+   <div class="timer-controls">
+     <div class="timer-row">
+       <select id="timerProject">
+         <option value="">— Vyber projekt —</option>
+       </select>
+       <input type="text" id="timerDesc" placeholder="Popis práce...">
+     </div>
+     <div class="timer-row">
+       <button class="btn btn-green" id="startBtn" onclick="startTimer()">▶ Start</button>
+       <button class="btn btn-orange" id="stopBtn" onclick="stopTimer()" style="display:none">⏸ Stop & Uložit</button>
+       <button class="btn btn-outline" onclick="manualEntry()">+ Ruční zápis</button>
+     </div>
+   </div>
+ </div>
+
+ <!-- Week chart -->
+ <div class="week-chart">
+   <h3>Tento týden</h3>
+   <div class="bars" id="weekBars"></div>
+ </div>
+
+ <!-- Filters -->
+ <div class="toolbar">
+   <select id="filterProject" onchange="renderEntries()">
+     <option value="">Všechny projekty</option>
+   </select>
+   <select id="filterPeriod" onchange="renderEntries()">
+     <option value="week">Tento týden</option>
+     <option value="month" selected>Tento měsíc</option>
+     <option value="all">Vše</option>
+   </select>
+   <button class="btn btn-outline btn-sm" onclick="exportCSV()">📤 Export CSV</button>
+ </div>
+
+ <!-- Table -->
+ <table class="entries-table">
+   <thead>
+     <tr><th>Datum</th><th>Projekt</th><th>Popis</th><th>Hodiny</th><th>Sazba</th><th>Částka</th><th></th></tr>
+   </thead>
+   <tbody id="entriesBody"></tbody>
+ </table>
+</div>
+
+<script>
+const PROJECTS = [
+ { id: 'kavarna', name: 'Kavárna Zrnko', color: '#e94560', rate: 500 },
+ { id: 'eshop', name: 'MadeByHand.cz', color: '#3498db', rate: 550 },
+ { id: 'reality', name: 'BydlímTu', color: '#2ecc71', rate: 600 },
+ { id: 'fitness', name: 'Petr Novák (fitness)', color: '#f39c12', rate: 450 },
+ { id: 'internal', name: 'Interní práce', color: '#9b59b6', rate: 0 },
+];
+
+let entries = JSON.parse(sessionStorage.getItem('kudli_timesheet') || 'null') || generateDemo();
+let timerInterval = null;
+let timerStart = null;
+
+function generateDemo() {
+ const now = new Date();
+ const demo = [];
+ const descs = {
+   kavarna: ['Redesign homepage','SEO analýza','Správa obsahu','Konzultace s klientem','Responzivní úpravy','Analytics report'],
+   eshop: ['Implementace košíku','Integrace Zásilkovna','Produktové stránky','Testování plateb','Katalog redesign'],
+   reality: ['AI chatbot development','API integrace','Testování a ladění','UX konzultace'],
+   fitness: ['Landing page design','Copy psaní','Formulář setup'],
+   internal: ['Plánování týdne','Administrativa','Účetnictví','Školení / vzdělávání']
+ };
+ for (let d = 0; d < 25; d++) {
+   const date = new Date(now);
+   date.setDate(date.getDate() - d);
+   if (date.getDay() === 0) continue; // skip Sundays
+   const count = date.getDay() === 6 ? 1 : Math.floor(Math.random()*3)+1;
+   for (let i = 0; i < count; i++) {
+     const proj = PROJECTS[Math.floor(Math.random()*PROJECTS.length)];
+     const ds = descs[proj.id];
+     demo.push({
+       id: Date.now() + d*100 + i,
+       date: date.toISOString().slice(0,10),
+       project: proj.id,
+       desc: ds[Math.floor(Math.random()*ds.length)],
+       hours: Math.round((Math.random()*3+0.5)*4)/4, // 0.25 increments
+       rate: proj.rate
+     });
+   }
+ }
+ return demo.sort((a,b) => b.date.localeCompare(a.date));
+}
+
+function save() { sessionStorage.setItem('kudli_timesheet', JSON.stringify(entries)); }
+
+function getProject(id) { return PROJECTS.find(p => p.id === id) || { name: id, color: '#888', rate: 0 }; }
+
+function formatDate(d) { return new Date(d+'T12:00:00').toLocaleDateString('cs-CZ', { weekday:'short', day:'numeric', month:'numeric' }); }
+
+function populateSelects() {
+ const opts = PROJECTS.map(p => `<option value="${p.id}">${p.name} (${p.rate} Kč/h)</option>`).join('');
+ document.getElementById('timerProject').innerHTML = '<option value="">— Vyber projekt —</option>' + opts;
+ document.getElementById('filterProject').innerHTML = '<option value="">Všechny projekty</option>' + opts;
+}
+
+function renderStats() {
+ const now = new Date();
+ const monthEntries = entries.filter(e => e.date.slice(0,7) === now.toISOString().slice(0,7));
+ const weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay() + 1);
+ const weekStr = weekStart.toISOString().slice(0,10);
+ const weekEntries = entries.filter(e => e.date >= weekStr);
+
+ const monthHours = monthEntries.reduce((s,e) => s + e.hours, 0);
+ const monthRevenue = monthEntries.reduce((s,e) => s + e.hours * e.rate, 0);
+ const weekHours = weekEntries.reduce((s,e) => s + e.hours, 0);
+ const avgRate = monthHours > 0 ? Math.round(monthRevenue / monthHours) : 0;
+
+ document.getElementById('stats').innerHTML = `
+   <div class="stat"><div class="num" style="color:var(--accent)">${monthHours.toFixed(1)}h</div><div class="label">Tento měsíc</div></div>
+   <div class="stat"><div class="num" style="color:var(--green)">${monthRevenue.toLocaleString('cs-CZ')} Kč</div><div class="label">Měsíční výdělek</div></div>
+   <div class="stat"><div class="num" style="color:var(--blue)">${weekHours.toFixed(1)}h</div><div class="label">Tento týden</div></div>
+   <div class="stat"><div class="num" style="color:var(--orange)">${avgRate} Kč/h</div><div class="label">Průměrná sazba</div></div>
+ `;
+}
+
+function renderWeekChart() {
+ const now = new Date();
+ const days = ['Po','Út','St','Čt','Pá','So','Ne'];
+ const weekStart = new Date(now); weekStart.setDate(now.getDate() - now.getDay() + 1);
+ const dayData = [];
+ let maxH = 1;
+
+ for (let i = 0; i < 7; i++) {
+   const d = new Date(weekStart); d.setDate(weekStart.getDate() + i);
+   const ds = d.toISOString().slice(0,10);
+   const h = entries.filter(e => e.date === ds).reduce((s,e) => s + e.hours, 0);
+   dayData.push({ label: days[i], hours: h, isToday: ds === now.toISOString().slice(0,10) });
+   if (h > maxH) maxH = h;
+ }
+
+ document.getElementById('weekBars').innerHTML = dayData.map(d => {
+   const pct = (d.hours / maxH) * 100;
+   const color = d.isToday ? 'var(--accent)' : 'rgba(233,69,96,0.4)';
+   return `<div class="bar-col">
+     <div class="bar-value">${d.hours > 0 ? d.hours.toFixed(1)+'h' : ''}</div>
+     <div class="bar" style="height:${Math.max(pct,2)}%;background:${color}"></div>
+     <div class="bar-label" style="${d.isToday?'color:var(--accent);font-weight:700':''}">${d.label}</div>
+   </div>`;
+ }).join('');
+}
+
+function renderEntries() {
+ const fProj = document.getElementById('filterProject').value;
+ const fPeriod = document.getElementById('filterPeriod').value;
+ const now = new Date();
+
+ let filtered = [...entries];
+ if (fProj) filtered = filtered.filter(e => e.project === fProj);
+ if (fPeriod === 'week') {
+   const ws = new Date(now); ws.setDate(now.getDate() - now.getDay() + 1);
+   filtered = filtered.filter(e => e.date >= ws.toISOString().slice(0,10));
+ } else if (fPeriod === 'month') {
+   filtered = filtered.filter(e => e.date.slice(0,7) === now.toISOString().slice(0,7));
+ }
+
+ filtered.sort((a,b) => b.date.localeCompare(a.date) || b.id - a.id);
+
+ // Group by day
+ const groups = {};
+ filtered.forEach(e => {
+   if (!groups[e.date]) groups[e.date] = [];
+   groups[e.date].push(e);
+ });
+
+ const tbody = document.getElementById('entriesBody');
+ if (filtered.length === 0) {
+   tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:2rem;color:var(--muted)">Žádné záznamy</td></tr>';
+   return;
+ }
+
+ let html = '';
+ Object.keys(groups).sort().reverse().forEach(date => {
+   const dayEntries = groups[date];
+   const dayHours = dayEntries.reduce((s,e) => s + e.hours, 0);
+   const dayAmount = dayEntries.reduce((s,e) => s + e.hours * e.rate, 0);
+   html += `<tr><td colspan="7" class="day-header">${formatDate(date)} — ${dayHours.toFixed(1)}h · ${dayAmount.toLocaleString('cs-CZ')} Kč</td></tr>`;
+   dayEntries.forEach(e => {
+     const p = getProject(e.project);
+     html += `<tr>
+       <td style="color:var(--muted);font-size:0.8rem">${new Date(e.date+'T12:00:00').toLocaleDateString('cs-CZ')}</td>
+       <td><span class="project-dot" style="background:${p.color}"></span>${p.name}</td>
+       <td>${e.desc}</td>
+       <td class="hours-cell">${e.hours.toFixed(2)}h</td>
+       <td style="color:var(--muted)">${e.rate} Kč/h</td>
+       <td class="amount-cell">${(e.hours * e.rate).toLocaleString('cs-CZ')} Kč</td>
+       <td><button class="btn-sm btn-outline" style="color:var(--red);border-color:transparent;cursor:pointer;background:none;font-size:0.8rem" onclick="deleteEntry(${e.id})">×</button></td>
+     </tr>`;
+   });
+ });
+ tbody.innerHTML = html;
+}
+
+// Timer
+function startTimer() {
+ if (!document.getElementById('timerProject').value) return alert('Vyber projekt');
+ timerStart = Date.now();
+ document.getElementById('startBtn').style.display = 'none';
+ document.getElementById('stopBtn').style.display = '';
+ timerInterval = setInterval(updateTimerDisplay, 1000);
+}
+
+function updateTimerDisplay() {
+ const elapsed = Math.floor((Date.now() - timerStart) / 1000);
+ const h = String(Math.floor(elapsed/3600)).padStart(2,'0');
+ const m = String(Math.floor((elapsed%3600)/60)).padStart(2,'0');
+ const s = String(elapsed%60).padStart(2,'0');
+ document.getElementById('timerDisplay').textContent = `${h}:${m}:${s}`;
+}
+
+function stopTimer() {
+ clearInterval(timerInterval);
+ const elapsed = (Date.now() - timerStart) / (1000*60*60);
+ const hours = Math.round(elapsed * 4) / 4; // round to 0.25
+ const proj = PROJECTS.find(p => p.id === document.getElementById('timerProject').value);
+
+ entries.unshift({
+   id: Date.now(),
+   date: new Date().toISOString().slice(0,10),
+   project: proj.id,
+   desc: document.getElementById('timerDesc').value || 'Práce na projektu',
+   hours: Math.max(hours, 0.25),
+   rate: proj.rate
+ });
+ save();
+
+ document.getElementById('timerDisplay').textContent = '00:00:00';
+ document.getElementById('timerDesc').value = '';
+ document.getElementById('startBtn').style.display = '';
+ document.getElementById('stopBtn').style.display = 'none';
+ timerStart = null;
+ renderAll();
+}
+
+function manualEntry() {
+ const proj = document.getElementById('timerProject').value;
+ if (!proj) return alert('Vyber projekt');
+ const hours = prompt('Počet hodin (např. 1.5):');
+ if (!hours || isNaN(hours)) return;
+ const desc = document.getElementById('timerDesc').value || prompt('Popis práce:') || 'Práce na projektu';
+ const p = PROJECTS.find(x => x.id === proj);
+ entries.unshift({
+   id: Date.now(),
+   date: new Date().toISOString().slice(0,10),
+   project: proj,
+   desc: desc,
+   hours: parseFloat(hours),
+   rate: p.rate
+ });
+ save();
+ document.getElementById('timerDesc').value = '';
+ renderAll();
+}
+
+function deleteEntry(id) {
+ entries = entries.filter(e => e.id !== id);
+ save(); renderAll();
+}
+
+function exportCSV() {
+ const header = 'Datum,Projekt,Popis,Hodiny,Sazba,Částka\n';
+ const rows = entries.map(e => {
+   const p = getProject(e.project);
+   return `${e.date},"${p.name}","${e.desc}",${e.hours},${e.rate},${e.hours*e.rate}`;
+ }).join('\n');
+ const blob = new Blob(['\uFEFF'+header+rows], { type: 'text/csv;charset=utf-8' });
+ const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+ a.download = `timesheet-${new Date().toISOString().slice(0,7)}.csv`;
+ a.click();
+}
+
+function renderAll() { renderStats(); renderWeekChart(); renderEntries(); }
+
+populateSelects();
+renderAll();
+</script>
+</body>
+</html>

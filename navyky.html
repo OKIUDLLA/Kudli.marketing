@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Denní návyky | Kudli. marketing</title>
+<meta name="description" content="Sledování denních návyků a rutin pro produktivitu freelancera.">
+<meta property="og:title" content="Denní návyky | Kudli. marketing">
+<meta property="og:description" content="Habit tracker pro budování produktivních návyků.">
+<meta property="og:image" content="og-image.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.top-bar{background:var(--card);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05)}
+.top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
+.top-bar a:hover{color:var(--accent)}
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.75rem;margin-bottom:0.25rem}
+h1 em{color:var(--accent);font-style:normal}
+.subtitle{color:var(--muted);margin-bottom:2rem}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2rem}
+.stat{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.05)}
+.stat .num{font-size:1.75rem;font-weight:700}
+.stat .lbl{font-size:0.75rem;color:var(--muted);margin-top:0.2rem}
+
+.week-nav{display:flex;align-items:center;justify-content:center;gap:1rem;margin-bottom:1.5rem}
+.week-nav button{background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.4rem 0.8rem;border-radius:8px;cursor:pointer;font-size:0.85rem}
+.week-nav button:hover{border-color:var(--accent)}
+.week-label{font-weight:600;font-size:0.95rem}
+
+.habit-table{width:100%;border-collapse:collapse;margin-bottom:1.5rem}
+.habit-table th{text-align:left;padding:0.6rem 0.5rem;font-size:0.75rem;color:var(--muted);border-bottom:1px solid rgba(255,255,255,0.05);font-weight:600}
+.habit-table th.day{text-align:center;width:48px}
+.habit-table td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.03)}
+.habit-name{display:flex;align-items:center;gap:0.5rem;font-size:0.9rem}
+.habit-icon{font-size:1.1rem}
+.habit-streak{font-size:0.7rem;color:var(--orange);font-weight:600}
+.day-cell{text-align:center}
+.day-check{width:32px;height:32px;border-radius:8px;border:2px solid rgba(255,255,255,0.1);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:0.8rem;transition:all 0.15s;background:transparent}
+.day-check:hover{border-color:var(--green);background:rgba(46,204,113,0.1)}
+.day-check.done{background:var(--green);border-color:var(--green);color:#fff}
+.day-check.today{border-color:var(--accent);box-shadow:0 0 0 2px rgba(233,69,96,0.2)}
+.day-header{font-size:0.7rem;color:var(--muted)}
+.day-date{font-size:0.65rem;color:var(--muted)}
+
+.habit-pct{font-size:0.8rem;font-weight:700;text-align:center;width:48px}
+
+.actions{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+
+.btn{padding:0.5rem 1rem;border-radius:8px;border:none;cursor:pointer;font-size:0.8rem;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.3rem}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.1)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:0.35rem 0.75rem}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:16px;padding:2rem;width:90%;max-width:450px}
+.modal h2{font-size:1.25rem;margin-bottom:1.5rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.35rem}
+.form-group input,.form-group select{width:100%;padding:0.6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.9rem}
+.modal-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1.5rem}
+
+.completion-bar{height:6px;background:rgba(255,255,255,0.08);border-radius:3px;margin-top:1rem;overflow:hidden}
+.completion-fill{height:100%;border-radius:3px;transition:width 0.4s ease}
+
+@media(max-width:768px){.container{padding:1.5rem 0.75rem}h1{font-size:1.4rem}.stats{grid-template-columns:repeat(2,1fr)}.day-check{width:28px;height:28px;font-size:0.7rem}.habit-table th.day{width:36px}}
+@media(max-width:480px){.container{padding:1rem 0.5rem}.btn{width:100%;justify-content:center}.actions{flex-direction:column}}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="nastroje.html">← Zpět na nástroje</a>
+  <span style="font-size:0.8rem;color:var(--muted)">Denní návyky</span>
+</div>
+
+<div class="container">
+  <h1>✅ Denní <em>návyky</em></h1>
+  <p class="subtitle">Buduj produktivní rutiny pro úspěšný freelance business</p>
+
+  <div class="stats" id="stats"></div>
+
+  <div class="week-nav">
+    <button onclick="prevWeek()">← Předchozí</button>
+    <span class="week-label" id="weekLabel"></span>
+    <button onclick="nextWeek()">Další →</button>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" onclick="openModal()">+ Nový návyk</button>
+  </div>
+
+  <div style="overflow-x:auto">
+    <table class="habit-table" id="habitTable"></table>
+  </div>
+
+  <div class="completion-bar" id="completionBar"><div class="completion-fill" id="completionFill"></div></div>
+  <div style="text-align:center;margin-top:0.5rem;font-size:0.8rem;color:var(--muted)" id="completionText"></div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2>Nový návyk</h2>
+    <div class="form-group">
+      <label>Název</label>
+      <input type="text" id="hName" placeholder="Např. Ranní plánování">
+    </div>
+    <div class="form-group">
+      <label>Ikona</label>
+      <select id="hIcon">
+        <option value="📋">📋 Plánování</option>
+        <option value="💪">💪 Cvičení</option>
+        <option value="📚">📚 Učení</option>
+        <option value="✍️">✍️ Psaní</option>
+        <option value="📧">📧 Emaily</option>
+        <option value="🎯">🎯 Cíle</option>
+        <option value="💰">💰 Finance</option>
+        <option value="🧘">🧘 Meditace</option>
+        <option value="📱">📱 Social media</option>
+        <option value="🔍">🔍 SEO</option>
+        <option value="📊">📊 Analytika</option>
+        <option value="☕">☕ Rutina</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveHabit()">Uložit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const DAYS_CS = ['Po','Út','St','Čt','Pá','So','Ne'];
+const MONTHS_CS = ['led','úno','bře','dub','kvě','čer','čec','srp','zář','říj','lis','pro'];
+
+function defaultHabits(){
+  return [
+    {id:1,name:'Ranní plánování dne',icon:'📋'},
+    {id:2,name:'Zkontrolovat emaily & odpovědět',icon:'📧'},
+    {id:3,name:'1 hodina deep work na projektu',icon:'🎯'},
+    {id:4,name:'Sdílet content na sociální sítě',icon:'📱'},
+    {id:5,name:'Aktualizovat CRM & finance',icon:'💰'},
+    {id:6,name:'30 min učení / kurzy',icon:'📚'},
+    {id:7,name:'Večerní review & plán na zítra',icon:'📊'}
+  ];
+}
+
+function defaultLog(){
+  const log = {};
+  const habits = defaultHabits();
+  const today = new Date();
+  for(let d=1;d<=21;d++){
+    const date = new Date(today);
+    date.setDate(date.getDate()-d);
+    const key = dateKey(date);
+    habits.forEach(h=>{
+      if(Math.random()>0.3){
+        if(!log[key]) log[key]={};
+        log[key][h.id]=true;
+      }
+    });
+  }
+  return log;
+}
+
+let habits = JSON.parse(sessionStorage.getItem('habits_list')) || defaultHabits();
+let habitLog = JSON.parse(sessionStorage.getItem('habits_log')) || defaultLog();
+let nextId = Math.max(...habits.map(h=>h.id),0)+1;
+let weekOffset = 0;
+
+function save(){
+  sessionStorage.setItem('habits_list',JSON.stringify(habits));
+  sessionStorage.setItem('habits_log',JSON.stringify(habitLog));
+}
+
+function dateKey(d){return d.toISOString().split('T')[0]}
+
+function getWeekDates(){
+  const today = new Date();
+  const dayOfWeek = (today.getDay()+6)%7;
+  const monday = new Date(today);
+  monday.setDate(today.getDate()-dayOfWeek+(weekOffset*7));
+  const dates = [];
+  for(let i=0;i<7;i++){
+    const d = new Date(monday);
+    d.setDate(monday.getDate()+i);
+    dates.push(d);
+  }
+  return dates;
+}
+
+function isToday(d){return dateKey(d)===dateKey(new Date())}
+
+function getStreak(hId){
+  let streak=0;
+  const today=new Date();
+  for(let i=0;i<365;i++){
+    const d=new Date(today);d.setDate(d.getDate()-i);
+    const key=dateKey(d);
+    if(habitLog[key]&&habitLog[key][hId])streak++;
+    else break;
+  }
+  return streak;
+}
+
+function renderStats(){
+  const today=dateKey(new Date());
+  const todayDone=habits.filter(h=>habitLog[today]&&habitLog[today][h.id]).length;
+  const todayTotal=habits.length;
+  const best=Math.max(...habits.map(h=>getStreak(h.id)),0);
+  let totalChecks=0,totalPossible=0;
+  for(let i=0;i<30;i++){
+    const d=new Date();d.setDate(d.getDate()-i);
+    const k=dateKey(d);
+    habits.forEach(h=>{totalPossible++;if(habitLog[k]&&habitLog[k][h.id])totalChecks++});
+  }
+  const rate30=totalPossible>0?Math.round((totalChecks/totalPossible)*100):0;
+  document.getElementById('stats').innerHTML=`
+    <div class="stat"><div class="num" style="color:var(--green)">${todayDone}/${todayTotal}</div><div class="lbl">Dnes splněno</div></div>
+    <div class="stat"><div class="num" style="color:var(--accent)">${habits.length}</div><div class="lbl">Návyků celkem</div></div>
+    <div class="stat"><div class="num" style="color:var(--orange)">${best}🔥</div><div class="lbl">Nejdelší streak</div></div>
+    <div class="stat"><div class="num" style="color:var(--blue)">${rate30}%</div><div class="lbl">Úspěšnost 30 dní</div></div>
+  `;
+}
+
+function renderWeekLabel(){
+  const dates=getWeekDates();
+  const from=dates[0];const to=dates[6];
+  document.getElementById('weekLabel').textContent=`${from.getDate()}. ${MONTHS_CS[from.getMonth()]} – ${to.getDate()}. ${MONTHS_CS[to.getMonth()]} ${to.getFullYear()}`;
+}
+
+function renderTable(){
+  const dates=getWeekDates();
+  let html=`<thead><tr><th style="min-width:180px">Návyk</th>`;
+  dates.forEach(d=>{
+    html+=`<th class="day"><div class="day-header">${DAYS_CS[(d.getDay()+6)%7]}</div><div class="day-date">${d.getDate()}.</div></th>`;
+  });
+  html+=`<th class="day">%</th></tr></thead><tbody>`;
+  habits.forEach(h=>{
+    const streak=getStreak(h.id);
+    html+=`<tr><td><div class="habit-name"><span class="habit-icon">${h.icon}</span><span>${h.name}</span>${streak>0?`<span class="habit-streak">${streak}🔥</span>`:''}</span></div></td>`;
+    let weekDone=0;
+    dates.forEach(d=>{
+      const key=dateKey(d);
+      const done=habitLog[key]&&habitLog[key][h.id];
+      if(done)weekDone++;
+      const todayCls=isToday(d)?'today':'';
+      html+=`<td class="day-cell"><div class="day-check ${done?'done':''} ${todayCls}" onclick="toggle(${h.id},'${key}')">${done?'✓':''}</div></td>`;
+    });
+    const weekPct=Math.round((weekDone/7)*100);
+    const pctColor=weekPct>=80?'var(--green)':weekPct>=50?'var(--orange)':'var(--red)';
+    html+=`<td><div class="habit-pct" style="color:${pctColor}">${weekPct}%</div></td></tr>`;
+  });
+  html+=`</tbody>`;
+  document.getElementById('habitTable').innerHTML=html;
+
+  const todayKey=dateKey(new Date());
+  const todayDone=habits.filter(h=>habitLog[todayKey]&&habitLog[todayKey][h.id]).length;
+  const pct=habits.length>0?Math.round((todayDone/habits.length)*100):0;
+  document.getElementById('completionFill').style.width=pct+'%';
+  document.getElementById('completionFill').style.background=pct>=80?'var(--green)':pct>=50?'var(--orange)':'var(--accent)';
+  document.getElementById('completionText').textContent=`Dnešní pokrok: ${pct}% (${todayDone}/${habits.length})`;
+}
+
+function toggle(hId,key){
+  if(!habitLog[key])habitLog[key]={};
+  habitLog[key][hId]=!habitLog[key][hId];
+  if(!habitLog[key][hId])delete habitLog[key][hId];
+  save();render();
+}
+
+function prevWeek(){weekOffset--;render()}
+function nextWeek(){weekOffset++;render()}
+
+function render(){renderStats();renderWeekLabel();renderTable()}
+
+function openModal(){document.getElementById('hName').value='';document.getElementById('modalOverlay').classList.add('show')}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show')}
+
+function saveHabit(){
+  const name=document.getElementById('hName').value.trim();
+  if(!name)return alert('Vyplňte název');
+  const icon=document.getElementById('hIcon').value;
+  habits.push({id:nextId++,name,icon});
+  save();closeModal();render();
+}
+
+render();
+</script>
+</body>
+</html>

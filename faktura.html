@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generátor faktur — Kudli. marketing</title>
+<meta name="description" content="Generátor faktur s live náhledem, automatickým číslem a tiskem do PDF.">
+<meta property="og:title" content="Generátor faktur — Kudli. marketing">
+<meta property="og:description" content="Generátor faktur s live náhledem, automatickým číslem a tiskem do PDF.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/faktura.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+.top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}
+.top-bar .logo span{color:var(--accent)}
+.top-bar .badge{background:rgba(233,69,96,0.15);color:var(--accent-light);padding:0.25rem 0.75rem;border-radius:15px;font-size:0.75rem;font-weight:600}
+
+.container{max-width:1000px;margin:0 auto;padding:1.5rem}
+
+/* Two column layout */
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem}
+
+/* Form side */
+.form-panel{display:flex;flex-direction:column;gap:1rem}
+.form-card{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06)}
+.form-card h3{font-size:0.9rem;font-weight:700;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.field{margin-bottom:0.6rem}
+.field label{display:block;font-size:0.7rem;color:var(--muted);margin-bottom:0.2rem}
+.field input,.field textarea,.field select{width:100%;padding:0.5rem 0.7rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text);font-size:0.85rem;font-family:inherit}
+.field input:focus,.field textarea:focus,.field select:focus{outline:none;border-color:var(--accent)}
+.field textarea{min-height:60px;resize:vertical}
+
+/* Items table */
+.items-table{width:100%;border-collapse:collapse;font-size:0.8rem;margin:0.5rem 0}
+.items-table th{text-align:left;padding:0.4rem;border-bottom:1px solid rgba(255,255,255,0.1);font-size:0.7rem;color:var(--muted)}
+.items-table td{padding:0.35rem;border-bottom:1px solid rgba(255,255,255,0.04)}
+.items-table input{width:100%;padding:0.35rem 0.5rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08);border-radius:6px;color:var(--text);font-size:0.8rem}
+.items-table input:focus{outline:none;border-color:var(--accent)}
+.items-table .num-input{text-align:right;width:80px}
+.del-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;padding:0.2rem}
+.del-btn:hover{color:var(--accent)}
+
+.btn{padding:0.5rem 1rem;border:none;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.3s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-ghost{background:rgba(255,255,255,0.06);color:var(--text)}
+.btn-ghost:hover{background:rgba(255,255,255,0.12)}
+.btn-sm{padding:0.35rem 0.7rem;font-size:0.8rem}
+.btn-row{display:flex;gap:0.5rem;flex-wrap:wrap}
+
+/* Preview side */
+.preview-panel{position:sticky;top:1rem}
+.invoice-preview{background:#fff;color:#1a1a2e;border-radius:14px;padding:2rem;font-size:0.85rem;line-height:1.5;box-shadow:0 10px 40px rgba(0,0,0,0.3)}
+.inv-header{display:flex;justify-content:space-between;margin-bottom:2rem;padding-bottom:1rem;border-bottom:3px solid var(--accent)}
+.inv-brand{font-size:1.4rem;font-weight:800}
+.inv-brand span{color:var(--accent)}
+.inv-title{text-align:right}
+.inv-title h2{font-size:1.3rem;color:var(--accent);font-weight:800}
+.inv-title .num{font-size:0.85rem;color:#666}
+
+.inv-parties{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-bottom:1.5rem}
+.inv-party h4{font-size:0.7rem;text-transform:uppercase;letter-spacing:1px;color:#999;margin-bottom:0.4rem}
+.inv-party .name{font-weight:700;font-size:0.95rem}
+
+.inv-dates{display:flex;gap:2rem;margin-bottom:1.5rem;font-size:0.8rem;color:#666}
+.inv-dates strong{color:#1a1a2e}
+
+.inv-items{width:100%;border-collapse:collapse;margin-bottom:1.5rem;font-size:0.8rem}
+.inv-items th{text-align:left;padding:0.5rem;background:#f8f9fa;border-bottom:2px solid #e0e0e0;font-size:0.7rem;text-transform:uppercase;color:#666}
+.inv-items td{padding:0.5rem;border-bottom:1px solid #eee}
+.inv-items .right{text-align:right}
+.inv-items tfoot td{border-top:2px solid #e0e0e0;font-weight:700;font-size:0.9rem}
+.inv-items tfoot .total-row{font-size:1.1rem;color:var(--accent)}
+
+.inv-payment{background:#f8f9fa;border-radius:8px;padding:1rem;margin-bottom:1rem;font-size:0.8rem}
+.inv-payment h4{font-size:0.75rem;color:#999;text-transform:uppercase;margin-bottom:0.4rem}
+
+.inv-footer{text-align:center;font-size:0.75rem;color:#999;padding-top:1rem;border-top:1px solid #eee}
+
+.print-actions{display:flex;gap:0.5rem;margin-top:1rem;justify-content:center}
+
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--green);color:#fff;padding:0.7rem 1.5rem;border-radius:10px;font-weight:600;font-size:0.85rem;transform:translateY(100px);opacity:0;transition:all 0.4s;z-index:100}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media print{
+ body{background:#fff}
+ .top-bar,.form-panel,.print-actions,.toast{display:none!important}
+ .layout{grid-template-columns:1fr}
+ .invoice-preview{box-shadow:none;padding:0}
+ .preview-panel{position:static}
+}
+
+@media(max-width:768px){
+ .layout{grid-template-columns:1fr}
+ .preview-panel{position:static}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+ <div style="display:flex;align-items:center;gap:1.5rem">
+   <a href="index.html" class="logo">Kudli<span>.</span> marketing</a>
+   <span class="badge">FAKTURACE</span>
+ </div>
+ <a href="index.html" style="color:var(--muted);text-decoration:none;font-size:0.85rem">← Zpět</a>
+</div>
+
+<div class="container">
+<div class="layout">
+
+ <!-- Form -->
+ <div class="form-panel">
+   <div class="form-card">
+     <h3>📄 Údaje faktury</h3>
+     <div class="row">
+       <div class="field"><label>Číslo faktury</label><input type="text" id="invNum" value="" oninput="updatePreview()"></div>
+       <div class="field"><label>Variabilní symbol</label><input type="text" id="invVs" oninput="updatePreview()"></div>
+     </div>
+     <div class="row">
+       <div class="field"><label>Datum vystavení</label><input type="date" id="invDate" oninput="updatePreview()"></div>
+       <div class="field"><label>Datum splatnosti</label><input type="date" id="invDue" oninput="updatePreview()"></div>
+     </div>
+   </div>
+
+   <div class="form-card">
+     <h3>🏢 Dodavatel (já)</h3>
+     <div class="field"><label>Název / Jméno</label><input type="text" id="supName" value="Ondřej Kudlička — Kudli. marketing" oninput="updatePreview()"></div>
+     <div class="row">
+       <div class="field"><label>IČO</label><input type="text" id="supIco" value="07271751" oninput="updatePreview()"></div>
+       <div class="field"><label>DIČ</label><input type="text" id="supDic" placeholder="Neplátce DPH" oninput="updatePreview()"></div>
+     </div>
+     <div class="field"><label>Adresa</label><input type="text" id="supAddr" value="Hubrova 2263/7, 628 00 Brno" oninput="updatePreview()"></div>
+     <div class="field"><label>Bankovní účet</label><input type="text" id="supBank" value="1486382014/3030" oninput="updatePreview()"></div>
+   </div>
+
+   <div class="form-card">
+     <h3>👤 Odběratel</h3>
+     <div class="field"><label>Název firmy / Jméno</label><input type="text" id="custName" placeholder="Firma s.r.o." oninput="updatePreview()"></div>
+     <div class="row">
+       <div class="field"><label>IČO</label><input type="text" id="custIco" placeholder="" oninput="updatePreview()"></div>
+       <div class="field"><label>DIČ</label><input type="text" id="custDic" placeholder="" oninput="updatePreview()"></div>
+     </div>
+     <div class="field"><label>Adresa</label><input type="text" id="custAddr" placeholder="Ulice, Město, PSČ" oninput="updatePreview()"></div>
+   </div>
+
+   <div class="form-card">
+     <h3>📦 Položky</h3>
+     <table class="items-table">
+       <thead><tr><th style="width:50%">Popis</th><th>Počet</th><th>Cena/ks</th><th>Celkem</th><th></th></tr></thead>
+       <tbody id="itemsBody"></tbody>
+     </table>
+     <button class="btn btn-ghost btn-sm" onclick="addItem()">+ Přidat položku</button>
+   </div>
+
+   <div class="form-card">
+     <h3>📝 Poznámka</h3>
+     <div class="field"><textarea id="invNote" placeholder="Dodatečné informace..." oninput="updatePreview()"></textarea></div>
+   </div>
+ </div>
+
+ <!-- Preview -->
+ <div class="preview-panel">
+   <div class="invoice-preview" id="invoicePreview">
+     <div class="inv-header">
+       <div class="inv-brand">Kudli<span>.</span> marketing</div>
+       <div class="inv-title">
+         <h2>FAKTURA</h2>
+         <div class="num" id="prevNum">č. —</div>
+       </div>
+     </div>
+
+     <div class="inv-parties">
+       <div class="inv-party">
+         <h4>Dodavatel</h4>
+         <div class="name" id="prevSupName">—</div>
+         <div id="prevSupDetails"></div>
+       </div>
+       <div class="inv-party">
+         <h4>Odběratel</h4>
+         <div class="name" id="prevCustName">—</div>
+         <div id="prevCustDetails"></div>
+       </div>
+     </div>
+
+     <div class="inv-dates">
+       <div>Vystavení: <strong id="prevDate">—</strong></div>
+       <div>Splatnost: <strong id="prevDue">—</strong></div>
+       <div>VS: <strong id="prevVs">—</strong></div>
+     </div>
+
+     <table class="inv-items">
+       <thead><tr><th>Popis</th><th class="right">Počet</th><th class="right">Cena/ks</th><th class="right">Celkem</th></tr></thead>
+       <tbody id="prevItems"></tbody>
+       <tfoot>
+         <tr><td colspan="3" class="right">Celkem bez DPH:</td><td class="right" id="prevSubtotal">0 Kč</td></tr>
+         <tr class="total-row"><td colspan="3" class="right"><strong>CELKEM K ÚHRADĚ:</strong></td><td class="right"><strong id="prevTotal">0 Kč</strong></td></tr>
+       </tfoot>
+     </table>
+
+     <div class="inv-payment">
+       <h4>Platební údaje</h4>
+       <div id="prevBank">Bankovní účet: —</div>
+       <div id="prevVsPayment">Variabilní symbol: —</div>
+     </div>
+
+     <div id="prevNote" style="font-size:0.8rem;color:#666;margin-bottom:1rem"></div>
+
+     <div class="inv-footer">
+       Kudli. marketing | o.kudlicka@gmail.com | Neplátce DPH
+     </div>
+   </div>
+
+   <div class="print-actions">
+     <button class="btn btn-primary" onclick="window.print()">🖨️ Tisk / PDF</button>
+     <button class="btn btn-ghost" onclick="copyInvoice()">📋 Kopírovat text</button>
+   </div>
+ </div>
+
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let items = [
+ { desc: 'Tvorba webových stránek', qty: 1, price: 25000 }
+];
+
+function init() {
+ // Auto-fill dates
+ const today = new Date();
+ document.getElementById('invDate').valueAsDate = today;
+ const due = new Date(today);
+ due.setDate(due.getDate() + 14);
+ document.getElementById('invDue').valueAsDate = due;
+
+ // Auto-generate invoice number
+ const num = `FV${today.getFullYear()}${String(today.getMonth()+1).padStart(2,'0')}01`;
+ document.getElementById('invNum').value = num;
+ document.getElementById('invVs').value = num;
+
+ renderItems();
+ updatePreview();
+}
+
+function addItem() {
+ items.push({ desc: '', qty: 1, price: 0 });
+ renderItems();
+}
+
+function removeItem(i) {
+ items.splice(i, 1);
+ renderItems();
+ updatePreview();
+}
+
+function renderItems() {
+ document.getElementById('itemsBody').innerHTML = items.map((item, i) => `
+   <tr>
+     <td><input type="text" value="${esc(item.desc)}" onchange="items[${i}].desc=this.value;updatePreview()"></td>
+     <td><input type="number" class="num-input" value="${item.qty}" min="1" onchange="items[${i}].qty=parseInt(this.value)||1;updatePreview()"></td>
+     <td><input type="number" class="num-input" value="${item.price}" min="0" onchange="items[${i}].price=parseInt(this.value)||0;updatePreview()"></td>
+     <td style="text-align:right;font-weight:600;white-space:nowrap">${fmt(item.qty * item.price)}</td>
+     <td><button class="del-btn" onclick="removeItem(${i})">✕</button></td>
+   </tr>
+ `).join('');
+}
+
+function updatePreview() {
+ const num = document.getElementById('invNum').value || '—';
+ const vs = document.getElementById('invVs').value || '—';
+ const date = document.getElementById('invDate').value;
+ const due = document.getElementById('invDue').value;
+
+ document.getElementById('prevNum').textContent = `č. ${num}`;
+ document.getElementById('prevVs').textContent = vs;
+ document.getElementById('prevDate').textContent = date ? fmtDate(date) : '—';
+ document.getElementById('prevDue').textContent = due ? fmtDate(due) : '—';
+
+ // Supplier
+ document.getElementById('prevSupName').textContent = document.getElementById('supName').value || '—';
+ const supDetails = [];
+ const ico = document.getElementById('supIco').value;
+ const dic = document.getElementById('supDic').value;
+ const addr = document.getElementById('supAddr').value;
+ if (ico) supDetails.push(`IČO: ${ico}`);
+ if (dic) supDetails.push(`DIČ: ${dic}`);
+ if (addr) supDetails.push(addr);
+ document.getElementById('prevSupDetails').innerHTML = supDetails.map(s => `<div style="font-size:0.8rem;color:#666">${s}</div>`).join('');
+
+ // Customer
+ document.getElementById('prevCustName').textContent = document.getElementById('custName').value || '—';
+ const custDetails = [];
+ const cIco = document.getElementById('custIco').value;
+ const cDic = document.getElementById('custDic').value;
+ const cAddr = document.getElementById('custAddr').value;
+ if (cIco) custDetails.push(`IČO: ${cIco}`);
+ if (cDic) custDetails.push(`DIČ: ${cDic}`);
+ if (cAddr) custDetails.push(cAddr);
+ document.getElementById('prevCustDetails').innerHTML = custDetails.map(s => `<div style="font-size:0.8rem;color:#666">${s}</div>`).join('');
+
+ // Items
+ let total = 0;
+ document.getElementById('prevItems').innerHTML = items.map(item => {
+   const lineTotal = item.qty * item.price;
+   total += lineTotal;
+   return `<tr>
+     <td>${esc(item.desc) || '—'}</td>
+     <td class="right">${item.qty}</td>
+     <td class="right">${fmt(item.price)}</td>
+     <td class="right">${fmt(lineTotal)}</td>
+   </tr>`;
+ }).join('');
+
+ document.getElementById('prevSubtotal').textContent = fmt(total);
+ document.getElementById('prevTotal').textContent = fmt(total);
+
+ // Payment
+ const bank = document.getElementById('supBank').value;
+ document.getElementById('prevBank').textContent = bank ? `Bankovní účet: ${bank}` : 'Bankovní účet: —';
+ document.getElementById('prevVsPayment').textContent = `Variabilní symbol: ${vs}`;
+
+ // Note
+ const note = document.getElementById('invNote').value;
+ document.getElementById('prevNote').textContent = note || '';
+}
+
+function copyInvoice() {
+ const el = document.getElementById('invoicePreview');
+ navigator.clipboard.writeText(el.innerText).then(() => showToast('📋 Faktura zkopírována'));
+}
+
+function fmt(n) { return n.toLocaleString('cs') + ' Kč'; }
+function fmtDate(d) { const p = d.split('-'); return `${p[2]}.${p[1]}.${p[0]}`; }
+function esc(s) { return s ? s.replace(/</g,'&lt;').replace(/>/g,'&gt;') : ''; }
+
+function showToast(msg) {
+ const t = document.getElementById('toast');
+ t.textContent = msg;
+ t.classList.add('show');
+ setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+init();
+</script>
+</body>
+</html>

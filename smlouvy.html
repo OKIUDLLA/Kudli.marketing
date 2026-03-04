@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Správa smluv — Kudli. marketing</title>
+<meta name="description" content="Přehled a správa smluv s klienty. Termíny, stavy, upozornění na expirace.">
+<meta property="og:title" content="Správa smluv — Kudli. marketing">
+<meta property="og:description" content="Přehled a správa smluv s klienty. Termíny, stavy, upozornění na expirace.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/smlouvy.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+.top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}
+.top-bar .logo span{color:var(--accent)}
+.top-bar a.back{color:var(--muted);text-decoration:none;font-size:0.85rem}
+
+.container{max-width:1000px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.6rem;font-weight:800;margin-bottom:0.3rem}
+h1 em{color:var(--accent);font-style:normal}
+.subtitle{color:var(--muted);margin-bottom:2rem;font-size:0.95rem}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.75rem;margin-bottom:2rem}
+.stat-card{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.stat-card .num{font-size:1.8rem;font-weight:800}
+.stat-card .label{font-size:0.75rem;color:var(--muted);margin-top:0.2rem}
+
+/* Toolbar */
+.toolbar{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
+.toolbar input,.toolbar select{background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.6rem 1rem;border-radius:10px;font-size:0.85rem;font-family:inherit}
+.toolbar input{flex:1;min-width:200px}
+.toolbar select{min-width:140px}
+.btn{background:var(--accent);color:#fff;border:none;padding:0.6rem 1.25rem;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:inherit;transition:all 0.3s}
+.btn:hover{background:var(--accent-light);transform:translateY(-1px)}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.15);color:var(--text)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Contract cards */
+.contracts{display:flex;flex-direction:column;gap:1rem}
+.contract-card{background:var(--card);border-radius:16px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);position:relative;overflow:hidden;transition:all 0.3s;cursor:pointer}
+.contract-card:hover{border-color:rgba(233,69,96,0.3);transform:translateY(-2px);box-shadow:0 6px 25px rgba(0,0,0,0.2)}
+.contract-card::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+.contract-header{display:flex;align-items:center;gap:1rem;margin-bottom:0.75rem}
+.contract-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.contract-title{flex:1}
+.contract-title h3{font-size:1rem;font-weight:700}
+.contract-title .client{font-size:0.8rem;color:var(--muted)}
+.contract-status{padding:0.2rem 0.65rem;border-radius:8px;font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px}
+
+.contract-meta{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:0.5rem}
+.meta-item{display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--muted)}
+.meta-item strong{color:var(--text);font-weight:600}
+
+.contract-details{display:none;margin-top:1rem;padding-top:1rem;border-top:1px solid rgba(255,255,255,0.06)}
+.contract-card.open .contract-details{display:block}
+.detail-row{display:flex;justify-content:space-between;padding:0.4rem 0;font-size:0.85rem;border-bottom:1px solid rgba(255,255,255,0.03)}
+.detail-row:last-child{border:none}
+.detail-label{color:var(--muted)}
+.detail-actions{display:flex;gap:0.5rem;margin-top:1rem;flex-wrap:wrap}
+.detail-actions .btn{font-size:0.8rem;padding:0.45rem 1rem}
+
+/* Expiry warning */
+.expiry-warning{background:rgba(243,156,18,0.1);border:1px solid rgba(243,156,18,0.2);border-radius:12px;padding:1rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.75rem;font-size:0.9rem}
+.expiry-warning .icon{font-size:1.5rem}
+
+/* Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:100;padding:1rem}
+.modal-overlay.active{display:flex}
+.modal{background:var(--bg);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:2rem;max-width:550px;width:100%;max-height:90vh;overflow-y:auto}
+.modal h2{font-size:1.2rem;margin-bottom:1.5rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem;font-weight:600}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--card);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.6rem 1rem;border-radius:10px;font-size:0.9rem;font-family:inherit}
+.form-group textarea{min-height:80px;resize:vertical}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.modal-actions{display:flex;gap:0.75rem;justify-content:flex-end;margin-top:1.5rem}
+
+@media(max-width:768px){
+ .container{padding:1.5rem 1rem}
+ .toolbar{flex-direction:column}
+ .toolbar input{width:100%}
+ .contract-meta{grid-template-columns:1fr 1fr}
+ .form-row{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+ .stats{grid-template-columns:1fr 1fr}
+ .contract-meta{grid-template-columns:1fr}
+}
+@media print{
+ body{background:#fff;color:#000}
+ .top-bar,.btn,.modal-overlay,.delete-contract,.filters{display:none!important}
+ .container{max-width:100%;padding:0}
+ .contract-card{break-inside:avoid;border:1px solid #ccc;background:#fff;color:#000}
+ .contract-card *{color:#000!important}
+ .stats{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+ <a href="nastroje.html" class="logo">Kudli<span>.</span> marketing</a>
+ <a href="nastroje.html" class="back">← Zpět na nástroje</a>
+</div>
+
+<div class="container">
+ <h1>Správa <em>smluv</em></h1>
+ <p class="subtitle">Přehled všech smluv, termíny platnosti a upozornění na expirace</p>
+
+ <div class="stats" id="stats"></div>
+
+ <div id="expiryWarning"></div>
+
+ <div class="toolbar">
+   <input type="text" id="search" placeholder="Hledat smlouvu nebo klienta..." oninput="render()">
+   <select id="filterStatus" onchange="render()">
+     <option value="">Všechny stavy</option>
+     <option value="active">Aktivní</option>
+     <option value="draft">Návrh</option>
+     <option value="expired">Expirovaná</option>
+     <option value="terminated">Ukončená</option>
+   </select>
+   <select id="filterType" onchange="render()">
+     <option value="">Všechny typy</option>
+     <option value="sod">Smlouva o dílo</option>
+     <option value="retainer">Retainer</option>
+     <option value="nda">NDA</option>
+     <option value="sla">SLA</option>
+     <option value="other">Ostatní</option>
+   </select>
+   <button class="btn" onclick="openModal()">+ Nová smlouva</button>
+ </div>
+
+ <div class="contracts" id="contracts"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+ <div class="modal">
+   <h2 id="modalTitle">Nová smlouva</h2>
+   <div class="form-group"><label>Název smlouvy</label><input type="text" id="fName" placeholder="Smlouva o dílo — Web"></div>
+   <div class="form-row">
+     <div class="form-group"><label>Klient</label><input type="text" id="fClient" placeholder="Firma s.r.o."></div>
+     <div class="form-group"><label>Typ</label>
+       <select id="fType">
+         <option value="sod">Smlouva o dílo</option>
+         <option value="retainer">Retainer (měsíční)</option>
+         <option value="nda">NDA / Mlčenlivost</option>
+         <option value="sla">SLA / Servisní</option>
+         <option value="other">Ostatní</option>
+       </select>
+     </div>
+   </div>
+   <div class="form-row">
+     <div class="form-group"><label>Datum podpisu</label><input type="date" id="fSigned"></div>
+     <div class="form-group"><label>Platnost do</label><input type="date" id="fExpiry"></div>
+   </div>
+   <div class="form-row">
+     <div class="form-group"><label>Hodnota (Kč)</label><input type="number" id="fValue" placeholder="25000"></div>
+     <div class="form-group"><label>Stav</label>
+       <select id="fStatus">
+         <option value="active">Aktivní</option>
+         <option value="draft">Návrh</option>
+         <option value="expired">Expirovaná</option>
+         <option value="terminated">Ukončená</option>
+       </select>
+     </div>
+   </div>
+   <div class="form-group"><label>Poznámky</label><textarea id="fNotes" placeholder="Klíčové body, specifické podmínky..."></textarea></div>
+   <div class="modal-actions">
+     <button class="btn btn-outline" onclick="closeModal()">Zrušit</button>
+     <button class="btn" onclick="saveContract()">Uložit</button>
+   </div>
+ </div>
+</div>
+
+<script>
+const TYPE_MAP = {
+ sod: { label: 'Smlouva o dílo', icon: '📝', color: '#3498db' },
+ retainer: { label: 'Retainer', icon: '🔄', color: '#2ecc71' },
+ nda: { label: 'NDA', icon: '🤫', color: '#9b59b6' },
+ sla: { label: 'SLA', icon: '🛡️', color: '#e67e22' },
+ other: { label: 'Ostatní', icon: '📄', color: '#95a5a6' }
+};
+
+const STATUS_MAP = {
+ active: { label: 'Aktivní', bg: 'rgba(46,204,113,0.15)', color: '#2ecc71' },
+ draft: { label: 'Návrh', bg: 'rgba(52,152,219,0.15)', color: '#3498db' },
+ expired: { label: 'Expirovaná', bg: 'rgba(243,156,18,0.15)', color: '#f39c12' },
+ terminated: { label: 'Ukončená', bg: 'rgba(233,69,96,0.15)', color: '#e94560' }
+};
+
+let contracts = JSON.parse(sessionStorage.getItem('kudli_contracts') || 'null') || [
+ { id:1, name:'Smlouva o dílo — Web Kavárna Zrnko', client:'Kavárna Zrnko s.r.o.', type:'sod', signed:'2026-02-15', expiry:'2026-08-15', value:35000, status:'active', notes:'Kompletní redesign webu, 3 revize, 6 měsíců support. Platba 50/50.' },
+ { id:2, name:'Retainer — měsíční správa', client:'Kavárna Zrnko s.r.o.', type:'retainer', signed:'2026-03-01', expiry:'2026-12-31', value:8000, status:'active', notes:'Měsíční správa webu, SEO reporting, menší úpravy. 8000 Kč/měs.' },
+ { id:3, name:'NDA — Důvěrné informace', client:'MadeByHand.cz', type:'nda', signed:'2026-01-20', expiry:'2028-01-20', value:0, status:'active', notes:'Vzájemná NDA, 2 roky platnost, pokrývá veškeré obchodní informace.' },
+ { id:4, name:'Smlouva o dílo — E-shop', client:'MadeByHand.cz', type:'sod', signed:'2026-02-01', expiry:'2026-05-01', value:55000, status:'active', notes:'Multi-vendor e-shop, napojení Zásilkovna, platební brána. 3 milestones.' },
+ { id:5, name:'SLA — Servisní podpora', client:'BydlímTu s.r.o.', type:'sla', signed:'2026-02-10', expiry:'2027-02-10', value:5000, status:'active', notes:'Měsíční servisní poplatek 5000 Kč, reakční doba 24h, dostupnost 99.5%.' },
+ { id:6, name:'Smlouva o dílo — Landing page', client:'Petr Novák (fitness)', type:'sod', signed:'2026-01-10', expiry:'2026-02-28', value:12000, status:'expired', notes:'Jednoduchá landing page, dodáno včas. Platba po předání.' },
+ { id:7, name:'Smlouva o dílo — AI Chatbot', client:'BydlímTu s.r.o.', type:'sod', signed:'2026-03-01', expiry:'2026-06-30', value:45000, status:'draft', notes:'Návrh smlouvy na AI chatbota pro web. Čeká na podpis klienta.' },
+];
+let editId = null;
+
+function save() {
+ sessionStorage.setItem('kudli_contracts', JSON.stringify(contracts));
+}
+
+function daysUntil(dateStr) {
+ if (!dateStr) return Infinity;
+ const d = new Date(dateStr);
+ const now = new Date();
+ return Math.ceil((d - now) / (1000*60*60*24));
+}
+
+function formatDate(d) {
+ if (!d) return '—';
+ return new Date(d).toLocaleDateString('cs-CZ');
+}
+
+function formatMoney(v) {
+ if (!v) return '—';
+ return Number(v).toLocaleString('cs-CZ') + ' Kč';
+}
+
+function renderStats() {
+ const active = contracts.filter(c => c.status === 'active').length;
+ const drafts = contracts.filter(c => c.status === 'draft').length;
+ const totalValue = contracts.filter(c => c.status === 'active').reduce((s,c) => s + (Number(c.value)||0), 0);
+ const expiring = contracts.filter(c => c.status === 'active' && daysUntil(c.expiry) <= 30 && daysUntil(c.expiry) > 0).length;
+
+ document.getElementById('stats').innerHTML = `
+   <div class="stat-card"><div class="num" style="color:var(--green)">${active}</div><div class="label">Aktivních smluv</div></div>
+   <div class="stat-card"><div class="num" style="color:var(--blue)">${drafts}</div><div class="label">Návrhy</div></div>
+   <div class="stat-card"><div class="num" style="color:var(--accent)">${formatMoney(totalValue)}</div><div class="label">Celková hodnota</div></div>
+   <div class="stat-card"><div class="num" style="color:var(--orange)">${expiring}</div><div class="label">Brzy expirují</div></div>
+ `;
+
+ // Expiry warning
+ const soon = contracts.filter(c => c.status === 'active' && daysUntil(c.expiry) <= 30 && daysUntil(c.expiry) > 0);
+ const warn = document.getElementById('expiryWarning');
+ if (soon.length > 0) {
+   warn.innerHTML = `<div class="expiry-warning"><span class="icon">⚠️</span><div><strong>${soon.length} smlouv${soon.length===1?'a':soon.length<5?'y':''}</strong> expiruj${soon.length===1?'e':'í'} do 30 dnů: ${soon.map(c => `${c.name} (${daysUntil(c.expiry)} dní)`).join(', ')}</div></div>`;
+ } else {
+   warn.innerHTML = '';
+ }
+}
+
+function render() {
+ const search = document.getElementById('search').value.toLowerCase();
+ const fStatus = document.getElementById('filterStatus').value;
+ const fType = document.getElementById('filterType').value;
+
+ let filtered = contracts.filter(c => {
+   if (search && !c.name.toLowerCase().includes(search) && !c.client.toLowerCase().includes(search)) return false;
+   if (fStatus && c.status !== fStatus) return false;
+   if (fType && c.type !== fType) return false;
+   return true;
+ });
+
+ // Sort: active first, then by expiry
+ filtered.sort((a,b) => {
+   const order = {active:0,draft:1,expired:2,terminated:3};
+   if (order[a.status] !== order[b.status]) return order[a.status] - order[b.status];
+   return new Date(a.expiry||'9999') - new Date(b.expiry||'9999');
+ });
+
+ renderStats();
+
+ const container = document.getElementById('contracts');
+ if (filtered.length === 0) {
+   container.innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted)">Žádné smlouvy k zobrazení</div>';
+   return;
+ }
+
+ container.innerHTML = filtered.map(c => {
+   const type = TYPE_MAP[c.type] || TYPE_MAP.other;
+   const status = STATUS_MAP[c.status] || STATUS_MAP.active;
+   const days = daysUntil(c.expiry);
+   const expiryClass = c.status === 'active' && days <= 30 && days > 0 ? 'color:var(--orange);font-weight:700' : '';
+   const expiryText = c.status === 'active' && days <= 0 ? '<span style="color:var(--red);font-weight:700">EXPIROVÁNO</span>' : days <= 30 && days > 0 && c.status === 'active' ? `<span style="${expiryClass}">${days} dní</span>` : formatDate(c.expiry);
+
+   return `
+     <div class="contract-card" onclick="this.classList.toggle('open')">
+       <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:${type.color}"></div>
+       <div class="contract-header">
+         <div class="contract-icon" style="background:${type.color}22">${type.icon}</div>
+         <div class="contract-title">
+           <h3>${c.name}</h3>
+           <div class="client">${c.client} · ${type.label}</div>
+         </div>
+         <span class="contract-status" style="background:${status.bg};color:${status.color}">${status.label}</span>
+       </div>
+       <div class="contract-meta">
+         <div class="meta-item">📅 Podpis: <strong>${formatDate(c.signed)}</strong></div>
+         <div class="meta-item">⏰ Platnost do: <strong>${expiryText}</strong></div>
+         <div class="meta-item">💰 Hodnota: <strong>${formatMoney(c.value)}</strong></div>
+       </div>
+       <div class="contract-details">
+         <div class="detail-row"><span class="detail-label">Klient</span><span>${c.client}</span></div>
+         <div class="detail-row"><span class="detail-label">Typ</span><span>${type.label}</span></div>
+         <div class="detail-row"><span class="detail-label">Podepsáno</span><span>${formatDate(c.signed)}</span></div>
+         <div class="detail-row"><span class="detail-label">Platnost do</span><span>${formatDate(c.expiry)}</span></div>
+         <div class="detail-row"><span class="detail-label">Hodnota</span><span>${formatMoney(c.value)}</span></div>
+         ${c.notes ? `<div class="detail-row"><span class="detail-label">Poznámky</span><span style="max-width:350px">${c.notes}</span></div>` : ''}
+         <div class="detail-actions">
+           <button class="btn" onclick="event.stopPropagation();editContract(${c.id})">Upravit</button>
+           <button class="btn btn-outline" onclick="event.stopPropagation();duplicateContract(${c.id})">Duplikovat</button>
+           <button class="btn btn-outline" style="color:var(--red);border-color:var(--red)" onclick="event.stopPropagation();deleteContract(${c.id})">Smazat</button>
+         </div>
+       </div>
+     </div>
+   `;
+ }).join('');
+}
+
+function openModal(id) {
+ editId = id || null;
+ document.getElementById('modalTitle').textContent = id ? 'Upravit smlouvu' : 'Nová smlouva';
+ if (id) {
+   const c = contracts.find(x => x.id === id);
+   document.getElementById('fName').value = c.name;
+   document.getElementById('fClient').value = c.client;
+   document.getElementById('fType').value = c.type;
+   document.getElementById('fSigned').value = c.signed;
+   document.getElementById('fExpiry').value = c.expiry;
+   document.getElementById('fValue').value = c.value;
+   document.getElementById('fStatus').value = c.status;
+   document.getElementById('fNotes').value = c.notes || '';
+ } else {
+   ['fName','fClient','fSigned','fExpiry','fValue','fNotes'].forEach(id => document.getElementById(id).value = '');
+   document.getElementById('fType').value = 'sod';
+   document.getElementById('fStatus').value = 'draft';
+ }
+ document.getElementById('modal').classList.add('active');
+}
+
+function closeModal() {
+ document.getElementById('modal').classList.remove('active');
+ editId = null;
+}
+
+function saveContract() {
+ const data = {
+   name: document.getElementById('fName').value.trim(),
+   client: document.getElementById('fClient').value.trim(),
+   type: document.getElementById('fType').value,
+   signed: document.getElementById('fSigned').value,
+   expiry: document.getElementById('fExpiry').value,
+   value: Number(document.getElementById('fValue').value) || 0,
+   status: document.getElementById('fStatus').value,
+   notes: document.getElementById('fNotes').value.trim()
+ };
+ if (!data.name || !data.client) return alert('Vyplň název smlouvy a klienta.');
+
+ if (editId) {
+   const idx = contracts.findIndex(c => c.id === editId);
+   contracts[idx] = { ...contracts[idx], ...data };
+ } else {
+   data.id = Date.now();
+   contracts.push(data);
+ }
+ save(); closeModal(); render();
+}
+
+function editContract(id) { openModal(id); }
+
+function duplicateContract(id) {
+ const c = contracts.find(x => x.id === id);
+ const dup = { ...c, id: Date.now(), name: c.name + ' (kopie)', status: 'draft' };
+ contracts.push(dup);
+ save(); render();
+}
+
+function deleteContract(id) {
+ if (!confirm('Opravdu smazat tuto smlouvu?')) return;
+ contracts = contracts.filter(c => c.id !== id);
+ save(); render();
+}
+
+render();
+</script>
+</body>
+</html>

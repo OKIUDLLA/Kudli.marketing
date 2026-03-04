@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CRM Pipeline — Kudli. marketing</title>
+<meta name="description" content="CRM pipeline s kanban boardem, drag & drop a exportem do CSV.">
+<meta property="og:title" content="CRM Pipeline — Kudli. marketing">
+<meta property="og:description" content="CRM pipeline s kanban boardem, drag & drop a exportem do CSV.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/crm.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--blue:#3498db;--orange:#f39c12;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:auto}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+.top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}
+.top-bar .logo span{color:var(--accent)}
+.top-bar .badge{background:rgba(233,69,96,0.15);color:var(--accent-light);padding:0.25rem 0.75rem;border-radius:15px;font-size:0.75rem;font-weight:600}
+.top-bar .actions{display:flex;gap:0.5rem}
+
+.btn{padding:0.5rem 1rem;border:none;border-radius:8px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.3s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-ghost{background:rgba(255,255,255,0.06);color:var(--text)}
+.btn-ghost:hover{background:rgba(255,255,255,0.12)}
+.btn-sm{padding:0.3rem 0.6rem;font-size:0.75rem}
+
+/* Summary KPIs */
+.kpi-row{display:flex;gap:1rem;padding:1.25rem 2rem;overflow-x:auto}
+.kpi-mini{background:var(--card);border-radius:10px;padding:0.75rem 1rem;min-width:140px;border:1px solid rgba(255,255,255,0.06)}
+.kpi-mini .label{font-size:0.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px}
+.kpi-mini .val{font-size:1.4rem;font-weight:800;margin-top:0.15rem}
+
+/* Pipeline Board */
+.pipeline{display:flex;gap:1rem;padding:1rem 2rem;min-height:calc(100vh - 180px);align-items:flex-start}
+.column{min-width:280px;max-width:300px;flex:1;background:rgba(255,255,255,0.02);border-radius:14px;padding:0.75rem;border:1px solid rgba(255,255,255,0.04)}
+.col-header{display:flex;justify-content:space-between;align-items:center;padding:0.5rem;margin-bottom:0.5rem}
+.col-header h3{font-size:0.85rem;font-weight:700;display:flex;align-items:center;gap:0.5rem}
+.col-header .count{background:rgba(255,255,255,0.1);padding:0.15rem 0.5rem;border-radius:10px;font-size:0.7rem;font-weight:600}
+.col-header .total{font-size:0.75rem;color:var(--muted)}
+.col-dot{width:10px;height:10px;border-radius:50%}
+
+/* Deal Cards */
+.deal-card{background:var(--card);border-radius:12px;padding:1rem;margin-bottom:0.6rem;border:1px solid rgba(255,255,255,0.06);cursor:grab;transition:all 0.2s;position:relative}
+.deal-card:hover{border-color:rgba(233,69,96,0.3);transform:translateY(-2px);box-shadow:0 5px 20px rgba(0,0,0,0.2)}
+.deal-card.dragging{opacity:0.5;transform:rotate(2deg)}
+.deal-name{font-weight:700;font-size:0.9rem;margin-bottom:0.35rem}
+.deal-company{font-size:0.8rem;color:var(--muted);margin-bottom:0.5rem}
+.deal-amount{font-size:1rem;font-weight:800;color:var(--accent-light)}
+.deal-tags{display:flex;gap:0.35rem;margin-top:0.5rem;flex-wrap:wrap}
+.deal-tag{padding:0.15rem 0.5rem;border-radius:6px;font-size:0.65rem;font-weight:600}
+.tag-web{background:rgba(233,69,96,0.15);color:var(--accent-light)}
+.tag-eshop{background:rgba(46,204,113,0.15);color:var(--green)}
+.tag-chatbot{background:rgba(52,152,219,0.15);color:var(--blue)}
+.tag-auto{background:rgba(243,156,18,0.15);color:var(--orange)}
+.tag-redesign{background:rgba(155,89,182,0.15);color:var(--purple)}
+.deal-footer{display:flex;justify-content:space-between;align-items:center;margin-top:0.6rem;padding-top:0.5rem;border-top:1px solid rgba(255,255,255,0.05)}
+.deal-date{font-size:0.7rem;color:var(--muted)}
+.deal-actions{display:flex;gap:0.3rem}
+.deal-actions button{background:none;border:none;color:var(--muted);cursor:pointer;font-size:0.85rem;padding:0.2rem;transition:color 0.3s}
+.deal-actions button:hover{color:var(--accent)}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:200;align-items:center;justify-content:center;padding:1rem}
+.modal-overlay.open{display:flex}
+.modal{background:var(--card);border-radius:18px;padding:2rem;max-width:500px;width:100%;border:1px solid rgba(255,255,255,0.08);max-height:90vh;overflow-y:auto}
+.modal h2{font-size:1.2rem;font-weight:800;margin-bottom:1.5rem}
+.modal .field{margin-bottom:1rem}
+.modal label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.3rem}
+.modal input,.modal select,.modal textarea{width:100%;padding:0.6rem 0.85rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text);font-size:0.9rem;font-family:inherit}
+.modal input:focus,.modal select:focus,.modal textarea:focus{outline:none;border-color:var(--accent)}
+.modal textarea{min-height:80px;resize:vertical}
+.modal .row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.modal-actions{display:flex;gap:0.75rem;margin-top:1.5rem}
+.modal-actions .btn{flex:1;padding:0.7rem}
+
+.drop-zone{min-height:60px;border:2px dashed transparent;border-radius:10px;transition:all 0.3s}
+.drop-zone.over{border-color:var(--accent);background:rgba(233,69,96,0.05)}
+
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--green);color:#fff;padding:0.7rem 1.5rem;border-radius:10px;font-weight:600;font-size:0.85rem;transform:translateY(100px);opacity:0;transition:all 0.4s;z-index:300}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:768px){
+ .pipeline{flex-direction:column}
+ .column{min-width:100%;max-width:100%}
+ .kpi-row{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+ <div style="display:flex;align-items:center;gap:1.5rem">
+   <a href="nastroje.html" style="color:var(--muted);text-decoration:none;font-size:0.85rem">← Nástroje</a>
+   <a href="index.html" class="logo">Kudli<span>.</span> marketing</a>
+   <span class="badge">CRM PIPELINE</span>
+ </div>
+ <div class="actions">
+   <button class="btn btn-ghost" onclick="exportDeals()">📥 Export</button>
+   <button class="btn btn-primary" onclick="openModal()">+ Nový lead</button>
+ </div>
+</div>
+
+<!-- KPI Row -->
+<div class="kpi-row">
+ <div class="kpi-mini"><div class="label">Celkem dealů</div><div class="val" id="kpiTotal">0</div></div>
+ <div class="kpi-mini"><div class="label">Hodnota pipeline</div><div class="val" id="kpiValue">0 Kč</div></div>
+ <div class="kpi-mini"><div class="label">Vážená hodnota</div><div class="val" id="kpiWeighted">0 Kč</div></div>
+ <div class="kpi-mini"><div class="label">Konverzní poměr</div><div class="val" id="kpiConv">0%</div></div>
+ <div class="kpi-mini"><div class="label">Vyhrané tento měsíc</div><div class="val" id="kpiWon">0 Kč</div></div>
+</div>
+
+<!-- Pipeline Board -->
+<div class="pipeline" id="pipeline"></div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+ <div class="modal">
+   <h2 id="modalTitle">Nový lead</h2>
+   <div class="field">
+     <label>Kontaktní osoba *</label>
+     <input type="text" id="dealName" placeholder="Jan Novák">
+   </div>
+   <div class="row">
+     <div class="field">
+       <label>Firma</label>
+       <input type="text" id="dealCompany" placeholder="Firma s.r.o.">
+     </div>
+     <div class="field">
+       <label>Email</label>
+       <input type="email" id="dealEmail" placeholder="jan@firma.cz">
+     </div>
+   </div>
+   <div class="row">
+     <div class="field">
+       <label>Typ projektu</label>
+       <select id="dealType">
+         <option value="web">Webové stránky</option>
+         <option value="eshop">E-shop</option>
+         <option value="chatbot">AI Chatbot</option>
+         <option value="auto">Automatizace</option>
+         <option value="redesign">Redesign</option>
+       </select>
+     </div>
+     <div class="field">
+       <label>Hodnota (Kč)</label>
+       <input type="number" id="dealAmount" placeholder="25000" min="0">
+     </div>
+   </div>
+   <div class="field">
+     <label>Fáze</label>
+     <select id="dealStage">
+       <option value="lead">Nový lead</option>
+       <option value="contacted">Kontaktováno</option>
+       <option value="proposal">Nabídka odeslána</option>
+       <option value="negotiation">Jednání</option>
+       <option value="won">Vyhráno ✅</option>
+       <option value="lost">Prohráno ❌</option>
+     </select>
+   </div>
+   <div class="field">
+     <label>Poznámky</label>
+     <textarea id="dealNotes" placeholder="Další informace o dealu..."></textarea>
+   </div>
+   <input type="hidden" id="dealEditId" value="">
+   <div class="modal-actions">
+     <button class="btn btn-ghost" onclick="closeModal()">Zrušit</button>
+     <button class="btn btn-primary" onclick="saveDeal()">Uložit</button>
+   </div>
+ </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const STAGES = [
+ { id: 'lead', name: 'Nový lead', color: '#95a5a6', prob: 10 },
+ { id: 'contacted', name: 'Kontaktováno', color: '#3498db', prob: 25 },
+ { id: 'proposal', name: 'Nabídka odeslána', color: '#f39c12', prob: 50 },
+ { id: 'negotiation', name: 'Jednání', color: '#9b59b6', prob: 75 },
+ { id: 'won', name: 'Vyhráno', color: '#2ecc71', prob: 100 },
+ { id: 'lost', name: 'Prohráno', color: '#e74c3c', prob: 0 }
+];
+
+const TAG_CLASSES = { web:'tag-web', eshop:'tag-eshop', chatbot:'tag-chatbot', auto:'tag-auto', redesign:'tag-redesign' };
+const TAG_LABELS = { web:'Web', eshop:'E-shop', chatbot:'Chatbot', auto:'Automatizace', redesign:'Redesign' };
+
+let deals = [];
+let nextId = 1;
+let dragDealId = null;
+
+function init() {
+ loadDeals();
+ renderBoard();
+ updateKPIs();
+}
+
+function renderBoard() {
+ const board = document.getElementById('pipeline');
+ board.innerHTML = '';
+
+ STAGES.forEach(stage => {
+   const stageDeals = deals.filter(d => d.stage === stage.id);
+   const total = stageDeals.reduce((s,d) => s + (d.amount||0), 0);
+
+   const col = document.createElement('div');
+   col.className = 'column';
+   col.innerHTML = `
+     <div class="col-header">
+       <h3><span class="col-dot" style="background:${stage.color}"></span> ${stage.name} <span class="count">${stageDeals.length}</span></h3>
+       <span class="total">${fmt(total)}</span>
+     </div>
+     <div class="drop-zone" data-stage="${stage.id}"
+       ondragover="event.preventDefault();this.classList.add('over')"
+       ondragleave="this.classList.remove('over')"
+       ondrop="dropDeal(event,'${stage.id}');this.classList.remove('over')">
+       ${stageDeals.map(d => dealCard(d)).join('')}
+     </div>
+   `;
+   board.appendChild(col);
+ });
+}
+
+function dealCard(d) {
+ const dateStr = new Date(d.created).toLocaleDateString('cs');
+ return `<div class="deal-card" draggable="true"
+   ondragstart="dragDealId=${d.id};this.classList.add('dragging')"
+   ondragend="this.classList.remove('dragging')">
+   <div class="deal-name">${esc(d.name)}</div>
+   <div class="deal-company">${esc(d.company||'—')}</div>
+   <div class="deal-amount">${fmt(d.amount||0)}</div>
+   <div class="deal-tags">
+     <span class="deal-tag ${TAG_CLASSES[d.type]||'tag-web'}">${TAG_LABELS[d.type]||d.type}</span>
+   </div>
+   <div class="deal-footer">
+     <span class="deal-date">${dateStr}</span>
+     <div class="deal-actions">
+       <button onclick="editDeal(${d.id})" title="Upravit">✏️</button>
+       <button onclick="deleteDeal(${d.id})" title="Smazat">🗑️</button>
+     </div>
+   </div>
+ </div>`;
+}
+
+function dropDeal(e, stageId) {
+ e.preventDefault();
+ if (dragDealId === null) return;
+ const deal = deals.find(d => d.id === dragDealId);
+ if (deal) {
+   deal.stage = stageId;
+   saveDeals();
+   renderBoard();
+   updateKPIs();
+   showToast(`✅ ${deal.name} přesunut do "${STAGES.find(s=>s.id===stageId).name}"`);
+ }
+ dragDealId = null;
+}
+
+function openModal(id) {
+ document.getElementById('dealEditId').value = id || '';
+ document.getElementById('modalTitle').textContent = id ? 'Upravit deal' : 'Nový lead';
+
+ if (id) {
+   const d = deals.find(x => x.id === id);
+   if (!d) return;
+   document.getElementById('dealName').value = d.name;
+   document.getElementById('dealCompany').value = d.company || '';
+   document.getElementById('dealEmail').value = d.email || '';
+   document.getElementById('dealType').value = d.type;
+   document.getElementById('dealAmount').value = d.amount || '';
+   document.getElementById('dealStage').value = d.stage;
+   document.getElementById('dealNotes').value = d.notes || '';
+ } else {
+   ['dealName','dealCompany','dealEmail','dealAmount','dealNotes'].forEach(id => document.getElementById(id).value = '');
+   document.getElementById('dealType').value = 'web';
+   document.getElementById('dealStage').value = 'lead';
+ }
+ document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+ document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function saveDeal() {
+ const name = document.getElementById('dealName').value.trim();
+ if (!name) { alert('Vyplň jméno kontaktu'); return; }
+
+ const editId = parseInt(document.getElementById('dealEditId').value);
+ const data = {
+   name,
+   company: document.getElementById('dealCompany').value.trim(),
+   email: document.getElementById('dealEmail').value.trim(),
+   type: document.getElementById('dealType').value,
+   amount: parseInt(document.getElementById('dealAmount').value) || 0,
+   stage: document.getElementById('dealStage').value,
+   notes: document.getElementById('dealNotes').value.trim()
+ };
+
+ if (editId) {
+   const deal = deals.find(d => d.id === editId);
+   if (deal) Object.assign(deal, data);
+   showToast('✅ Deal aktualizován');
+ } else {
+   data.id = nextId++;
+   data.created = new Date().toISOString();
+   deals.push(data);
+   showToast('✅ Nový lead přidán');
+ }
+
+ saveDeals();
+ renderBoard();
+ updateKPIs();
+ closeModal();
+}
+
+function editDeal(id) { openModal(id); }
+
+function deleteDeal(id) {
+ if (!confirm('Smazat tento deal?')) return;
+ deals = deals.filter(d => d.id !== id);
+ saveDeals();
+ renderBoard();
+ updateKPIs();
+ showToast('🗑️ Deal smazán');
+}
+
+function updateKPIs() {
+ const active = deals.filter(d => d.stage !== 'lost');
+ const won = deals.filter(d => d.stage === 'won');
+ const lost = deals.filter(d => d.stage === 'lost');
+ const closed = won.length + lost.length;
+
+ const totalVal = active.reduce((s,d) => s + (d.amount||0), 0);
+ const weightedVal = active.reduce((s,d) => {
+   const stage = STAGES.find(st => st.id === d.stage);
+   return s + ((d.amount||0) * (stage ? stage.prob/100 : 0));
+ }, 0);
+
+ const now = new Date();
+ const wonThisMonth = won.filter(d => {
+   const c = new Date(d.created);
+   return c.getMonth() === now.getMonth() && c.getFullYear() === now.getFullYear();
+ }).reduce((s,d) => s + (d.amount||0), 0);
+
+ document.getElementById('kpiTotal').textContent = deals.length;
+ document.getElementById('kpiValue').textContent = fmt(totalVal);
+ document.getElementById('kpiWeighted').textContent = fmt(Math.round(weightedVal));
+ document.getElementById('kpiConv').textContent = closed > 0 ? Math.round((won.length/closed)*100) + '%' : '—';
+ document.getElementById('kpiWon').textContent = fmt(wonThisMonth);
+}
+
+function exportDeals() {
+ if (deals.length === 0) { showToast('⚠️ Žádné dealy'); return; }
+ const h = 'Jméno,Firma,Email,Typ,Hodnota,Fáze,Poznámky,Vytvořeno\n';
+ const rows = deals.map(d => `"${d.name}","${d.company||''}","${d.email||''}","${d.type}",${d.amount||0},"${d.stage}","${(d.notes||'').replace(/"/g,'""')}","${d.created}"`).join('\n');
+ const blob = new Blob([h+rows], {type:'text/csv;charset=utf-8;'});
+ const a = document.createElement('a');
+ a.href = URL.createObjectURL(blob);
+ a.download = `kudli-crm-${new Date().toISOString().split('T')[0]}.csv`;
+ a.click();
+ showToast('📥 Export hotový');
+}
+
+function loadSampleDeals() {
+ deals = [
+   {id:1,name:'Petr Svoboda',company:'FreshFood s.r.o.',email:'petr@freshfood.cz',type:'web',amount:35000,stage:'won',notes:'Firemní web + blog',created:'2026-02-10'},
+   {id:2,name:'Marie Dvořáková',company:'Boutique Elegance',email:'marie@boutique.cz',type:'eshop',amount:65000,stage:'negotiation',notes:'E-shop s 200 produkty',created:'2026-02-20'},
+   {id:3,name:'Tomáš Krejčí',company:'TechStart',email:'tomas@techstart.io',type:'chatbot',amount:28000,stage:'proposal',notes:'Customer support chatbot',created:'2026-02-25'},
+   {id:4,name:'Eva Nováková',company:'Klínika Zdraví',email:'eva@klinika.cz',type:'web',amount:42000,stage:'contacted',notes:'Redesign stávajícího webu kliniky',created:'2026-02-28'},
+   {id:5,name:'Jan Horák',company:'Horák Reality',email:'jan@horak-re.cz',type:'redesign',amount:55000,stage:'lead',notes:'Kontakt z LinkedIn',created:'2026-03-01'},
+   {id:6,name:'Lucie Malá',company:'BioShop.cz',email:'lucie@bioshop.cz',type:'auto',amount:18000,stage:'proposal',notes:'Automatizace objednávek',created:'2026-02-15'},
+   {id:7,name:'David Černý',company:'Černý & Partners',email:'david@cerny.law',type:'web',amount:30000,stage:'lost',notes:'Vybrali jinou nabídku',created:'2026-01-20'},
+ ];
+ nextId = 8;
+ saveDeals();
+ renderBoard();
+ updateKPIs();
+ showToast('📋 Demo dealy načteny');
+}
+
+function saveDeals() {
+ try { sessionStorage.setItem('kudli_crm', JSON.stringify({deals, nextId})); } catch(e) {}
+}
+function loadDeals() {
+ try {
+   const d = sessionStorage.getItem('kudli_crm');
+   if (d) {
+     const parsed = JSON.parse(d);
+     deals = parsed.deals || [];
+     nextId = parsed.nextId || 1;
+   }
+ } catch(e) {}
+ if (deals.length === 0) loadSampleDeals();
+}
+
+function fmt(n) { return n.toLocaleString('cs') + ' Kč'; }
+function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+function showToast(msg) {
+ const t = document.getElementById('toast');
+ t.textContent = msg;
+ t.classList.add('show');
+ setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+init();
+</script>
+</body>
+</html>

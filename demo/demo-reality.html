@@ -1,0 +1,1700 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BydlímTu Reality - Váš Vysněný Domov</title>
+    <meta name="description" content="Demo ukázka webu pro realitní kancelář — vyhledávání nemovitostí.">
+    <meta property="og:title" content="BydlímTu Reality - Váš Vysněný Domov — Kudli. marketing">
+    <meta property="og:description" content="Demo ukázka webu pro realitní kancelář — vyhledávání nemovitostí.">
+    <meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://kudlimarketing.cz/demo/demo-reality.html">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --midnight: #0A2540;
+            --indigo: #635BFF;
+            --teal: #00D4AA;
+            --light: #F6F9FC;
+            --white: #FFFFFF;
+            --dark-text: #1A2332;
+            --muted: #8B94A5;
+            --border: #E5E9F0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            color: var(--dark-text);
+            background: var(--light);
+            overflow-x: hidden;
+        }
+
+        /* Demo Banner */
+        .demo-banner {
+            background: linear-gradient(135deg, var(--midnight) 0%, var(--indigo) 100%);
+            color: var(--white);
+            text-align: center;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+            z-index: 100;
+        }
+
+        .demo-banner a {
+            color: var(--teal);
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.3s ease;
+        }
+
+        .demo-banner a:hover {
+            opacity: 0.8;
+        }
+
+        /* Navigation */
+        nav {
+            background: rgba(255, 255, 255, 0.92);
+            position: sticky;
+            top: 42px;
+            z-index: 99;
+            box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 24px;
+        }
+
+        .logo {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--midnight);
+            letter-spacing: -0.3px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 50px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--dark-text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--indigo);
+        }
+
+        .nav-cta {
+            background: linear-gradient(135deg, var(--indigo) 0%, #5A4AE8 100%);
+            color: var(--white);
+            padding: 10px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 91, 255, 0.3);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2.5px;
+            background: var(--midnight);
+            transition: 0.3s ease;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            min-height: 700px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 42px;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, var(--midnight) 0%, #2D3B5C 40%, var(--indigo) 100%);
+            z-index: -1;
+        }
+
+        .hero-bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 15% 40%, rgba(0, 212, 170, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 85% 85%, rgba(99, 91, 255, 0.2) 0%, transparent 50%);
+            animation: moveGradient 12s ease infinite;
+        }
+
+        @keyframes moveGradient {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-40px, 40px); }
+        }
+
+        .hero-content {
+            max-width: 850px;
+            color: var(--white);
+            text-align: center;
+            z-index: 2;
+            padding: 0 20px;
+            animation: fadeInUp 0.9s ease 0.2s backwards;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(44px, 8vw, 72px);
+            margin-bottom: 24px;
+            font-weight: 700;
+            letter-spacing: -0.8px;
+            line-height: 1.15;
+        }
+
+        .hero-content p {
+            font-size: 18px;
+            opacity: 0.93;
+            margin-bottom: 40px;
+            font-weight: 400;
+            line-height: 1.6;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 36px;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 15px;
+            letter-spacing: 0.3px;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .btn-primary {
+            background: var(--white);
+            color: var(--midnight);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.22);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.12);
+            color: var(--white);
+            border: 2px solid rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(10px);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Search Section */
+        .search-section {
+            max-width: 1400px;
+            margin: -60px auto 0;
+            padding: 0 24px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-card {
+            background: var(--white);
+            border-radius: 14px;
+            padding: 32px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.12);
+            backdrop-filter: blur(20px);
+        }
+
+        .search-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 18px;
+            align-items: flex-end;
+        }
+
+        .search-input {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .search-input label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--midnight);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+
+        .search-input input,
+        .search-input select {
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .search-input input:focus,
+        .search-input select:focus {
+            outline: none;
+            border-color: var(--indigo);
+            box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.1);
+        }
+
+        .search-button {
+            background: linear-gradient(135deg, var(--indigo) 0%, #5A4AE8 100%);
+            color: var(--white);
+            border: none;
+            padding: 11px 40px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            width: 100%;
+        }
+
+        .search-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(99, 91, 255, 0.3);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: var(--midnight);
+            padding: 60px 24px;
+            margin: 80px 0;
+        }
+
+        .stats-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-item {
+            color: var(--white);
+        }
+
+        .stat-number {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--teal);
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .stat-label {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.8);
+            font-weight: 500;
+        }
+
+        /* Properties Section */
+        .properties-section {
+            max-width: 1400px;
+            margin: 80px auto;
+            padding: 0 24px;
+        }
+
+        .section-title {
+            font-size: 42px;
+            font-weight: 700;
+            margin-bottom: 48px;
+            color: var(--midnight);
+            letter-spacing: -0.5px;
+        }
+
+        .properties-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+            gap: 28px;
+        }
+
+        .property-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+            animation: scaleIn 0.6s ease backwards;
+        }
+
+        .property-card:nth-child(1) { animation-delay: 0.05s; }
+        .property-card:nth-child(2) { animation-delay: 0.1s; }
+        .property-card:nth-child(3) { animation-delay: 0.15s; }
+        .property-card:nth-child(4) { animation-delay: 0.2s; }
+        .property-card:nth-child(5) { animation-delay: 0.25s; }
+        .property-card:nth-child(6) { animation-delay: 0.3s; }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.94);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .property-card:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 24px 48px rgba(0, 0, 0, 0.16);
+        }
+
+        .property-image {
+            width: 100%;
+            height: 240px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #E3F2FD 0%, #90CAF9 100%);
+        }
+
+        .property-image-1 { background: linear-gradient(135deg, #E8F5E9 0%, #81C784 100%); }
+        .property-image-2 { background: linear-gradient(135deg, #F3E5F5 0%, #CE93D8 100%); }
+        .property-image-3 { background: linear-gradient(135deg, #E0F2F1 0%, #80CBC4 100%); }
+        .property-image-4 { background: linear-gradient(135deg, #FCE4EC 0%, #F48FB1 100%); }
+        .property-image-5 { background: linear-gradient(135deg, #FFF3E0 0%, #FFB74D 100%); }
+        .property-image-6 { background: linear-gradient(135deg, #EDE7F6 0%, #9575CD 100%); }
+
+        .property-image::after {
+            content: '🏠';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 76px;
+            opacity: 0.5;
+        }
+
+        .property-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: rgba(0, 212, 170, 0.95);
+            color: var(--white);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+            letter-spacing: 0.3px;
+        }
+
+        .property-badge.sale { background: rgba(99, 91, 255, 0.95); }
+        .property-badge.featured { background: rgba(255, 152, 0, 0.95); }
+
+        .property-price {
+            position: absolute;
+            bottom: 12px;
+            left: 12px;
+            background: rgba(10, 37, 64, 0.95);
+            color: var(--teal);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 16px;
+            backdrop-filter: blur(8px);
+        }
+
+        .property-content {
+            padding: 22px;
+        }
+
+        .property-type {
+            display: inline-block;
+            background: rgba(99, 91, 255, 0.08);
+            color: var(--indigo);
+            padding: 5px 11px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            letter-spacing: 0.3px;
+        }
+
+        .property-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--midnight);
+            margin-bottom: 8px;
+            letter-spacing: -0.2px;
+        }
+
+        .property-location {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+        }
+
+        .property-features {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .feature-icon {
+            font-size: 22px;
+        }
+
+        .feature-value {
+            font-weight: 700;
+            color: var(--midnight);
+            font-size: 13px;
+        }
+
+        .feature-label {
+            font-size: 11px;
+            color: var(--muted);
+            font-weight: 500;
+        }
+
+        .property-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .property-actions button {
+            flex: 1;
+            padding: 9px 0;
+            border: 1.5px solid var(--indigo);
+            background: var(--white);
+            color: var(--indigo);
+            border-radius: 7px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .property-actions button:hover {
+            background: var(--indigo);
+            color: var(--white);
+            transform: translateY(-1px);
+        }
+
+        .favorite-btn {
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        /* Features Section */
+        .features-section {
+            background: var(--light);
+            padding: 80px 24px;
+        }
+
+        .features-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin-top: 40px;
+        }
+
+        .feature-card {
+            background: var(--white);
+            padding: 32px;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(99, 91, 255, 0.12);
+        }
+
+        .feature-icon-large {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h3 {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--midnight);
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            max-width: 1400px;
+            margin: 80px auto;
+            padding: 0 24px;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+
+        .contact-form {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--midnight);
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--indigo);
+            box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .form-submit {
+            background: linear-gradient(135deg, var(--indigo) 0%, #5A4AE8 100%);
+            color: var(--white);
+            padding: 12px 32px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .form-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(99, 91, 255, 0.3);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .contact-item h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--midnight);
+            margin-bottom: 8px;
+        }
+
+        .contact-item p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .office-map {
+            background: linear-gradient(135deg, #E8F5E9 0%, #C8E6C9 100%);
+            height: 300px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        /* Chatbot Widget */
+        .chatbot {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .chatbot-toggle {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--indigo) 0%, #5A4AE8 100%);
+            color: var(--white);
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            box-shadow: 0 12px 32px rgba(99, 91, 255, 0.35);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2.5s infinite;
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.08);
+            box-shadow: 0 16px 40px rgba(99, 91, 255, 0.4);
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 12px 32px rgba(99, 91, 255, 0.35); }
+            50% { box-shadow: 0 12px 40px rgba(99, 91, 255, 0.5); }
+        }
+
+        .chatbot-window {
+            position: absolute;
+            bottom: 90px;
+            right: 0;
+            width: 400px;
+            height: 550px;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            animation: slideUp 0.3s ease;
+        }
+
+        .chatbot-window.active {
+            display: flex;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .chatbot-header {
+            background: linear-gradient(135deg, var(--indigo) 0%, #5A4AE8 100%);
+            color: var(--white);
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .chatbot-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: var(--white);
+            cursor: pointer;
+            font-size: 20px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            transition: 0.3s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .chatbot-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 8px;
+            animation: messageSlide 0.3s ease;
+        }
+
+        @keyframes messageSlide {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.4;
+            word-wrap: break-word;
+        }
+
+        .message.bot .message-content {
+            background: #F0F0F6;
+            color: var(--dark-text);
+        }
+
+        .message.user .message-content {
+            background: linear-gradient(135deg, var(--indigo) 0%, #5A4AE8 100%);
+            color: var(--white);
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 10px 14px;
+            background: #F0F0F6;
+            border-radius: 10px;
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--muted);
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.5; transform: translateY(0); }
+            30% { opacity: 1; transform: translateY(-8px); }
+        }
+
+        .quick-replies {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0 20px 12px;
+        }
+
+        .quick-reply {
+            background: rgba(99, 91, 255, 0.08);
+            color: var(--indigo);
+            border: 1px solid rgba(99, 91, 255, 0.2);
+            padding: 9px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .quick-reply:hover {
+            background: rgba(99, 91, 255, 0.15);
+            border-color: rgba(99, 91, 255, 0.4);
+        }
+
+        .chatbot-input {
+            padding: 16px 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 10px;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 9px 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            transition: all 0.3s ease;
+        }
+
+        .chatbot-input input:focus {
+            outline: none;
+            border-color: var(--indigo);
+            box-shadow: 0 0 0 3px rgba(99, 91, 255, 0.1);
+        }
+
+        .chatbot-input button {
+            background: var(--indigo);
+            color: var(--white);
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .chatbot-input button:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 16px rgba(99, 91, 255, 0.3);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--midnight);
+            color: var(--white);
+            padding: 60px 24px 40px;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-column h4 {
+            font-size: 15px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            letter-spacing: 0.2px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-column a:hover {
+            color: var(--teal);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .social-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 16px;
+        }
+
+        .social-icon:hover {
+            background: var(--teal);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 24px;
+            text-align: center;
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .search-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .nav-cta {
+                display: none;
+            }
+
+            .properties-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-button {
+                width: 100%;
+            }
+
+            .chatbot-window {
+                width: calc(100vw - 30px);
+                height: 600px;
+                bottom: auto;
+                right: auto;
+                left: 15px;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+
+            .hero-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .contact-grid {
+                gap: 24px;
+            }
+
+            .stats-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+
+            .stat-number {
+                font-size: 36px;
+            }
+
+            .section-title {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .search-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .properties-grid {
+                gap: 16px;
+            }
+
+            .property-card {
+                border-radius: 10px;
+            }
+
+            .chatbot-window {
+                width: calc(100vw - 20px);
+                left: 10px;
+                right: 10px;
+                height: 90vh;
+            }
+
+            .stats-container {
+                grid-template-columns: 1fr;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .contact-form {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-banner">
+        Demo projekt — vytvořil <a href="../index.html">Kudli. marketing</a>
+    </div>
+
+    <nav>
+        <div class="nav-container">
+            <div class="logo">BydlímTu</div>
+            <ul class="nav-links">
+                <li><a href="#properties">Nabídka</a></li>
+                <li><a href="#features">O nás</a></li>
+                <li><a href="#contact">Kontakt</a></li>
+            </ul>
+            <button class="nav-cta">Kontaktovat agenta</button>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <h1>Najděte svůj vysněný domov</h1>
+            <p>Prozkoumejte naši exkluzivní kolekci nemovitostí v nejlepších lokalitách. Profesionální služby s osobním přístupem.</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary">Procházet nemovitosti</button>
+                <button class="btn btn-secondary">Více informací</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="search-section">
+        <div class="search-card">
+            <div class="search-grid">
+                <div class="search-input">
+                    <label>Lokalita</label>
+                    <input type="text" placeholder="Praha, Brno, Ostrava..." id="locationInput">
+                </div>
+                <div class="search-input">
+                    <label>Typ nemovitosti</label>
+                    <select id="typeSelect">
+                        <option value="">Všechny typy</option>
+                        <option value="byt">Byt</option>
+                        <option value="dum">Dům</option>
+                        <option value="garaž">Garáž</option>
+                    </select>
+                </div>
+                <div class="search-input">
+                    <label>Cena do (Kč)</label>
+                    <input type="number" placeholder="10 000 000" id="priceInput">
+                </div>
+                <button class="search-button" onclick="handleSearch()">Hledat</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number" data-count="250">250+</div>
+                <div class="stat-label">Nemovitostí v nabídce</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-count="98">98%</div>
+                <div class="stat-label">Spokojených klientů</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-count="15">15</div>
+                <div class="stat-label">Let na trhu</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number" data-count="50">50+</div>
+                <div class="stat-label">Profesionálních makléřů</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="properties-section" id="properties">
+        <h2 class="section-title">Doporučené nemovitosti</h2>
+        <div class="properties-grid" id="propertiesGrid">
+            <!-- Vygenerováno JavaScriptem -->
+        </div>
+    </section>
+
+    <section class="features-section" id="features">
+        <div class="features-container">
+            <h2 class="section-title">Proč BydlímTu</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon-large">🤖</div>
+                    <h3>AI Technologie</h3>
+                    <p>Náš inteligentní asistent vám pomůže najít ideální nemovitost na základě vašich preferencí a rozpočtu.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-large">👥</div>
+                    <h3>Osobní přístup</h3>
+                    <p>Každý klient je pro nás speciální. Dedikovaní makléři se věnují vašim potřebám a přáním.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon-large">✨</div>
+                    <h3>Bez starostí</h3>
+                    <p>Řídíme celý proces od prohlídky až po uzavření smlouvy. Vám zbývá jen užít si nový domov.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact-section" id="contact">
+        <h2 class="section-title">Kontaktujte nás</h2>
+        <div class="contact-grid">
+            <div class="contact-form">
+                <h3 style="font-size: 20px; margin-bottom: 24px; color: var(--midnight);">Napište nám zprávu</h3>
+                <div class="form-group">
+                    <label>Jméno</label>
+                    <input type="text" placeholder="Vaše jméno" id="nameInput">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="vase@email.cz" id="emailInput">
+                </div>
+                <div class="form-group">
+                    <label>Telefon</label>
+                    <input type="tel" placeholder="+420 xxx xxx xxx" id="phoneInput">
+                </div>
+                <div class="form-group">
+                    <label>Zpráva</label>
+                    <textarea placeholder="Jak vám můžeme pomoci?" id="messageInput"></textarea>
+                </div>
+                <button class="form-submit" onclick="submitForm()">Odeslat</button>
+            </div>
+            <div class="contact-info">
+                <div>
+                    <h3>Naše kancelář</h3>
+                    <p>BydlímTu Reality s.r.o.<br>Nerudova 123<br>110 00 Praha 1</p>
+                </div>
+                <div>
+                    <h3>Telefonicky</h3>
+                    <p>+420 210 820 400<br>Po-Pá: 8:00 - 18:00<br>So: 9:00 - 12:00</p>
+                </div>
+                <div>
+                    <h3>Nebo nás najděte online</h3>
+                    <p>Email: info@byldimu.cz<br>Web: www.byldimu.cz<br>24/7 AI Asistent</p>
+                </div>
+                <div class="office-map">
+                    📍 Mapa naší polohy
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h4>O BydlímTu</h4>
+                <ul>
+                    <li><a href="#about">O společnosti</a></li>
+                    <li><a href="#team">Náš tým</a></li>
+                    <li><a href="#reviews">Recenze</a></li>
+                    <li><a href="#blog">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Služby</h4>
+                <ul>
+                    <li><a href="#buy">Koupě nemovitostí</a></li>
+                    <li><a href="#sell">Prodej nemovitostí</a></li>
+                    <li><a href="#rent">Pronájem</a></li>
+                    <li><a href="#valuation">Ocenění</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Kategorie</h4>
+                <ul>
+                    <li><a href="#apartments">Byty</a></li>
+                    <li><a href="#houses">Domy</a></li>
+                    <li><a href="#offices">Kanceláře</a></li>
+                    <li><a href="#lands">Pozemky</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h4>Společnost</h4>
+                <ul>
+                    <li><a href="#contact">Kontakt</a></li>
+                    <li><a href="#privacy">Ochrana osobních údajů</a></li>
+                    <li><a href="#terms">Podmínky používání</a></li>
+                    <li><a href="#cookies">Cookies</a></li>
+                </ul>
+                <div class="social-icons">
+                    <a href="#facebook" class="social-icon">f</a>
+                    <a href="#instagram" class="social-icon">📷</a>
+                    <a href="#linkedin" class="social-icon">in</a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 BydlímTu Reality s.r.o. Všechna práva vyhrazena. | Obsah je chráněn autorským právem.</p>
+        </div>
+    </footer>
+
+    <!-- AI Chatbot Widget -->
+    <div class="chatbot">
+        <button class="chatbot-toggle" id="chatbotToggle">💬</button>
+        <div class="chatbot-window" id="chatbotWindow">
+            <div class="chatbot-header">
+                <h3>BydlímTu AI Asistent</h3>
+                <button class="chatbot-close" id="chatbotClose">&times;</button>
+            </div>
+            <div class="chatbot-messages" id="messages"></div>
+            <div id="quickRepliesContainer" class="quick-replies"></div>
+            <div class="chatbot-input">
+                <input type="text" placeholder="Napište zprávu..." id="chatInput">
+                <button id="sendBtn">→</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Property Data
+        const properties = [
+            {
+                id: 1,
+                title: 'Luxusní byt 3+kk',
+                location: 'Praha 6 - Bubeneč',
+                price: '4 500 000',
+                rooms: '3+kk',
+                area: 85,
+                floor: '3',
+                image: 1,
+                badge: 'Novinka',
+                badgeType: 'sale'
+            },
+            {
+                id: 2,
+                title: 'Vila s bazénem',
+                location: 'Praha 5 - Střešovice',
+                price: '12 800 000',
+                rooms: '4+1',
+                area: 250,
+                floor: 'Přízemí',
+                image: 2,
+                badge: 'Top nabídka',
+                badgeType: 'featured'
+            },
+            {
+                id: 3,
+                title: 'Penthouse s terasou',
+                location: 'Praha 1 - Staré Město',
+                price: '8 200 000',
+                rooms: '3+1',
+                area: 120,
+                floor: '8',
+                image: 3,
+                badge: 'Snížená cena',
+                badgeType: 'sale'
+            },
+            {
+                id: 4,
+                title: 'Moderní kancelářský prostor',
+                location: 'Praha 2 - Vinohrady',
+                price: '3 500 000',
+                rooms: 'Kancelář',
+                area: 85,
+                floor: '2',
+                image: 4,
+                badge: 'Top nabídka',
+                badgeType: 'featured'
+            },
+            {
+                id: 5,
+                title: 'Rodinný dům 4+1',
+                location: 'Praha 5 - Smíchov',
+                price: '9 900 000',
+                rooms: '4+1',
+                area: 180,
+                floor: 'Dvoupatrový',
+                image: 5,
+                badge: 'Novinka',
+                badgeType: 'sale'
+            },
+            {
+                id: 6,
+                title: 'Garsoniera s balkónem',
+                location: 'Praha 3 - Žižkov',
+                price: '2 100 000',
+                rooms: '2+kk',
+                area: 45,
+                floor: '4',
+                image: 6,
+                badge: 'Snížená cena',
+                badgeType: 'sale'
+            }
+        ];
+
+        // Chatbot Responses
+        const botResponses = {
+            greeting: 'Ahoj! Jsem AI asistent BydlímTu. Jak vám mohu pomoct při hledání vašeho vysněného domova? 🏠',
+            rent: 'Hledáte pronájem? Máme v nabídce spoustu zajímavých nemovitostí k pronájmu. Jaká lokalita vás zajímá a jaký rozpočet máte?',
+            buy: 'Chcete koupit nemovitost? Můžu vám pomoci s výběrem podle vašich kritérií - rozpočet, typ, lokalita. Co by vás zajímalo?',
+            valuation: 'Potřebujete ocenění? Naši odborníci vám poskytnou profesionální odhad hodnoty. Máte nějakou konkrétní nemovitost na mysli?',
+            default: 'Zajímavá otázka! Mohu vám pomoci s vyhledáváním nemovitostí, oceniením nebo informacemi o našich službách.'
+        };
+
+        // Render Properties
+        function renderProperties() {
+            const grid = document.getElementById('propertiesGrid');
+            grid.innerHTML = properties.map((prop) => `
+                <div class="property-card">
+                    <div class="property-image property-image-${prop.image}">
+                        <div class="property-badge ${prop.badgeType}">${prop.badge}</div>
+                        <div class="property-price">${prop.price.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')} Kč</div>
+                    </div>
+                    <div class="property-content">
+                        <div class="property-type">${prop.rooms.includes('kk') || prop.rooms.includes('+') ? 'BYTOVÁ JEDNOTKA' : 'KANCELÁŘ'}</div>
+                        <div class="property-title">${prop.title}</div>
+                        <div class="property-location">📍 ${prop.location}</div>
+                        <div class="property-features">
+                            <div class="feature">
+                                <div class="feature-icon">🛏️</div>
+                                <div class="feature-value">${prop.rooms}</div>
+                                <div class="feature-label">Dispozice</div>
+                            </div>
+                            <div class="feature">
+                                <div class="feature-icon">📏</div>
+                                <div class="feature-value">${prop.area} m²</div>
+                                <div class="feature-label">Plocha</div>
+                            </div>
+                            <div class="feature">
+                                <div class="feature-icon">📍</div>
+                                <div class="feature-value">${prop.floor}.</div>
+                                <div class="feature-label">Patro</div>
+                            </div>
+                        </div>
+                        <div class="property-actions">
+                            <button onclick="contactAgent(${prop.id})">Kontakt</button>
+                            <button onclick="scheduleView(${prop.id})">Prohlídka</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Search Functionality
+        function handleSearch() {
+            const location = document.getElementById('locationInput').value || 'celé České republice';
+            const type = document.getElementById('typeSelect').value || 'všechny typy';
+            const price = document.getElementById('priceInput').value;
+
+            let message = `Hledáme nemovitosti v ${location}`;
+            if (type) message += ` typu ${type}`;
+            if (price) message += ` do ${price} Kč`;
+            message += '. Výsledky se aktualizují...';
+
+            alert(message);
+        }
+
+        // Property Actions
+        function contactAgent(id) {
+            const prop = properties.find(p => p.id === id);
+            alert(`Kontakt na agenta pro: ${prop.title}\nOdsuneme vám zprávu do 1 hodiny.`);
+        }
+
+        function scheduleView(id) {
+            const prop = properties.find(p => p.id === id);
+            alert(`Objednání prohlídky: ${prop.title}\nVyberte si čas, který vám vyhovuje.`);
+        }
+
+        // Form Submission
+        function submitForm() {
+            const name = document.getElementById('nameInput').value;
+            const email = document.getElementById('emailInput').value;
+            const message = document.getElementById('messageInput').value;
+
+            if (!name || !email || !message) {
+                alert('Prosím, vyplňte všechna pole.');
+                return;
+            }
+
+            alert(`Děkujeme, ${name}! Vaša zpráva byla odeslána. Ozveme se vám na ${email} během 24 hodin.`);
+            document.getElementById('nameInput').value = '';
+            document.getElementById('emailInput').value = '';
+            document.getElementById('phoneInput').value = '';
+            document.getElementById('messageInput').value = '';
+        }
+
+        // Chatbot Variables
+        const chatbotToggle = document.getElementById('chatbotToggle');
+        const chatbotWindow = document.getElementById('chatbotWindow');
+        const chatbotClose = document.getElementById('chatbotClose');
+        const messages = document.getElementById('messages');
+        const chatInput = document.getElementById('chatInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const quickRepliesContainer = document.getElementById('quickRepliesContainer');
+        let isFirstOpen = true;
+
+        // Chatbot Toggle
+        chatbotToggle.addEventListener('click', () => {
+            chatbotWindow.classList.toggle('active');
+            if (chatbotWindow.classList.contains('active')) {
+                if (isFirstOpen) {
+                    initializeChat();
+                    isFirstOpen = false;
+                }
+                chatInput.focus();
+            }
+        });
+
+        chatbotClose.addEventListener('click', () => {
+            chatbotWindow.classList.remove('active');
+        });
+
+        // Initialize Chat
+        function initializeChat() {
+            messages.innerHTML = '';
+            addMessage(botResponses.greeting, false);
+            renderQuickReplies();
+        }
+
+        // Add Message
+        function addMessage(text, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'bot'}`;
+            messageDiv.innerHTML = `<div class="message-content">${text}</div>`;
+            messages.appendChild(messageDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // Show Typing Indicator
+        function showTypingIndicator() {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message bot';
+            messageDiv.id = 'typing-indicator';
+            messageDiv.innerHTML = `<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+            messages.appendChild(messageDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // Remove Typing Indicator
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) indicator.remove();
+        }
+
+        // Render Quick Replies
+        function renderQuickReplies() {
+            quickRepliesContainer.innerHTML = `
+                <button class="quick-reply" onclick="handleQuickReply('pronájem')">Hledám byt k pronájmu</button>
+                <button class="quick-reply" onclick="handleQuickReply('koupě')">Chci koupit nemovitost</button>
+                <button class="quick-reply" onclick="handleQuickReply('ocenění')">Potřebuji ocenění</button>
+            `;
+        }
+
+        // Handle Quick Reply
+        function handleQuickReply(intent) {
+            quickRepliesContainer.innerHTML = '';
+
+            if (intent === 'pronájem') {
+                addMessage('Hledám byt k pronájmu', true);
+                showTypingIndicator();
+                setTimeout(() => {
+                    removeTypingIndicator();
+                    addMessage(botResponses.rent, false);
+                }, 1500);
+            } else if (intent === 'koupě') {
+                addMessage('Chci koupit nemovitost', true);
+                showTypingIndicator();
+                setTimeout(() => {
+                    removeTypingIndicator();
+                    addMessage(botResponses.buy, false);
+                }, 1500);
+            } else if (intent === 'ocenění') {
+                addMessage('Potřebuji ocenění', true);
+                showTypingIndicator();
+                setTimeout(() => {
+                    removeTypingIndicator();
+                    addMessage(botResponses.valuation, false);
+                }, 1500);
+            }
+        }
+
+        // Send Message
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text) return;
+
+            quickRepliesContainer.innerHTML = '';
+            addMessage(text, true);
+            chatInput.value = '';
+
+            showTypingIndicator();
+
+            setTimeout(() => {
+                removeTypingIndicator();
+
+                let response = botResponses.default;
+                const lowerText = text.toLowerCase();
+
+                if (lowerText.includes('pronájem') || lowerText.includes('pronajmu')) {
+                    response = botResponses.rent;
+                } else if (lowerText.includes('koupit') || lowerText.includes('koupě')) {
+                    response = botResponses.buy;
+                } else if (lowerText.includes('ocenění') || lowerText.includes('cena')) {
+                    response = botResponses.valuation;
+                } else if (lowerText.includes('Praha') || lowerText.includes('Brno') || lowerText.includes('byt') || lowerText.includes('dům')) {
+                    response = 'Skvělá volba! Máme v těchto lokalitách několik zajímavých nabídek. Chcete, abych vám je ukázal?';
+                }
+
+                addMessage(response, false);
+            }, 1200);
+        }
+
+        sendBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // Animate Numbers on Scroll
+        function animateNumbers() {
+            const statNumbers = document.querySelectorAll('[data-count]');
+            statNumbers.forEach(element => {
+                const target = parseInt(element.dataset.count);
+                let current = 0;
+                const increment = Math.ceil(target / 50);
+
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        current = target;
+                        clearInterval(timer);
+                    }
+                    element.textContent = current + (element.dataset.count.includes('%') ? '%' : target > 50 ? '' : '');
+                }, 20);
+            });
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = { threshold: 0.5 };
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.target.classList.contains('stats-container')) {
+                    animateNumbers();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        observer.observe(document.querySelector('.stats-container'));
+
+        // Initialize
+        renderProperties();
+    </script>
+</body>
+</html>

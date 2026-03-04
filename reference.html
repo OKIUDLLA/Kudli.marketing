@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Napište referenci — Kudli. marketing</title>
+<meta name="description" content="Pomozte mi růst — napište krátkou referenci o naší spolupráci.">
+<meta property="og:title" content="Napište referenci — Kudli. marketing">
+<meta property="og:description" content="Pomozte mi růst — napište krátkou referenci o naší spolupráci.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/reference.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.container{max-width:700px;margin:0 auto;padding:2rem 1.5rem}
+.back-link{display:inline-flex;align-items:center;gap:0.5rem;color:var(--muted);text-decoration:none;font-size:0.9rem;margin-bottom:2rem;transition:color 0.3s}
+.back-link:hover{color:var(--accent)}
+
+.hero{text-align:center;margin-bottom:2.5rem}
+.hero h1{font-size:2.2rem;font-weight:800;margin-bottom:0.5rem}
+.hero h1 span{color:var(--accent)}
+.hero p{color:var(--muted);font-size:1.05rem;line-height:1.6}
+.hero .time{display:inline-block;background:rgba(233,69,96,0.15);color:var(--accent-light);padding:0.3rem 1rem;border-radius:20px;font-size:0.85rem;font-weight:600;margin-top:0.75rem}
+
+/* Form */
+.form-card{background:var(--card);border-radius:20px;padding:2rem;border:1px solid rgba(255,255,255,0.06)}
+.form-section{margin-bottom:1.75rem}
+.form-section label{display:block;font-size:0.9rem;font-weight:600;margin-bottom:0.5rem}
+.form-section .hint{font-size:0.8rem;color:var(--muted);margin-bottom:0.5rem}
+
+input[type="text"],input[type="email"],textarea,select{width:100%;padding:0.75rem 1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:var(--text);font-size:0.95rem;font-family:inherit;transition:border-color 0.3s}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(233,69,96,0.1)}
+textarea{resize:vertical;min-height:120px;line-height:1.6}
+select{cursor:pointer}
+select option{background:var(--card);color:var(--text)}
+
+.row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+/* Star rating */
+.stars{display:flex;gap:0.5rem;margin:0.5rem 0}
+.star{width:44px;height:44px;border-radius:10px;background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:center;font-size:1.5rem;cursor:pointer;transition:all 0.2s;user-select:none}
+.star:hover,.star.active{background:rgba(255,193,7,0.15);border-color:#ffc107;transform:scale(1.1)}
+.star.active{background:rgba(255,193,7,0.25)}
+.star-label{font-size:0.85rem;color:var(--muted);margin-top:0.25rem;min-height:1.2rem}
+
+/* Prompt suggestions */
+.prompts{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:0.75rem}
+.prompt-chip{padding:0.4rem 0.85rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:20px;font-size:0.8rem;color:var(--muted);cursor:pointer;transition:all 0.3s}
+.prompt-chip:hover{background:rgba(233,69,96,0.15);border-color:var(--accent);color:var(--accent-light)}
+
+/* Permission checkbox */
+.checkbox-row{display:flex;align-items:flex-start;gap:0.75rem;margin:1.5rem 0}
+.checkbox-row input[type="checkbox"]{width:20px;height:20px;margin-top:2px;accent-color:var(--accent);cursor:pointer}
+.checkbox-row label{font-size:0.85rem;color:rgba(255,255,255,0.7);cursor:pointer;line-height:1.5}
+
+/* Submit */
+.btn-submit{display:block;width:100%;padding:1rem;background:var(--accent);color:#fff;border:none;border-radius:12px;font-size:1.05rem;font-weight:700;cursor:pointer;transition:all 0.3s;margin-top:0.5rem}
+.btn-submit:hover{background:var(--accent-light);transform:translateY(-2px);box-shadow:0 10px 30px rgba(233,69,96,0.3)}
+.btn-submit:disabled{opacity:0.5;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* Preview */
+.preview-section{margin-top:2rem}
+.preview-section h3{font-size:1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+.preview-card{background:rgba(255,255,255,0.03);border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.06);position:relative}
+.preview-card .quote{font-size:1.1rem;font-style:italic;line-height:1.7;color:rgba(255,255,255,0.8);margin-bottom:1rem}
+.preview-card .quote::before{content:'"';font-size:3rem;color:var(--accent);opacity:0.3;position:absolute;top:0.5rem;left:1rem;font-family:Georgia,serif}
+.preview-card .author{display:flex;align-items:center;gap:0.75rem}
+.preview-card .avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-light));display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem}
+.preview-card .author-info .name{font-weight:600;font-size:0.95rem}
+.preview-card .author-info .role{font-size:0.8rem;color:var(--muted)}
+.preview-stars{color:#ffc107;margin-bottom:0.75rem;font-size:1.1rem;letter-spacing:2px}
+.preview-empty{text-align:center;padding:2rem;color:var(--muted);font-size:0.9rem}
+
+/* Thank you screen */
+.thank-you{display:none;text-align:center;padding:3rem 1rem}
+.thank-you .check-icon{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,#2ecc71,#27ae60);margin:0 auto 1.5rem;display:flex;align-items:center;justify-content:center;font-size:2.5rem;animation:pop 0.5s cubic-bezier(0.175,0.885,0.32,1.275)}
+@keyframes pop{from{transform:scale(0)}to{transform:scale(1)}}
+.thank-you h2{font-size:1.8rem;font-weight:800;margin-bottom:0.75rem}
+.thank-you h2 span{color:var(--accent)}
+.thank-you p{color:var(--muted);line-height:1.6;max-width:500px;margin:0 auto}
+.thank-you .btn-back{display:inline-block;padding:0.75rem 2rem;background:var(--accent);color:#fff;text-decoration:none;border-radius:10px;font-weight:600;margin-top:1.5rem;transition:all 0.3s}
+.thank-you .btn-back:hover{background:var(--accent-light);transform:translateY(-2px)}
+
+@media(max-width:600px){
+ .row{grid-template-columns:1fr}
+ .stars{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+<div class="container">
+ <a href="index.html" class="back-link">← Zpět na hlavní stránku</a>
+
+ <div class="hero">
+   <h1>Napište <span>referenci</span></h1>
+   <p>Vaše zpětná vazba mi pomáhá růst a získávat nové projekty. Moc si toho vážím!</p>
+   <div class="time">⏱️ Zabere to max 2 minuty</div>
+ </div>
+
+ <!-- Form -->
+ <div id="formSection">
+   <div class="form-card">
+     <div class="form-section">
+       <div class="row">
+         <div>
+           <label>Jméno a příjmení *</label>
+           <input type="text" id="refName" placeholder="Jan Novák" required>
+         </div>
+         <div>
+           <label>Firma / pozice</label>
+           <input type="text" id="refCompany" placeholder="CEO, Firma s.r.o.">
+         </div>
+       </div>
+     </div>
+
+     <div class="form-section">
+       <div class="row">
+         <div>
+           <label>Email</label>
+           <input type="email" id="refEmail" placeholder="jan@firma.cz">
+         </div>
+         <div>
+           <label>Typ projektu</label>
+           <select id="refProjectType">
+             <option value="">Vyberte...</option>
+             <option value="Webové stránky">Webové stránky</option>
+             <option value="E-shop">E-shop</option>
+             <option value="Redesign">Redesign webu</option>
+             <option value="Automatizace">Automatizace</option>
+             <option value="AI Chatbot">AI Chatbot</option>
+             <option value="Jiné">Jiné</option>
+           </select>
+         </div>
+       </div>
+     </div>
+
+     <div class="form-section">
+       <label>Celkové hodnocení *</label>
+       <div class="stars" id="starRating">
+         <div class="star" data-value="1" onclick="setRating(1)">⭐</div>
+         <div class="star" data-value="2" onclick="setRating(2)">⭐</div>
+         <div class="star" data-value="3" onclick="setRating(3)">⭐</div>
+         <div class="star" data-value="4" onclick="setRating(4)">⭐</div>
+         <div class="star" data-value="5" onclick="setRating(5)">⭐</div>
+       </div>
+       <div class="star-label" id="starLabel">Klikněte pro hodnocení</div>
+     </div>
+
+     <div class="form-section">
+       <label>Vaše reference *</label>
+       <div class="hint">Popište svou zkušenost se spoluprací — co se vám líbilo, jaký byl výsledek...</div>
+       <textarea id="refText" placeholder="Napište pár vět o naší spolupráci..." oninput="updatePreview()"></textarea>
+       <div class="prompts">
+         <div class="prompt-chip" onclick="addPrompt('Komunikace byla skvělá, vždy včasná odpověď.')">💬 Komunikace</div>
+         <div class="prompt-chip" onclick="addPrompt('Projekt byl dodán v termínu a v perfektní kvalitě.')">⏰ Termín</div>
+         <div class="prompt-chip" onclick="addPrompt('Výsledek předčil moje očekávání.')">🎯 Kvalita</div>
+         <div class="prompt-chip" onclick="addPrompt('Přinesl kreativní nápady, které zvýšily hodnotu projektu.')">💡 Kreativita</div>
+         <div class="prompt-chip" onclick="addPrompt('Cena odpovídala kvalitě, skvělý poměr cena/výkon.')">💰 Cena</div>
+       </div>
+     </div>
+
+     <div class="form-section">
+       <label>Co konkrétně se vám nejvíc líbilo?</label>
+       <input type="text" id="refBest" placeholder="Např. rychlá komunikace, kreativní přístup, dodání v termínu...">
+     </div>
+
+     <div class="checkbox-row">
+       <input type="checkbox" id="refPermission" checked>
+       <label for="refPermission">Souhlasím se zobrazením mé reference na webu a v marketingových materiálech Kudli. marketing</label>
+     </div>
+
+     <div class="checkbox-row">
+       <input type="checkbox" id="refPhoto">
+       <label for="refPhoto">Souhlasím s uvedením své profilové fotky (pošlu emailem)</label>
+     </div>
+
+     <button class="btn-submit" id="submitBtn" onclick="submitReference()">Odeslat referenci ⭐</button>
+   </div>
+
+   <!-- Live Preview -->
+   <div class="preview-section">
+     <h3>👁️ Náhled, jak se reference zobrazí:</h3>
+     <div class="preview-card" id="previewCard">
+       <div class="preview-empty" id="previewEmpty">Začněte psát a uvidíte, jak bude vaše reference vypadat na webu...</div>
+       <div id="previewContent" style="display:none">
+         <div class="preview-stars" id="previewStars">★★★★★</div>
+         <div class="quote" id="previewQuote"></div>
+         <div class="author">
+           <div class="avatar" id="previewAvatar">J</div>
+           <div class="author-info">
+             <div class="name" id="previewName">Jan Novák</div>
+             <div class="role" id="previewRole">CEO, Firma s.r.o.</div>
+           </div>
+         </div>
+       </div>
+     </div>
+   </div>
+ </div>
+
+ <!-- Thank You -->
+ <div class="thank-you" id="thankYou">
+   <div class="check-icon">✓</div>
+   <h2>Děkuji za <span>referenci!</span></h2>
+   <p>Vaše zpětná vazba je pro mě nesmírně cenná. Reference se zobrazí na mém webu po schválení.</p>
+   <p style="margin-top:1rem;color:rgba(255,255,255,0.4);font-size:0.85rem">Email s referencí byl připraven k odeslání.</p>
+   <a href="index.html" class="btn-back">← Zpět na hlavní stránku</a>
+ </div>
+</div>
+
+<script>
+let currentRating = 0;
+const starLabels = ['','Slabé','Průměrné','Dobré','Velmi dobré','Výborné!'];
+
+function setRating(val) {
+ currentRating = val;
+ document.querySelectorAll('.star').forEach((s,i) => {
+   s.classList.toggle('active', i < val);
+ });
+ document.getElementById('starLabel').textContent = starLabels[val] + ' (' + val + '/5)';
+ updatePreview();
+}
+
+function addPrompt(text) {
+ const ta = document.getElementById('refText');
+ ta.value = ta.value ? ta.value + ' ' + text : text;
+ updatePreview();
+}
+
+function updatePreview() {
+ const text = document.getElementById('refText').value.trim();
+ const name = document.getElementById('refName').value.trim() || 'Váš klient';
+ const company = document.getElementById('refCompany').value.trim();
+ const projType = document.getElementById('refProjectType').value;
+
+ if (text.length > 0) {
+   document.getElementById('previewEmpty').style.display = 'none';
+   document.getElementById('previewContent').style.display = 'block';
+   document.getElementById('previewQuote').textContent = text;
+   document.getElementById('previewName').textContent = name;
+   document.getElementById('previewAvatar').textContent = name.charAt(0).toUpperCase();
+
+   let roleText = '';
+   if (company) roleText += company;
+   if (projType && company) roleText += ' · ';
+   if (projType) roleText += projType;
+   document.getElementById('previewRole').textContent = roleText || 'Klient';
+
+   const stars = currentRating > 0 ? '★'.repeat(currentRating) + '☆'.repeat(5 - currentRating) : '★★★★★';
+   document.getElementById('previewStars').textContent = stars;
+ } else {
+   document.getElementById('previewEmpty').style.display = 'block';
+   document.getElementById('previewContent').style.display = 'none';
+ }
+}
+
+// Update preview on name/company changes
+['refName','refCompany','refProjectType'].forEach(id => {
+ document.getElementById(id).addEventListener('input', updatePreview);
+ document.getElementById(id).addEventListener('change', updatePreview);
+});
+
+function submitReference() {
+ const name = document.getElementById('refName').value.trim();
+ const text = document.getElementById('refText').value.trim();
+
+ if (!name) { alert('Vyplňte prosím jméno.'); return; }
+ if (currentRating === 0) { alert('Vyberte prosím hodnocení (hvězdičky).'); return; }
+ if (!text) { alert('Napište prosím text reference.'); return; }
+ if (!document.getElementById('refPermission').checked) { alert('Potřebuji váš souhlas se zobrazením reference.'); return; }
+
+ const company = document.getElementById('refCompany').value.trim();
+ const email = document.getElementById('refEmail').value.trim();
+ const projType = document.getElementById('refProjectType').value;
+ const best = document.getElementById('refBest').value.trim();
+ const wantsPhoto = document.getElementById('refPhoto').checked;
+
+ const subject = `Nová reference od ${name}`;
+ const body = [
+   `NOVÁ REFERENCE`,
+   `================`,
+   `Jméno: ${name}`,
+   company ? `Firma/pozice: ${company}` : '',
+   email ? `Email: ${email}` : '',
+   projType ? `Typ projektu: ${projType}` : '',
+   `Hodnocení: ${'★'.repeat(currentRating)}${'☆'.repeat(5-currentRating)} (${currentRating}/5)`,
+   ``,
+   `REFERENCE:`,
+   `"${text}"`,
+   best ? `\nNejvíc se líbilo: ${best}` : '',
+   `\nSouhlas se zobrazením: ANO`,
+   wantsPhoto ? `Souhlas s fotkou: ANO (pošle emailem)` : `Souhlas s fotkou: NE`,
+   `\n--- Odesláno z referenčního formuláře ---`
+ ].filter(Boolean).join('\n');
+
+ window.location.href = `mailto:o.kudlicka@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+
+ // Show thank you
+ document.getElementById('formSection').style.display = 'none';
+ document.getElementById('thankYou').style.display = 'block';
+ document.querySelector('.hero').style.display = 'none';
+}
+</script>
+</body>
+</html>

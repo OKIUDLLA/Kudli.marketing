@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Rozpočty projektů | Kudli. marketing</title>
+<meta name="description" content="Správa rozpočtů jednotlivých projektů — plánované vs. skutečné náklady.">
+<meta property="og:title" content="Rozpočty projektů | Kudli. marketing">
+<meta property="og:description" content="Sledování rozpočtů a nákladů na projekty.">
+<meta property="og:image" content="og-image.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.top-bar{background:var(--card);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05)}
+.top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
+.top-bar a:hover{color:var(--accent)}
+.container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.75rem;margin-bottom:0.25rem}
+h1 em{color:var(--accent);font-style:normal}
+.subtitle{color:var(--muted);margin-bottom:2rem}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
+.stat{background:var(--card);border-radius:12px;padding:1.25rem;text-align:center;border:1px solid rgba(255,255,255,0.05)}
+.stat .num{font-size:1.75rem;font-weight:700}
+.stat .lbl{font-size:0.75rem;color:var(--muted);margin-top:0.25rem}
+
+.project-card{background:var(--card);border-radius:14px;padding:1.5rem;margin-bottom:1rem;border:1px solid rgba(255,255,255,0.05);position:relative}
+.p-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:0.5rem}
+.p-name{font-size:1.1rem;font-weight:600}
+.p-status{padding:0.2rem 0.65rem;border-radius:4px;font-size:0.7rem;font-weight:600}
+
+.budget-bar{margin-bottom:1rem}
+.budget-labels{display:flex;justify-content:space-between;font-size:0.8rem;margin-bottom:0.35rem}
+.budget-track{height:12px;background:rgba(255,255,255,0.08);border-radius:6px;overflow:hidden;position:relative}
+.budget-fill{height:100%;border-radius:6px;transition:width 0.5s ease}
+.budget-marker{position:absolute;top:-2px;width:2px;height:16px;background:var(--text);border-radius:1px}
+
+.line-items{margin-bottom:1rem}
+.line-item{display:grid;grid-template-columns:1fr 100px 100px 80px;gap:0.5rem;padding:0.5rem 0;border-bottom:1px solid rgba(255,255,255,0.03);align-items:center;font-size:0.85rem}
+.line-item:last-child{border:none}
+.line-header{font-weight:600;color:var(--muted);font-size:0.75rem;text-transform:uppercase}
+.line-diff{font-weight:600;font-size:0.8rem}
+
+.p-footer{display:flex;gap:0.5rem;flex-wrap:wrap}
+
+.btn{padding:0.5rem 1rem;border-radius:8px;border:none;cursor:pointer;font-size:0.8rem;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.3rem}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.1)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:0.35rem 0.75rem;font-size:0.78rem}
+
+.delete-p{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;opacity:0.4;transition:opacity 0.2s}
+.delete-p:hover{opacity:1;color:var(--red)}
+
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:16px;padding:2rem;width:90%;max-width:600px;max-height:85vh;overflow-y:auto}
+.modal h2{font-size:1.25rem;margin-bottom:1.5rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.35rem}
+.form-group input,.form-group select{width:100%;padding:0.6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.9rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.modal-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1.5rem}
+.item-inputs{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem}
+.item-row{display:grid;grid-template-columns:1fr 90px 90px 28px;gap:0.5rem;align-items:center}
+.item-row input{padding:0.4rem;border-radius:6px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.85rem}
+.remove-item{background:var(--red);color:#fff;border:none;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.8rem}
+
+@media print{body{background:#fff;color:#000}.top-bar,.btn,.modal-overlay,.delete-p{display:none!important}.container{max-width:100%;padding:0}.project-card{break-inside:avoid;border:1px solid #ccc;background:#fff;color:#000}.project-card *{color:#000!important}.budget-track{border:1px solid #ccc}}
+@media(max-width:768px){.container{padding:1.5rem 0.75rem}h1{font-size:1.4rem}.stats{grid-template-columns:repeat(2,1fr)}.line-item{grid-template-columns:1fr 80px 80px 60px;font-size:0.8rem}}
+@media(max-width:480px){.container{padding:1rem 0.5rem}.line-item{grid-template-columns:1fr 70px;font-size:0.75rem}.line-item .line-header:nth-child(3),.line-item .line-header:nth-child(4),.line-item>:nth-child(3),.line-item>:nth-child(4){display:none}.form-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="nastroje.html">← Zpět na nástroje</a>
+  <span style="font-size:0.8rem;color:var(--muted)">Rozpočty projektů</span>
+</div>
+
+<div class="container">
+  <h1>💵 Rozpočty <em>projektů</em></h1>
+  <p class="subtitle">Plánované vs. skutečné náklady, sledování čerpání rozpočtu</p>
+
+  <div class="stats" id="stats"></div>
+
+  <div style="margin-bottom:1.5rem;display:flex;gap:0.5rem;flex-wrap:wrap">
+    <button class="btn btn-primary" onclick="openModal()">+ Nový rozpočet</button>
+    <button class="btn btn-outline" onclick="exportCSV()">📥 Export CSV</button>
+  </div>
+
+  <div id="projectsList"></div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">Nový rozpočet</h2>
+    <input type="hidden" id="editId">
+    <div class="form-group">
+      <label>Název projektu</label>
+      <input type="text" id="pName" placeholder="Např. Landing page Kavárna">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Klient</label>
+        <input type="text" id="pClient" placeholder="Kavárna U Mlýna">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select id="pStatus">
+          <option value="active">Aktivní</option>
+          <option value="completed">Dokončeno</option>
+          <option value="overbudget">Přečerpáno</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Položky rozpočtu</label>
+      <div class="item-inputs" id="itemInputs"></div>
+      <button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="addItemInput()">+ Přidat položku</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveBudget()">Uložit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+function defaultProjects(){
+  return [
+    {id:1,name:'Landing page — Kavárna U Mlýna',client:'Kavárna U Mlýna',status:'completed',items:[
+      {name:'Design & wireframe',planned:2500,actual:2500},
+      {name:'Vývoj (HTML/CSS/JS)',planned:4000,actual:3800},
+      {name:'Copywriting',planned:1500,actual:1500},
+      {name:'Testování & nasazení',planned:900,actual:1100}
+    ]},
+    {id:2,name:'Firemní web — MadeByHand',client:'MadeByHand',status:'active',items:[
+      {name:'UX research & wireframe',planned:3000,actual:2800},
+      {name:'UI design (5 stránek)',planned:5000,actual:4200},
+      {name:'Frontend vývoj',planned:7000,actual:3500},
+      {name:'Backend & CMS',planned:3000,actual:0},
+      {name:'Copywriting & SEO',planned:2000,actual:800},
+      {name:'Testování & launch',planned:900,actual:0}
+    ]},
+    {id:3,name:'SEO + PPC retainer — BydlímTu',client:'BydlímTu',status:'active',items:[
+      {name:'SEO audit & strategie',planned:3000,actual:3000},
+      {name:'On-page optimalizace',planned:2000,actual:1800},
+      {name:'Google Ads setup',planned:2500,actual:2500},
+      {name:'Měsíční management (3 měs)',planned:4500,actual:1500}
+    ]},
+    {id:4,name:'Konzultace — Petr Novák',client:'Petr Novák',status:'completed',items:[
+      {name:'Analýza současného stavu',planned:1500,actual:1500},
+      {name:'Strategický plán',planned:2000,actual:2500},
+      {name:'Follow-up konzultace',planned:500,actual:500}
+    ]}
+  ];
+}
+
+let projects = JSON.parse(sessionStorage.getItem('budgets_data')) || defaultProjects();
+let nextId = Math.max(...projects.map(p=>p.id),0)+1;
+function save(){sessionStorage.setItem('budgets_data',JSON.stringify(projects))}
+
+function totals(p){
+  const planned = p.items.reduce((a,i)=>a+i.planned,0);
+  const actual = p.items.reduce((a,i)=>a+i.actual,0);
+  return {planned,actual,diff:planned-actual,pct:planned>0?Math.round((actual/planned)*100):0};
+}
+
+function renderStats(){
+  const allPlanned = projects.reduce((a,p)=>a+totals(p).planned,0);
+  const allActual = projects.reduce((a,p)=>a+totals(p).actual,0);
+  const active = projects.filter(p=>p.status==='active').length;
+  const over = projects.filter(p=>totals(p).actual>totals(p).planned).length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="num" style="color:var(--blue)">${projects.length}</div><div class="lbl">Projektů</div></div>
+    <div class="stat"><div class="num" style="color:var(--green)">${(allPlanned/1000).toFixed(0)}k Kč</div><div class="lbl">Celkem plánováno</div></div>
+    <div class="stat"><div class="num" style="color:var(--accent)">${(allActual/1000).toFixed(0)}k Kč</div><div class="lbl">Celkem čerpáno</div></div>
+    <div class="stat"><div class="num" style="color:${over>0?'var(--red)':'var(--green)'}">${over}</div><div class="lbl">Přečerpaných</div></div>
+  `;
+}
+
+function renderProjects(){
+  if(!projects.length){
+    document.getElementById('projectsList').innerHTML='<div style="text-align:center;color:var(--muted);padding:3rem">Žádné rozpočty. Přidejte první projekt.</div>';
+    return;
+  }
+  document.getElementById('projectsList').innerHTML = projects.map(p=>{
+    const t = totals(p);
+    const barColor = t.pct>100?'var(--red)':t.pct>80?'var(--orange)':'var(--green)';
+    const statusLabel = p.status==='active'?'Aktivní':p.status==='completed'?'Dokončeno':'Přečerpáno';
+    const statusColor = p.status==='active'?'var(--blue)':p.status==='completed'?'var(--green)':'var(--red)';
+    return `
+    <div class="project-card">
+      <button class="delete-p" onclick="deleteBudget(${p.id})">✕</button>
+      <div class="p-header">
+        <div>
+          <div class="p-name">${p.name}</div>
+          <div style="font-size:0.8rem;color:var(--muted)">👤 ${p.client}</div>
+        </div>
+        <span class="p-status" style="background:${statusColor}22;color:${statusColor}">${statusLabel}</span>
+      </div>
+      <div class="budget-bar">
+        <div class="budget-labels">
+          <span>Čerpáno: <strong>${t.actual.toLocaleString('cs')} Kč</strong> (${t.pct}%)</span>
+          <span>Rozpočet: <strong>${t.planned.toLocaleString('cs')} Kč</strong></span>
+        </div>
+        <div class="budget-track">
+          <div class="budget-fill" style="width:${Math.min(t.pct,100)}%;background:${barColor}"></div>
+        </div>
+      </div>
+      <div class="line-items">
+        <div class="line-item line-header"><span>Položka</span><span>Plán</span><span>Skutečnost</span><span>Rozdíl</span></div>
+        ${p.items.map(i=>{
+          const d = i.planned-i.actual;
+          const dColor = d<0?'var(--red)':d>0?'var(--green)':'var(--muted)';
+          return `<div class="line-item"><span>${i.name}</span><span>${i.planned.toLocaleString('cs')} Kč</span><span>${i.actual.toLocaleString('cs')} Kč</span><span class="line-diff" style="color:${dColor}">${d>0?'+':''}${d.toLocaleString('cs')}</span></div>`;
+        }).join('')}
+        <div class="line-item" style="font-weight:700;border-top:2px solid rgba(255,255,255,0.1)"><span>CELKEM</span><span>${t.planned.toLocaleString('cs')} Kč</span><span>${t.actual.toLocaleString('cs')} Kč</span><span class="line-diff" style="color:${t.diff<0?'var(--red)':'var(--green)'}">${t.diff>0?'+':''}${t.diff.toLocaleString('cs')}</span></div>
+      </div>
+      <div class="p-footer">
+        <button class="btn btn-outline btn-sm" onclick="editBudget(${p.id})">✏️ Upravit</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function render(){renderStats();renderProjects()}
+
+function deleteBudget(id){if(!confirm('Smazat rozpočet?'))return;projects=projects.filter(p=>p.id!==id);save();render()}
+
+function openModal(id){
+  const p=id?projects.find(x=>x.id===id):null;
+  document.getElementById('editId').value=id||'';
+  document.getElementById('modalTitle').textContent=p?'Upravit rozpočet':'Nový rozpočet';
+  document.getElementById('pName').value=p?p.name:'';
+  document.getElementById('pClient').value=p?p.client:'';
+  document.getElementById('pStatus').value=p?p.status:'active';
+  renderItemInputs(p?p.items:[{name:'',planned:0,actual:0}]);
+  document.getElementById('modalOverlay').classList.add('show');
+}
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show')}
+function editBudget(id){openModal(id)}
+
+function renderItemInputs(items){
+  document.getElementById('itemInputs').innerHTML=items.map(i=>`
+    <div class="item-row">
+      <input type="text" placeholder="Název položky" value="${i.name}" class="ii-name">
+      <input type="number" placeholder="Plán" value="${i.planned}" class="ii-planned" min="0">
+      <input type="number" placeholder="Skutečnost" value="${i.actual}" class="ii-actual" min="0">
+      <button class="remove-item" onclick="this.parentElement.remove()">✕</button>
+    </div>
+  `).join('');
+}
+function addItemInput(){
+  const w=document.getElementById('itemInputs');
+  const r=document.createElement('div');r.className='item-row';
+  r.innerHTML=`<input type="text" placeholder="Název položky" class="ii-name"><input type="number" placeholder="Plán" value="0" class="ii-planned" min="0"><input type="number" placeholder="Skutečnost" value="0" class="ii-actual" min="0"><button class="remove-item" onclick="this.parentElement.remove()">✕</button>`;
+  w.appendChild(r);
+}
+
+function saveBudget(){
+  const name=document.getElementById('pName').value.trim();
+  if(!name)return alert('Vyplňte název');
+  const client=document.getElementById('pClient').value.trim();
+  const status=document.getElementById('pStatus').value;
+  const rows=document.querySelectorAll('#itemInputs .item-row');
+  const items=[];
+  rows.forEach(r=>{
+    const n=r.querySelector('.ii-name').value.trim();
+    const pl=parseInt(r.querySelector('.ii-planned').value)||0;
+    const ac=parseInt(r.querySelector('.ii-actual').value)||0;
+    if(n)items.push({name:n,planned:pl,actual:ac});
+  });
+  const editId=document.getElementById('editId').value;
+  if(editId){const p=projects.find(x=>x.id===parseInt(editId));p.name=name;p.client=client;p.status=status;p.items=items;}
+  else{projects.push({id:nextId++,name,client,status,items});}
+  save();closeModal();render();
+}
+
+function exportCSV(){
+  let csv='Projekt,Klient,Položka,Plánováno,Skutečnost,Rozdíl\n';
+  projects.forEach(p=>p.items.forEach(i=>{csv+=`"${p.name}","${p.client}","${i.name}",${i.planned},${i.actual},${i.planned-i.actual}\n`}));
+  const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='rozpocty-export.csv';a.click();
+}
+
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zahájení spolupráce — Kudli. marketing</title>
+<meta name="description" content="5-krokový onboarding průvodce pro nové klienty Kudli. marketing.">
+<meta property="og:title" content="Zahájení spolupráce — Kudli. marketing">
+<meta property="og:description" content="5-krokový onboarding průvodce pro nové klienty Kudli. marketing.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/onboarding.html">
+<style>
+:root { --primary:#1a1a2e; --accent:#e94560; --accent-light:#ff6b81; --bg:#f8f9fa; --white:#fff; --text:#333; --gray:#666; --success:#2ecc71; --shadow:0 4px 20px rgba(0,0,0,0.08); }
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.7}
+.container{max-width:720px;margin:0 auto;padding:2rem 1rem}
+h1{font-size:2rem;font-weight:800;color:var(--primary);text-align:center;margin-bottom:0.25rem}
+.subtitle{text-align:center;color:var(--gray);margin-bottom:2.5rem;font-size:1rem}
+
+/* Progress bar */
+.progress-wrap{background:#e0e0e0;border-radius:20px;height:8px;margin-bottom:2rem;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-light));border-radius:20px;transition:width 0.5s ease}
+.progress-label{text-align:center;font-size:0.85rem;color:var(--gray);margin-bottom:2rem}
+
+/* Steps */
+.step{display:none;animation:fadeIn 0.4s ease}
+.step.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:translateY(0)}}
+
+.card{background:var(--white);border-radius:16px;padding:2rem;box-shadow:var(--shadow);margin-bottom:1.5rem}
+.card h2{font-size:1.35rem;color:var(--primary);margin-bottom:0.25rem}
+.card .step-num{display:inline-block;background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;text-align:center;line-height:32px;font-weight:700;font-size:0.85rem;margin-bottom:0.75rem}
+.card p.desc{color:var(--gray);font-size:0.95rem;margin-bottom:1.25rem}
+
+label{display:block;font-weight:600;font-size:0.9rem;color:var(--primary);margin-bottom:0.35rem;margin-top:1rem}
+input[type=text],input[type=email],input[type=tel],input[type=url],textarea,select{
+  width:100%;padding:0.7rem 1rem;border:2px solid #e0e0e0;border-radius:10px;font-size:0.95rem;font-family:inherit;transition:border 0.3s;background:var(--white)
+}
+input:focus,textarea:focus,select:focus{outline:none;border-color:var(--accent)}
+textarea{min-height:100px;resize:vertical}
+
+.checkbox-group label{font-weight:400;display:flex;align-items:center;gap:0.5rem;padding:0.5rem 0;cursor:pointer}
+.checkbox-group input[type=checkbox]{width:18px;height:18px;accent-color:var(--accent)}
+
+.btn-row{display:flex;gap:1rem;margin-top:1.5rem;justify-content:flex-end}
+.btn{padding:0.7rem 1.75rem;border-radius:10px;font-size:0.95rem;font-weight:600;cursor:pointer;border:none;transition:all 0.3s}
+.btn-next{background:var(--accent);color:white}
+.btn-next:hover{background:var(--accent-light);transform:translateY(-2px);box-shadow:0 6px 20px rgba(233,69,96,0.25)}
+.btn-back{background:transparent;color:var(--gray);border:2px solid #e0e0e0}
+.btn-back:hover{border-color:var(--primary);color:var(--primary)}
+
+/* Option cards */
+.option-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.75rem}
+.option-card{border:2px solid #e0e0e0;border-radius:12px;padding:1rem;cursor:pointer;transition:all 0.3s;text-align:center}
+.option-card:hover{border-color:var(--accent);background:rgba(233,69,96,0.03)}
+.option-card.selected{border-color:var(--accent);background:rgba(233,69,96,0.06)}
+.option-card .icon{font-size:1.75rem;margin-bottom:0.35rem}
+.option-card .name{font-weight:700;font-size:0.95rem;color:var(--primary)}
+.option-card .price{font-size:0.8rem;color:var(--accent);margin-top:0.15rem}
+
+/* Timeline summary */
+.timeline{position:relative;padding-left:2rem;margin-top:1rem}
+.timeline::before{content:'';position:absolute;left:8px;top:6px;bottom:6px;width:2px;background:var(--accent)}
+.timeline-item{position:relative;padding-bottom:1.25rem}
+.timeline-item::before{content:'';position:absolute;left:-2rem;top:6px;width:14px;height:14px;background:var(--accent);border-radius:50%;border:3px solid white;box-shadow:0 0 0 2px var(--accent)}
+.timeline-item h4{font-size:0.95rem;color:var(--primary)}
+.timeline-item p{font-size:0.85rem;color:var(--gray)}
+
+/* Summary */
+.summary-row{display:flex;justify-content:space-between;padding:0.65rem 0;border-bottom:1px solid #f0f0f0}
+.summary-row:last-child{border:none}
+.summary-label{color:var(--gray);font-size:0.9rem}
+.summary-value{font-weight:600;color:var(--primary);font-size:0.9rem}
+
+/* Success */
+.success-icon{width:80px;height:80px;background:var(--success);border-radius:50%;margin:0 auto 1.5rem;display:flex;align-items:center;justify-content:center}
+.success-icon svg{width:40px;height:40px}
+
+.back-link{display:block;text-align:center;margin-top:2rem;color:var(--accent);text-decoration:none;font-size:0.9rem}
+.back-link:hover{text-decoration:underline}
+
+@media(max-width:768px){
+ .container{padding:1.5rem 0.75rem}
+ .card{padding:1.25rem}
+ h1{font-size:1.5rem}
+ .option-card{padding:0.75rem}
+}
+@media(max-width:480px){
+ .container{padding:1rem 0.5rem}
+ .card{padding:1rem}
+ .btn{width:100%;text-align:center}
+ .summary-row{flex-direction:column;gap:0.25rem}
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Zahájení spolupráce</h1>
+  <p class="subtitle">Vyplňte formulář a já se vám ozvu do 24 hodin s nabídkou</p>
+
+  <div class="progress-wrap"><div class="progress-bar" id="progressBar" style="width:20%"></div></div>
+  <div class="progress-label" id="progressLabel">Krok 1 z 5</div>
+
+  <!-- STEP 1: Contact Info -->
+  <div class="step active" id="step1">
+    <div class="card">
+      <div class="step-num">1</div>
+      <h2>Vaše kontaktní údaje</h2>
+      <p class="desc">Abych vás mohl kontaktovat s nabídkou.</p>
+      <label>Jméno a příjmení *</label>
+      <input type="text" id="name" placeholder="Jan Novák">
+      <label>Firma / IČO</label>
+      <input type="text" id="company" placeholder="Název firmy (nepovinné)">
+      <label>Email *</label>
+      <input type="email" id="email" placeholder="jan@firma.cz">
+      <label>Telefon</label>
+      <input type="tel" id="phone" placeholder="+420 123 456 789">
+      <div class="btn-row">
+        <button class="btn btn-next" onclick="nextStep(1)">Pokračovat →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2: Project Type -->
+  <div class="step" id="step2">
+    <div class="card">
+      <div class="step-num">2</div>
+      <h2>Typ projektu</h2>
+      <p class="desc">Vyberte, co nejlépe odpovídá vašim potřebám.</p>
+      <div class="option-grid" id="projectType">
+        <div class="option-card" data-value="web" onclick="selectOption(this,'projectType')">
+          <div class="icon">🌐</div>
+          <div class="name">Web na míru</div>
+          <div class="price">od 8 000 Kč</div>
+        </div>
+        <div class="option-card" data-value="eshop" onclick="selectOption(this,'projectType')">
+          <div class="icon">🛒</div>
+          <div class="name">E-shop</div>
+          <div class="price">od 35 000 Kč</div>
+        </div>
+        <div class="option-card" data-value="automatizace" onclick="selectOption(this,'projectType')">
+          <div class="icon">⚡</div>
+          <div class="name">Automatizace</div>
+          <div class="price">od 12 000 Kč</div>
+        </div>
+        <div class="option-card" data-value="ai" onclick="selectOption(this,'projectType')">
+          <div class="icon">🤖</div>
+          <div class="name">AI řešení</div>
+          <div class="price">individuálně</div>
+        </div>
+        <div class="option-card" data-value="landing" onclick="selectOption(this,'projectType')">
+          <div class="icon">📄</div>
+          <div class="name">Landing page</div>
+          <div class="price">od 8 000 Kč</div>
+        </div>
+        <div class="option-card" data-value="konzultace" onclick="selectOption(this,'projectType')">
+          <div class="icon">💡</div>
+          <div class="name">Konzultace</div>
+          <div class="price">od 5 000 Kč</div>
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-back" onclick="prevStep(2)">← Zpět</button>
+        <button class="btn btn-next" onclick="nextStep(2)">Pokračovat →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: Project Details -->
+  <div class="step" id="step3">
+    <div class="card">
+      <div class="step-num">3</div>
+      <h2>Detaily projektu</h2>
+      <p class="desc">Čím víc toho vím, tím přesnější bude nabídka.</p>
+      <label>Popište svůj projekt *</label>
+      <textarea id="projectDesc" placeholder="Co byste chtěl/a vytvořit? Jaký problém řešíte? Co je pro vás důležité?"></textarea>
+      <label>Máte představu o rozpočtu?</label>
+      <select id="budget">
+        <option value="">— Vyberte rozmezí —</option>
+        <option value="do-10k">Do 10 000 Kč</option>
+        <option value="10-25k">10 000 – 25 000 Kč</option>
+        <option value="25-50k">25 000 – 50 000 Kč</option>
+        <option value="50-100k">50 000 – 100 000 Kč</option>
+        <option value="100k+">Nad 100 000 Kč</option>
+        <option value="nevim">Nemám představu</option>
+      </select>
+      <label>Ideální termín dokončení</label>
+      <select id="deadline">
+        <option value="">— Vyberte —</option>
+        <option value="asap">Co nejdříve</option>
+        <option value="mesic">Do 1 měsíce</option>
+        <option value="3mesice">Do 3 měsíců</option>
+        <option value="bez-spechu">Bez spěchu</option>
+      </select>
+      <div class="btn-row">
+        <button class="btn btn-back" onclick="prevStep(3)">← Zpět</button>
+        <button class="btn btn-next" onclick="nextStep(3)">Pokračovat →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: Extras -->
+  <div class="step" id="step4">
+    <div class="card">
+      <div class="step-num">4</div>
+      <h2>Doplňkové služby</h2>
+      <p class="desc">Vyberte, co dalšího by se vám hodilo (nepovinné).</p>
+      <div class="checkbox-group">
+        <label><input type="checkbox" value="seo"> SEO optimalizace (+5 000 Kč)</label>
+        <label><input type="checkbox" value="analytics"> Analytika a tracking (+3 000 Kč)</label>
+        <label><input type="checkbox" value="copywriting"> Copywriting textů (+4 000 Kč)</label>
+        <label><input type="checkbox" value="design"> Grafický návrh na míru (+8 000 Kč)</label>
+        <label><input type="checkbox" value="cms"> Správa obsahu (CMS) (+6 000 Kč)</label>
+        <label><input type="checkbox" value="podpora"> Měsíční podpora a údržba (+3 000 Kč/měs)</label>
+        <label><input type="checkbox" value="skoleni"> Zaškolení obsluhy (+2 000 Kč)</label>
+      </div>
+      <label>Odkaz na současný web (pokud máte)</label>
+      <input type="url" id="currentWeb" placeholder="https://www.vasefirma.cz">
+      <label>Něco dalšího?</label>
+      <textarea id="notes" placeholder="Cokoli dalšího, co bych měl vědět..." style="min-height:60px"></textarea>
+      <div class="btn-row">
+        <button class="btn btn-back" onclick="prevStep(4)">← Zpět</button>
+        <button class="btn btn-next" onclick="nextStep(4)">Zkontrolovat →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: Summary -->
+  <div class="step" id="step5">
+    <div class="card">
+      <div class="step-num">5</div>
+      <h2>Shrnutí poptávky</h2>
+      <p class="desc">Zkontrolujte zadané údaje a odešlete.</p>
+      <div id="summaryContent"></div>
+      <h3 style="margin-top:1.5rem;font-size:1.1rem;color:var(--primary)">Co bude následovat</h3>
+      <div class="timeline">
+        <div class="timeline-item"><h4>Do 24 hodin</h4><p>Ozvu se vám emailem s potvrzením a případnými doplňujícími dotazy.</p></div>
+        <div class="timeline-item"><h4>Do 48 hodin</h4><p>Zašlu přesnou cenovou nabídku s rozsahem prací a harmonogramem.</p></div>
+        <div class="timeline-item"><h4>15min konzultace</h4><p>Domluvíme si krátký hovor, kde vše probereme osobně.</p></div>
+        <div class="timeline-item"><h4>Start projektu</h4><p>Po odsouhlasení nabídky začínám pracovat!</p></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-back" onclick="prevStep(5)">← Zpět</button>
+        <button class="btn btn-next" onclick="submitForm()">Odeslat poptávku ✉️</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUCCESS -->
+  <div class="step" id="stepSuccess">
+    <div class="card" style="text-align:center">
+      <div class="success-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <h2>Poptávka odeslána!</h2>
+      <p class="desc" style="max-width:400px;margin:0.5rem auto 1.5rem">
+        Děkuji za zájem! Ozvu se vám do 24 hodin na zadaný email. Těším se na spolupráci.
+      </p>
+      <p style="font-size:0.9rem;color:var(--gray)">— Ondra Kudlička, Kudli. marketing</p>
+    </div>
+  </div>
+
+  <a href="index.html" class="back-link">← Zpět na hlavní stránku</a>
+</div>
+
+<script>
+let currentStep = 1;
+const totalSteps = 5;
+const selections = {};
+
+function updateProgress() {
+  const pct = (currentStep / totalSteps) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
+  document.getElementById('progressLabel').textContent = `Krok ${currentStep} z ${totalSteps}`;
+}
+
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  const step = document.getElementById(n === 6 ? 'stepSuccess' : 'step' + n);
+  if (step) step.classList.add('active');
+  if (n === 5) buildSummary();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function nextStep(from) {
+  if (from === 1) {
+    if (!document.getElementById('name').value || !document.getElementById('email').value) {
+      alert('Vyplňte prosím jméno a email.');
+      return;
+    }
+  }
+  if (from === 2 && !selections.projectType) {
+    alert('Vyberte prosím typ projektu.');
+    return;
+  }
+  if (from === 3 && !document.getElementById('projectDesc').value) {
+    alert('Popište prosím svůj projekt.');
+    return;
+  }
+  currentStep = from + 1;
+  updateProgress();
+  showStep(currentStep);
+}
+
+function prevStep(from) {
+  currentStep = from - 1;
+  updateProgress();
+  showStep(currentStep);
+}
+
+function selectOption(el, group) {
+  el.parentElement.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selections[group] = el.dataset.value;
+}
+
+const typeNames = { web:'Web na míru', eshop:'E-shop', automatizace:'Automatizace', ai:'AI řešení', landing:'Landing page', konzultace:'Konzultace' };
+const budgetNames = { 'do-10k':'Do 10 000 Kč', '10-25k':'10–25 000 Kč', '25-50k':'25–50 000 Kč', '50-100k':'50–100 000 Kč', '100k+':'Nad 100 000 Kč', nevim:'Bez představy' };
+const deadlineNames = { asap:'Co nejdříve', mesic:'Do 1 měsíce', '3mesice':'Do 3 měsíců', 'bez-spechu':'Bez spěchu' };
+
+function buildSummary() {
+  const extras = [...document.querySelectorAll('.checkbox-group input:checked')].map(c => c.parentElement.textContent.trim());
+  let html = '';
+  const row = (l,v) => `<div class="summary-row"><span class="summary-label">${l}</span><span class="summary-value">${v||'—'}</span></div>`;
+  html += row('Jméno', document.getElementById('name').value);
+  html += row('Firma', document.getElementById('company').value);
+  html += row('Email', document.getElementById('email').value);
+  html += row('Telefon', document.getElementById('phone').value);
+  html += row('Typ projektu', typeNames[selections.projectType] || '—');
+  html += row('Rozpočet', budgetNames[document.getElementById('budget').value] || '—');
+  html += row('Termín', deadlineNames[document.getElementById('deadline').value] || '—');
+  if (extras.length) html += row('Doplňky', extras.join(', '));
+  if (document.getElementById('currentWeb').value) html += row('Web', document.getElementById('currentWeb').value);
+  html += `<div style="margin-top:1rem;padding:1rem;background:var(--bg);border-radius:10px"><strong style="font-size:0.85rem;color:var(--primary)">Popis projektu:</strong><p style="font-size:0.9rem;color:var(--gray);margin-top:0.25rem">${document.getElementById('projectDesc').value}</p></div>`;
+  if (document.getElementById('notes').value) {
+    html += `<div style="margin-top:0.5rem;padding:1rem;background:var(--bg);border-radius:10px"><strong style="font-size:0.85rem;color:var(--primary)">Poznámky:</strong><p style="font-size:0.9rem;color:var(--gray);margin-top:0.25rem">${document.getElementById('notes').value}</p></div>`;
+  }
+  document.getElementById('summaryContent').innerHTML = html;
+}
+
+function submitForm() {
+  const name = document.getElementById('name').value;
+  const email = document.getElementById('email').value;
+  const company = document.getElementById('company').value;
+  const phone = document.getElementById('phone').value;
+  const type = typeNames[selections.projectType] || '';
+  const budget = budgetNames[document.getElementById('budget').value] || '';
+  const deadline = deadlineNames[document.getElementById('deadline').value] || '';
+  const desc = document.getElementById('projectDesc').value;
+  const extras = [...document.querySelectorAll('.checkbox-group input:checked')].map(c => c.parentElement.textContent.trim()).join(', ');
+  const web = document.getElementById('currentWeb').value;
+  const notes = document.getElementById('notes').value;
+
+  const subject = encodeURIComponent(`Nová poptávka: ${type} — ${name}`);
+  const body = encodeURIComponent(
+    `NOVÁ POPTÁVKA\n\nJméno: ${name}\nFirma: ${company}\nEmail: ${email}\nTelefon: ${phone}\n\nTyp projektu: ${type}\nRozpočet: ${budget}\nTermín: ${deadline}\n\nPopis:\n${desc}\n\nDoplňky: ${extras}\nSoučasný web: ${web}\nPoznámky: ${notes}`
+  );
+
+  window.location.href = `mailto:o.kudlicka@gmail.com?subject=${subject}&body=${body}`;
+
+  currentStep = 6;
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('progressLabel').textContent = 'Hotovo!';
+  showStep(6);
+}
+</script>
+</body>
+</html>

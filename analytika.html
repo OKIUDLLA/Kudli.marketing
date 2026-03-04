@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytika — Kudli. marketing</title>
+<meta name="description" content="Interní analytický dashboard pro sledování návštěvnosti, leadů a tržeb.">
+<meta property="og:title" content="Analytika — Kudli. marketing">
+<meta property="og:description" content="Interní analytický dashboard pro sledování návštěvnosti, leadů a tržeb.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/analytika.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--blue:#3498db;--orange:#f39c12;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+.top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}
+.top-bar .logo span{color:var(--accent)}
+.top-bar .badge{background:rgba(233,69,96,0.15);color:var(--accent-light);padding:0.25rem 0.75rem;border-radius:15px;font-size:0.75rem;font-weight:600}
+.back-link{color:var(--muted);text-decoration:none;font-size:0.85rem;transition:color 0.3s}
+.back-link:hover{color:var(--accent)}
+
+.container{max-width:1100px;margin:0 auto;padding:1.5rem}
+
+/* KPI Cards */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-bottom:2rem}
+.kpi{background:var(--card);border-radius:14px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);position:relative;overflow:hidden}
+.kpi::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;border-radius:4px 0 0 4px}
+.kpi.red::before{background:var(--accent)}
+.kpi.green::before{background:var(--green)}
+.kpi.blue::before{background:var(--blue)}
+.kpi.orange::before{background:var(--orange)}
+.kpi.purple::before{background:var(--purple)}
+.kpi-label{font-size:0.8rem;color:var(--muted);margin-bottom:0.35rem}
+.kpi-value{font-size:2rem;font-weight:800;line-height:1}
+.kpi-change{font-size:0.8rem;margin-top:0.35rem;display:flex;align-items:center;gap:0.3rem}
+.kpi-change.up{color:var(--green)}
+.kpi-change.down{color:var(--accent)}
+
+/* Period selector */
+.controls{display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem}
+.period-btns{display:flex;gap:0.5rem}
+.period-btn{padding:0.4rem 1rem;border:1px solid rgba(255,255,255,0.1);background:transparent;color:var(--muted);border-radius:8px;font-size:0.8rem;cursor:pointer;transition:all 0.3s}
+.period-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.period-btn:hover:not(.active){border-color:var(--accent);color:var(--accent-light)}
+
+/* Charts */
+.chart-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-bottom:2rem}
+.chart-card{background:var(--card);border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.06)}
+.chart-card h3{font-size:0.95rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+.chart-canvas{width:100%;height:220px;position:relative}
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:100%;padding-top:20px}
+.bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px}
+.bar{border-radius:6px 6px 0 0;width:100%;min-width:20px;transition:height 0.8s cubic-bezier(0.22,1,0.36,1);position:relative;cursor:pointer}
+.bar:hover{opacity:0.8}
+.bar-label{font-size:0.65rem;color:var(--muted);white-space:nowrap}
+.bar-val{font-size:0.65rem;color:var(--text);font-weight:600;position:absolute;top:-18px;left:50%;transform:translateX(-50%);white-space:nowrap}
+
+/* Line chart using SVG */
+.line-svg{width:100%;height:100%}
+
+/* Data entry */
+.entry-section{background:var(--card);border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.06);margin-bottom:2rem}
+.entry-section h3{font-size:1rem;font-weight:700;margin-bottom:1rem;display:flex;align-items:center;gap:0.5rem}
+.entry-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:0.75rem;margin-bottom:1rem}
+.entry-field label{display:block;font-size:0.75rem;color:var(--muted);margin-bottom:0.3rem}
+.entry-field input,.entry-field select{width:100%;padding:0.55rem 0.75rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text);font-size:0.9rem}
+.entry-field input:focus,.entry-field select:focus{outline:none;border-color:var(--accent)}
+.btn-add{padding:0.6rem 1.5rem;background:var(--accent);color:#fff;border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.3s;font-size:0.9rem}
+.btn-add:hover{background:var(--accent-light);transform:translateY(-1px)}
+.btn-secondary{padding:0.6rem 1.5rem;background:rgba(255,255,255,0.08);color:var(--text);border:none;border-radius:8px;font-weight:600;cursor:pointer;transition:all 0.3s;font-size:0.9rem}
+.btn-secondary:hover{background:rgba(255,255,255,0.15)}
+.entry-actions{display:flex;gap:0.75rem;flex-wrap:wrap}
+
+/* Data table */
+.data-table{width:100%;border-collapse:collapse;margin-top:1rem;font-size:0.85rem}
+.data-table th{text-align:left;padding:0.6rem 0.75rem;border-bottom:2px solid rgba(255,255,255,0.1);color:var(--muted);font-size:0.75rem;text-transform:uppercase;letter-spacing:0.5px}
+.data-table td{padding:0.55rem 0.75rem;border-bottom:1px solid rgba(255,255,255,0.04)}
+.data-table tr:hover td{background:rgba(255,255,255,0.02)}
+.data-table .del-btn{color:var(--accent);cursor:pointer;border:none;background:none;font-size:0.85rem;padding:0.2rem}
+
+/* Source breakdown */
+.source-list{list-style:none;margin-top:0.5rem}
+.source-item{display:flex;align-items:center;gap:0.75rem;padding:0.6rem 0;border-bottom:1px solid rgba(255,255,255,0.04)}
+.source-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.source-name{flex:1;font-size:0.9rem}
+.source-val{font-weight:700;font-size:0.95rem}
+.source-pct{font-size:0.8rem;color:var(--muted);min-width:45px;text-align:right}
+.progress-bg{flex:2;height:8px;background:rgba(255,255,255,0.06);border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;border-radius:4px;transition:width 0.8s}
+
+/* Goals */
+.goal-card{background:rgba(255,255,255,0.03);border-radius:12px;padding:1rem;margin-bottom:0.75rem}
+.goal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.5rem}
+.goal-name{font-size:0.9rem;font-weight:600}
+.goal-progress{font-size:0.85rem;color:var(--accent-light);font-weight:700}
+.goal-bar-bg{height:8px;background:rgba(255,255,255,0.08);border-radius:4px;overflow:hidden}
+.goal-bar-fill{height:100%;border-radius:4px;transition:width 1s cubic-bezier(0.22,1,0.36,1)}
+
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--green);color:#fff;padding:0.7rem 1.5rem;border-radius:10px;font-weight:600;font-size:0.85rem;transform:translateY(100px);opacity:0;transition:all 0.4s;z-index:100}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:768px){
+ .chart-grid{grid-template-columns:1fr}
+ .kpi-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+ .kpi-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+ <div style="display:flex;align-items:center;gap:1.5rem">
+   <a href="index.html" class="logo">Kudli<span>.</span> marketing</a>
+   <span class="badge">INTERNÍ DASHBOARD</span>
+ </div>
+ <a href="index.html" class="back-link">← Zpět na web</a>
+</div>
+
+<div class="container">
+
+ <!-- KPI Cards -->
+ <div class="kpi-grid" id="kpiGrid">
+   <div class="kpi red">
+     <div class="kpi-label">Návštěvy tento měsíc</div>
+     <div class="kpi-value" id="kpiVisits">0</div>
+     <div class="kpi-change up" id="kpiVisitsChange">—</div>
+   </div>
+   <div class="kpi green">
+     <div class="kpi-label">Poptávky (leady)</div>
+     <div class="kpi-value" id="kpiLeads">0</div>
+     <div class="kpi-change up" id="kpiLeadsChange">—</div>
+   </div>
+   <div class="kpi blue">
+     <div class="kpi-label">Konverzní poměr</div>
+     <div class="kpi-value" id="kpiConversion">0%</div>
+     <div class="kpi-change" id="kpiConvChange">—</div>
+   </div>
+   <div class="kpi orange">
+     <div class="kpi-label">Příjem tento měsíc</div>
+     <div class="kpi-value" id="kpiRevenue">0 Kč</div>
+     <div class="kpi-change up" id="kpiRevChange">—</div>
+   </div>
+   <div class="kpi purple">
+     <div class="kpi-label">Aktivní projekty</div>
+     <div class="kpi-value" id="kpiProjects">0</div>
+     <div class="kpi-change" id="kpiProjChange">—</div>
+   </div>
+ </div>
+
+ <!-- Data Entry -->
+ <div class="entry-section">
+   <h3>📊 Přidat záznam</h3>
+   <div class="entry-grid">
+     <div class="entry-field">
+       <label>Datum</label>
+       <input type="date" id="entryDate">
+     </div>
+     <div class="entry-field">
+       <label>Návštěvy</label>
+       <input type="number" id="entryVisits" placeholder="0" min="0">
+     </div>
+     <div class="entry-field">
+       <label>Poptávky</label>
+       <input type="number" id="entryLeads" placeholder="0" min="0">
+     </div>
+     <div class="entry-field">
+       <label>Příjem (Kč)</label>
+       <input type="number" id="entryRevenue" placeholder="0" min="0">
+     </div>
+     <div class="entry-field">
+       <label>Zdroj</label>
+       <select id="entrySource">
+         <option value="Organické">Organické (Google)</option>
+         <option value="LinkedIn">LinkedIn</option>
+         <option value="Doporučení">Doporučení</option>
+         <option value="Přímý">Přímý přístup</option>
+         <option value="Sociální sítě">Sociální sítě</option>
+         <option value="Jiné">Jiné</option>
+       </select>
+     </div>
+   </div>
+   <div class="entry-actions">
+     <button class="btn-add" onclick="addEntry()">+ Přidat záznam</button>
+     <button class="btn-secondary" onclick="loadSampleData()">📋 Načíst demo data</button>
+     <button class="btn-secondary" onclick="exportCSV()">📥 Export CSV</button>
+   </div>
+
+   <!-- Data Table -->
+   <table class="data-table" id="dataTable">
+     <thead>
+       <tr>
+         <th>Datum</th>
+         <th>Návštěvy</th>
+         <th>Poptávky</th>
+         <th>Příjem</th>
+         <th>Zdroj</th>
+         <th></th>
+       </tr>
+     </thead>
+     <tbody id="tableBody"></tbody>
+   </table>
+ </div>
+
+ <!-- Charts -->
+ <div class="chart-grid">
+   <!-- Visits Bar Chart -->
+   <div class="chart-card">
+     <h3>📈 Návštěvy po dnech</h3>
+     <div class="chart-canvas">
+       <div class="bar-chart" id="visitsChart"></div>
+     </div>
+   </div>
+
+   <!-- Revenue Bar Chart -->
+   <div class="chart-card">
+     <h3>💰 Příjem po dnech</h3>
+     <div class="chart-canvas">
+       <div class="bar-chart" id="revenueChart"></div>
+     </div>
+   </div>
+
+   <!-- Source Breakdown -->
+   <div class="chart-card">
+     <h3>🎯 Zdroje návštěv</h3>
+     <ul class="source-list" id="sourceList"></ul>
+   </div>
+
+   <!-- Goals -->
+   <div class="chart-card">
+     <h3>🏆 Měsíční cíle</h3>
+     <div id="goalsContainer">
+       <div class="goal-card">
+         <div class="goal-header">
+           <span class="goal-name">Návštěvy</span>
+           <span class="goal-progress" id="goalVisitsPct">0%</span>
+         </div>
+         <div class="goal-bar-bg"><div class="goal-bar-fill" id="goalVisitsBar" style="width:0%;background:var(--accent)"></div></div>
+         <div style="font-size:0.75rem;color:var(--muted);margin-top:0.3rem"><span id="goalVisitsVal">0</span> / 500 návštěv</div>
+       </div>
+       <div class="goal-card">
+         <div class="goal-header">
+           <span class="goal-name">Poptávky</span>
+           <span class="goal-progress" id="goalLeadsPct">0%</span>
+         </div>
+         <div class="goal-bar-bg"><div class="goal-bar-fill" id="goalLeadsBar" style="width:0%;background:var(--green)"></div></div>
+         <div style="font-size:0.75rem;color:var(--muted);margin-top:0.3rem"><span id="goalLeadsVal">0</span> / 10 poptávek</div>
+       </div>
+       <div class="goal-card">
+         <div class="goal-header">
+           <span class="goal-name">Příjem</span>
+           <span class="goal-progress" id="goalRevPct">0%</span>
+         </div>
+         <div class="goal-bar-bg"><div class="goal-bar-fill" id="goalRevBar" style="width:0%;background:var(--orange)"></div></div>
+         <div style="font-size:0.75rem;color:var(--muted);margin-top:0.3rem"><span id="goalRevVal">0 Kč</span> / 50 000 Kč</div>
+       </div>
+     </div>
+   </div>
+ </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let entries = [];
+
+function addEntry() {
+ const date = document.getElementById('entryDate').value;
+ const visits = parseInt(document.getElementById('entryVisits').value) || 0;
+ const leads = parseInt(document.getElementById('entryLeads').value) || 0;
+ const revenue = parseInt(document.getElementById('entryRevenue').value) || 0;
+ const source = document.getElementById('entrySource').value;
+
+ if (!date) { showToast('⚠️ Vyplň datum'); return; }
+
+ entries.push({ date, visits, leads, revenue, source });
+ entries.sort((a,b) => a.date.localeCompare(b.date));
+
+ saveData();
+ renderAll();
+ clearForm();
+ showToast('✅ Záznam přidán');
+}
+
+function deleteEntry(i) {
+ entries.splice(i, 1);
+ saveData();
+ renderAll();
+}
+
+function clearForm() {
+ document.getElementById('entryVisits').value = '';
+ document.getElementById('entryLeads').value = '';
+ document.getElementById('entryRevenue').value = '';
+}
+
+function renderAll() {
+ renderTable();
+ renderKPIs();
+ renderVisitsChart();
+ renderRevenueChart();
+ renderSources();
+ renderGoals();
+}
+
+function renderTable() {
+ const tb = document.getElementById('tableBody');
+ tb.innerHTML = entries.map((e,i) => `
+   <tr>
+     <td>${formatDate(e.date)}</td>
+     <td>${e.visits}</td>
+     <td>${e.leads}</td>
+     <td>${fmt(e.revenue)}</td>
+     <td>${e.source}</td>
+     <td><button class="del-btn" onclick="deleteEntry(${i})">✕</button></td>
+   </tr>
+ `).reverse().join('');
+}
+
+function renderKPIs() {
+ const now = new Date();
+ const thisMonth = entries.filter(e => {
+   const d = new Date(e.date);
+   return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+ });
+
+ const totalVisits = thisMonth.reduce((s,e) => s + e.visits, 0);
+ const totalLeads = thisMonth.reduce((s,e) => s + e.leads, 0);
+ const totalRevenue = thisMonth.reduce((s,e) => s + e.revenue, 0);
+ const conv = totalVisits > 0 ? ((totalLeads / totalVisits) * 100).toFixed(1) : 0;
+
+ document.getElementById('kpiVisits').textContent = totalVisits.toLocaleString('cs');
+ document.getElementById('kpiLeads').textContent = totalLeads;
+ document.getElementById('kpiConversion').textContent = conv + '%';
+ document.getElementById('kpiRevenue').textContent = fmt(totalRevenue);
+ document.getElementById('kpiProjects').textContent = new Set(thisMonth.filter(e=>e.revenue>0).map(e=>e.source)).size || thisMonth.filter(e=>e.leads>0).length;
+}
+
+function renderVisitsChart() {
+ const last14 = getLast14();
+ const max = Math.max(...last14.map(d => d.visits), 1);
+ const chart = document.getElementById('visitsChart');
+ chart.innerHTML = last14.map(d => {
+   const h = (d.visits / max * 180);
+   return `<div class="bar-col">
+     <div class="bar" style="height:${h}px;background:linear-gradient(to top,var(--accent),var(--accent-light))">
+       <span class="bar-val">${d.visits}</span>
+     </div>
+     <span class="bar-label">${d.label}</span>
+   </div>`;
+ }).join('');
+}
+
+function renderRevenueChart() {
+ const last14 = getLast14();
+ const max = Math.max(...last14.map(d => d.revenue), 1);
+ const chart = document.getElementById('revenueChart');
+ chart.innerHTML = last14.map(d => {
+   const h = (d.revenue / max * 180);
+   return `<div class="bar-col">
+     <div class="bar" style="height:${Math.max(h,2)}px;background:linear-gradient(to top,var(--orange),#f1c40f)">
+       ${d.revenue > 0 ? `<span class="bar-val">${(d.revenue/1000).toFixed(0)}k</span>` : ''}
+     </div>
+     <span class="bar-label">${d.label}</span>
+   </div>`;
+ }).join('');
+}
+
+function renderSources() {
+ const sources = {};
+ entries.forEach(e => {
+   sources[e.source] = (sources[e.source] || 0) + e.visits;
+ });
+ const total = Object.values(sources).reduce((s,v) => s + v, 0) || 1;
+ const sorted = Object.entries(sources).sort((a,b) => b[1] - a[1]);
+ const colors = {'Organické':'#e94560','LinkedIn':'#3498db','Doporučení':'#2ecc71','Přímý':'#f39c12','Sociální sítě':'#9b59b6','Jiné':'#95a5a6'};
+
+ document.getElementById('sourceList').innerHTML = sorted.map(([name, val]) => {
+   const pct = ((val/total)*100).toFixed(0);
+   const c = colors[name] || '#95a5a6';
+   return `<li class="source-item">
+     <span class="source-dot" style="background:${c}"></span>
+     <span class="source-name">${name}</span>
+     <div class="progress-bg"><div class="progress-fill" style="width:${pct}%;background:${c}"></div></div>
+     <span class="source-val">${val}</span>
+     <span class="source-pct">${pct}%</span>
+   </li>`;
+ }).join('') || '<li class="source-item" style="justify-content:center;color:var(--muted)">Přidej záznamy pro zobrazení zdrojů</li>';
+}
+
+function renderGoals() {
+ const now = new Date();
+ const thisMonth = entries.filter(e => {
+   const d = new Date(e.date);
+   return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+ });
+
+ const v = thisMonth.reduce((s,e) => s + e.visits, 0);
+ const l = thisMonth.reduce((s,e) => s + e.leads, 0);
+ const r = thisMonth.reduce((s,e) => s + e.revenue, 0);
+
+ setGoal('Visits', v, 500);
+ setGoal('Leads', l, 10);
+ setGoal('Rev', r, 50000, true);
+}
+
+function setGoal(key, val, target, isCurrency) {
+ const pct = Math.min((val / target) * 100, 100).toFixed(0);
+ document.getElementById(`goal${key}Pct`).textContent = pct + '%';
+ document.getElementById(`goal${key}Bar`).style.width = pct + '%';
+ document.getElementById(`goal${key}Val`).textContent = isCurrency ? fmt(val) : val;
+}
+
+function getLast14() {
+ const result = [];
+ const today = new Date();
+ for (let i = 13; i >= 0; i--) {
+   const d = new Date(today);
+   d.setDate(d.getDate() - i);
+   const key = d.toISOString().split('T')[0];
+   const dayEntries = entries.filter(e => e.date === key);
+   result.push({
+     date: key,
+     label: `${d.getDate()}.${d.getMonth()+1}.`,
+     visits: dayEntries.reduce((s,e) => s + e.visits, 0),
+     leads: dayEntries.reduce((s,e) => s + e.leads, 0),
+     revenue: dayEntries.reduce((s,e) => s + e.revenue, 0)
+   });
+ }
+ return result;
+}
+
+function loadSampleData() {
+ const sources = ['Organické','LinkedIn','Doporučení','Přímý','Sociální sítě'];
+ const today = new Date();
+ for (let i = 30; i >= 0; i--) {
+   const d = new Date(today);
+   d.setDate(d.getDate() - i);
+   const dateStr = d.toISOString().split('T')[0];
+   const visits = Math.floor(Math.random() * 40) + 5;
+   const leads = Math.random() > 0.7 ? Math.floor(Math.random() * 3) + 1 : 0;
+   const revenue = Math.random() > 0.85 ? (Math.floor(Math.random() * 15) + 5) * 1000 : 0;
+   entries.push({
+     date: dateStr,
+     visits,
+     leads,
+     revenue,
+     source: sources[Math.floor(Math.random() * sources.length)]
+   });
+ }
+ saveData();
+ renderAll();
+ showToast('📋 Demo data načtena (30 dní)');
+}
+
+function exportCSV() {
+ if (entries.length === 0) { showToast('⚠️ Žádná data k exportu'); return; }
+ const header = 'Datum,Návštěvy,Poptávky,Příjem,Zdroj\n';
+ const rows = entries.map(e => `${e.date},${e.visits},${e.leads},${e.revenue},${e.source}`).join('\n');
+ const blob = new Blob([header + rows], { type: 'text/csv;charset=utf-8;' });
+ const a = document.createElement('a');
+ a.href = URL.createObjectURL(blob);
+ a.download = `kudli-analytika-${new Date().toISOString().split('T')[0]}.csv`;
+ a.click();
+ showToast('📥 CSV exportováno');
+}
+
+function fmt(n) { return n.toLocaleString('cs') + ' Kč'; }
+function formatDate(d) { const p = d.split('-'); return `${p[2]}.${p[1]}.${p[0]}`; }
+
+function saveData() {
+ try { sessionStorage.setItem('kudli_analytics', JSON.stringify(entries)); } catch(e) {}
+}
+function loadData() {
+ try {
+   const d = sessionStorage.getItem('kudli_analytics');
+   if (d) entries = JSON.parse(d);
+ } catch(e) {}
+}
+
+function showToast(msg) {
+ const t = document.getElementById('toast');
+ t.textContent = msg;
+ t.classList.add('show');
+ setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Init
+document.getElementById('entryDate').valueAsDate = new Date();
+loadData();
+renderAll();
+</script>
+</body>
+</html>

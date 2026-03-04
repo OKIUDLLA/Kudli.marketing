@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generátor ceníku — Kudli. marketing</title>
+<meta name="description" content="Vytvoř profesionální ceník služeb pro klienty. Balíčky, položky, tisk do PDF.">
+<meta property="og:title" content="Generátor ceníku — Kudli. marketing">
+<meta property="og:description" content="Vytvoř profesionální ceník služeb pro klienty. Balíčky, položky, tisk do PDF.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/cenik-generator.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+.top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}
+.top-bar .logo span{color:var(--accent)}
+
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:2rem;max-width:1400px;margin:0 auto;padding:2rem 1.5rem}
+.form-side h1{font-size:1.4rem;font-weight:800;margin-bottom:1.5rem}
+.form-side h1 em{color:var(--accent);font-style:normal}
+
+/* Form */
+.section{background:var(--card);border-radius:16px;padding:1.25rem;border:1px solid rgba(255,255,255,0.06);margin-bottom:1rem}
+.section h3{font-size:0.95rem;font-weight:700;margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem}
+.field{margin-bottom:0.75rem}
+.field label{display:block;font-size:0.75rem;color:var(--muted);margin-bottom:0.25rem;font-weight:600}
+.field input,.field select,.field textarea{width:100%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);color:var(--text);padding:0.55rem 0.85rem;border-radius:10px;font-size:0.85rem;font-family:inherit}
+.field textarea{min-height:60px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+.btn{background:var(--accent);color:#fff;border:none;padding:0.6rem 1.25rem;border-radius:10px;font-weight:700;cursor:pointer;font-size:0.85rem;font-family:inherit;transition:all 0.3s}
+.btn:hover{background:var(--accent-light)}
+.btn-sm{padding:0.35rem 0.75rem;font-size:0.75rem;border-radius:8px}
+.btn-outline{background:transparent;border:1px solid rgba(255,255,255,0.15);color:var(--text)}
+
+/* Package builder */
+.package{background:rgba(255,255,255,0.03);border:1px solid rgba(255,255,255,0.08);border-radius:12px;padding:1rem;margin-bottom:0.75rem;position:relative}
+.package .remove{position:absolute;top:0.5rem;right:0.5rem;background:none;border:none;color:var(--red);cursor:pointer;font-size:1rem;opacity:0.5}
+.package .remove:hover{opacity:1}
+.package .items{margin-top:0.5rem}
+.item-row{display:flex;gap:0.5rem;align-items:center;margin-bottom:0.4rem}
+.item-row input{flex:1;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);color:var(--text);padding:0.4rem 0.7rem;border-radius:8px;font-size:0.8rem;font-family:inherit}
+.item-row input.price{max-width:100px;text-align:right}
+.chip-row{display:flex;flex-wrap:wrap;gap:0.4rem;margin-top:0.5rem}
+.chip{padding:0.2rem 0.6rem;border-radius:6px;font-size:0.7rem;cursor:pointer;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);transition:all 0.2s}
+.chip.selected{background:var(--accent);border-color:var(--accent);color:#fff}
+
+/* Preview */
+.preview-side{position:sticky;top:2rem;align-self:start}
+.preview{background:#fff;color:#222;border-radius:16px;padding:2.5rem;box-shadow:0 8px 40px rgba(0,0,0,0.3);min-height:500px}
+.preview h2{font-size:1.4rem;font-weight:800;color:#1a1a2e;text-align:center;margin-bottom:0.25rem}
+.preview .brand{text-align:center;color:#e94560;font-size:0.85rem;font-weight:600;margin-bottom:2rem}
+.preview .intro{text-align:center;color:#666;font-size:0.85rem;margin-bottom:2rem;line-height:1.6}
+
+.pkg-preview{border:2px solid #f0f0f0;border-radius:16px;padding:1.5rem;margin-bottom:1rem;position:relative;transition:all 0.3s}
+.pkg-preview.featured{border-color:#e94560;box-shadow:0 4px 20px rgba(233,69,96,0.1)}
+.pkg-featured-badge{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#e94560;color:#fff;padding:0.15rem 0.75rem;border-radius:10px;font-size:0.65rem;font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.pkg-name{font-size:1.1rem;font-weight:800;color:#1a1a2e;text-align:center;margin-bottom:0.25rem}
+.pkg-desc{text-align:center;color:#888;font-size:0.8rem;margin-bottom:1rem}
+.pkg-price{text-align:center;font-size:2rem;font-weight:900;color:#1a1a2e;margin-bottom:1rem}
+.pkg-price span{font-size:0.85rem;font-weight:400;color:#888}
+.pkg-items{list-style:none;padding:0}
+.pkg-items li{padding:0.4rem 0;font-size:0.85rem;color:#444;display:flex;align-items:center;gap:0.5rem;border-bottom:1px solid #f8f8f8}
+.pkg-items li:last-child{border:none}
+.pkg-items li::before{content:'✓';color:#2ecc71;font-weight:700;font-size:0.9rem}
+
+.preview-footer{text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:2px solid #f0f0f0;color:#888;font-size:0.75rem;line-height:1.6}
+.print-btn{display:flex;gap:0.5rem;justify-content:center;margin-top:1rem}
+
+@media print{
+ body{background:#fff}
+ .top-bar,.form-side,.print-btn{display:none!important}
+ .layout{grid-template-columns:1fr;padding:0}
+ .preview-side{position:static}
+ .preview{box-shadow:none;padding:2rem 1rem}
+}
+@media(max-width:900px){
+ .layout{grid-template-columns:1fr}
+ .preview-side{position:static}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+ <a href="nastroje.html" class="logo">Kudli<span>.</span> marketing</a>
+ <a href="nastroje.html" style="color:var(--muted);text-decoration:none;font-size:0.85rem">← Zpět na nástroje</a>
+</div>
+
+<div class="layout">
+ <div class="form-side">
+   <h1>Generátor <em>ceníku</em></h1>
+
+   <div class="section">
+     <h3>📋 Základní nastavení</h3>
+     <div class="field"><label>Nadpis ceníku</label><input type="text" id="title" value="Ceník služeb" oninput="updatePreview()"></div>
+     <div class="field"><label>Popis / intro text</label><textarea id="intro" oninput="updatePreview()">Transparentní ceny bez skrytých poplatků. Každý projekt je unikátní — cena se může lišit dle rozsahu.</textarea></div>
+     <div class="field"><label>Platnost ceníku od</label><input type="date" id="validFrom" oninput="updatePreview()"></div>
+   </div>
+
+   <div class="section">
+     <h3>📦 Balíčky služeb</h3>
+     <div id="packages"></div>
+     <button class="btn" onclick="addPackage()" style="width:100%">+ Přidat balíček</button>
+   </div>
+
+   <div class="section">
+     <h3>📝 Patička ceníku</h3>
+     <div class="field"><label>Doplňující info</label><textarea id="footer" oninput="updatePreview()">Ceny jsou bez DPH (nejsem plátce DPH). Platba převodem na účet. Doba splatnosti 14 dní.</textarea></div>
+   </div>
+ </div>
+
+ <div class="preview-side">
+   <div class="preview" id="preview"></div>
+   <div class="print-btn">
+     <button class="btn" onclick="window.print()">🖨️ Tisk / PDF</button>
+     <button class="btn btn-outline" onclick="copyHTML()">📋 Kopírovat HTML</button>
+   </div>
+ </div>
+</div>
+
+<script>
+let packages = [
+ {
+   name: 'Landing Page',
+   desc: 'Jednoduchá prezentační stránka',
+   price: '8 900',
+   featured: false,
+   items: ['Responzivní design na míru','Kontaktní formulář','SEO optimalizace','Dodání do 5 pracovních dnů','1 revize zdarma']
+ },
+ {
+   name: 'Firemní web',
+   desc: 'Kompletní webová prezentace',
+   price: '19 900',
+   featured: true,
+   items: ['5–8 stránek na míru','Blog / aktuality','Napojení na analytics','Responzivní design','3 měsíce podpory zdarma','3 revize zdarma']
+ },
+ {
+   name: 'Automatizace',
+   desc: 'Automatizace procesů & AI',
+   price: 'od 15 000',
+   featured: false,
+   items: ['Analýza procesů','Návrh řešení na míru','Implementace & testování','Zaškolení vašeho týmu','1 měsíc podpory']
+ }
+];
+
+function renderForm() {
+ const container = document.getElementById('packages');
+ container.innerHTML = packages.map((pkg, pi) => `
+   <div class="package">
+     <button class="remove" onclick="removePackage(${pi})">&times;</button>
+     <div class="row">
+       <div class="field"><label>Název balíčku</label><input type="text" value="${pkg.name}" onchange="packages[${pi}].name=this.value;updatePreview()"></div>
+       <div class="field"><label>Cena</label><input type="text" value="${pkg.price}" onchange="packages[${pi}].price=this.value;updatePreview()"></div>
+     </div>
+     <div class="field"><label>Krátký popis</label><input type="text" value="${pkg.desc}" onchange="packages[${pi}].desc=this.value;updatePreview()"></div>
+     <div class="chip-row">
+       <span class="chip ${pkg.featured?'selected':''}" onclick="packages[${pi}].featured=!packages[${pi}].featured;renderForm();updatePreview()">⭐ Doporučený</span>
+     </div>
+     <div class="items">
+       <label style="font-size:0.75rem;color:var(--muted);font-weight:600;display:block;margin:0.5rem 0 0.3rem">Položky</label>
+       ${pkg.items.map((item, ii) => `
+         <div class="item-row">
+           <input type="text" value="${item}" onchange="packages[${pi}].items[${ii}]=this.value;updatePreview()">
+           <button class="btn-sm btn-outline" style="color:var(--red);border-color:var(--red);flex-shrink:0" onclick="packages[${pi}].items.splice(${ii},1);renderForm();updatePreview()">×</button>
+         </div>
+       `).join('')}
+       <button class="btn-sm btn-outline" onclick="packages[${pi}].items.push('Nová položka');renderForm();updatePreview()" style="margin-top:0.3rem">+ Položka</button>
+     </div>
+   </div>
+ `).join('');
+}
+
+function addPackage() {
+ packages.push({ name: 'Nový balíček', desc: 'Popis balíčku', price: '0', featured: false, items: ['Položka 1'] });
+ renderForm(); updatePreview();
+}
+
+function removePackage(i) {
+ packages.splice(i, 1);
+ renderForm(); updatePreview();
+}
+
+function updatePreview() {
+ const title = document.getElementById('title').value;
+ const intro = document.getElementById('intro').value;
+ const footer = document.getElementById('footer').value;
+ const validFrom = document.getElementById('validFrom').value;
+
+ let html = `<h2>${title}</h2>`;
+ html += `<div class="brand">Kudli. marketing · Ondřej Kudlička</div>`;
+ if (intro) html += `<div class="intro">${intro}</div>`;
+
+ packages.forEach(pkg => {
+   html += `<div class="pkg-preview ${pkg.featured?'featured':''}">`;
+   if (pkg.featured) html += `<div class="pkg-featured-badge">Nejoblíbenější</div>`;
+   html += `<div class="pkg-name">${pkg.name}</div>`;
+   if (pkg.desc) html += `<div class="pkg-desc">${pkg.desc}</div>`;
+   html += `<div class="pkg-price">${pkg.price} <span>Kč</span></div>`;
+   html += `<ul class="pkg-items">${pkg.items.map(i => `<li>${i}</li>`).join('')}</ul>`;
+   html += `</div>`;
+ });
+
+ html += `<div class="preview-footer">`;
+ html += `Ondřej Kudlička — Kudli. marketing<br>IČO: 07271751 · Účet: 1486382014/3030<br>`;
+ if (footer) html += `<br>${footer.replace(/\n/g,'<br>')}`;
+ if (validFrom) html += `<br><br>Ceník platný od ${new Date(validFrom).toLocaleDateString('cs-CZ')}`;
+ html += `</div>`;
+
+ document.getElementById('preview').innerHTML = html;
+}
+
+function copyHTML() {
+ const html = document.getElementById('preview').innerHTML;
+ navigator.clipboard.writeText(html).then(() => alert('HTML zkopírováno!'));
+}
+
+renderForm();
+updatePreview();
+</script>
+</body>
+</html>

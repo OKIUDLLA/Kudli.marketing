@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Workflow & Automatizace | Kudli. marketing</title>
+<meta name="description" content="Přehled interních procesů, workflow a automatizací pro freelance business.">
+<meta property="og:title" content="Workflow & Automatizace | Kudli. marketing">
+<meta property="og:description" content="Dokumentace procesů a automatizačních scénářů.">
+<meta property="og:image" content="og-image.png">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.top-bar{background:var(--card);padding:0.75rem 1.5rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(255,255,255,0.05)}
+.top-bar a{color:var(--muted);text-decoration:none;font-size:0.85rem}
+.top-bar a:hover{color:var(--accent)}
+.container{max-width:1100px;margin:0 auto;padding:2rem 1.5rem}
+h1{font-size:1.75rem;margin-bottom:0.25rem}
+h1 em{color:var(--accent);font-style:normal}
+.subtitle{color:var(--muted);margin-bottom:2rem}
+
+/* Tabs */
+.tabs{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.tab{padding:0.5rem 1.25rem;border-radius:8px;background:var(--card);border:1px solid rgba(255,255,255,0.05);cursor:pointer;font-size:0.85rem;color:var(--muted);transition:all 0.2s}
+.tab:hover{border-color:var(--accent)}
+.tab.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Stats */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.05)}
+.stat-card .num{font-size:1.75rem;font-weight:700}
+.stat-card .lbl{font-size:0.75rem;color:var(--muted);margin-top:0.2rem}
+
+/* Workflow card */
+.wf-card{background:var(--card);border-radius:14px;padding:1.5rem;margin-bottom:1.25rem;border:1px solid rgba(255,255,255,0.05);position:relative}
+.wf-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1rem}
+.wf-title-area{display:flex;align-items:center;gap:0.75rem}
+.wf-icon{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0}
+.wf-title{font-size:1.1rem;font-weight:600}
+.wf-desc{font-size:0.8rem;color:var(--muted);margin-top:0.2rem}
+.wf-badges{display:flex;gap:0.35rem;flex-wrap:wrap}
+.wf-badge{padding:0.2rem 0.6rem;border-radius:4px;font-size:0.7rem;font-weight:600}
+
+/* Steps */
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:flex;align-items:flex-start;gap:0.75rem;position:relative;padding:0.5rem 0}
+.step-line{position:absolute;left:15px;top:32px;bottom:-8px;width:2px;background:rgba(255,255,255,0.08)}
+.step:last-child .step-line{display:none}
+.step-num{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;flex-shrink:0;z-index:1}
+.step-content{flex:1;padding-top:4px}
+.step-name{font-size:0.85rem;font-weight:600;margin-bottom:0.15rem}
+.step-detail{font-size:0.75rem;color:var(--muted)}
+.step-tool{display:inline-block;padding:0.1rem 0.4rem;border-radius:3px;font-size:0.65rem;background:rgba(255,255,255,0.05);color:var(--muted);margin-top:0.25rem}
+
+/* Trigger info */
+.trigger-info{background:rgba(255,255,255,0.03);border-radius:8px;padding:0.75rem;margin-top:0.75rem;display:flex;align-items:center;gap:0.75rem;font-size:0.8rem}
+.trigger-icon{font-size:1.2rem}
+
+/* Actions */
+.actions{display:flex;gap:0.5rem;margin-bottom:1.5rem;flex-wrap:wrap}
+.btn{padding:0.6rem 1.25rem;border-radius:8px;border:none;cursor:pointer;font-size:0.85rem;font-weight:600;transition:all 0.2s;display:inline-flex;align-items:center;gap:0.4rem}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-outline{background:transparent;color:var(--muted);border:1px solid rgba(255,255,255,0.1)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:0.35rem 0.75rem;font-size:0.8rem}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:100;align-items:center;justify-content:center}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:16px;padding:2rem;width:90%;max-width:600px;max-height:85vh;overflow-y:auto}
+.modal h2{font-size:1.25rem;margin-bottom:1.5rem}
+.form-group{margin-bottom:1rem}
+.form-group label{display:block;font-size:0.8rem;color:var(--muted);margin-bottom:0.35rem}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:0.6rem;border-radius:8px;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.05);color:var(--text);font-size:0.9rem;font-family:inherit}
+.form-group textarea{resize:vertical;min-height:60px}
+.modal-actions{display:flex;gap:0.5rem;justify-content:flex-end;margin-top:1.5rem}
+.step-inputs{display:flex;flex-direction:column;gap:0.5rem;margin-top:0.5rem}
+.step-row{display:flex;gap:0.5rem;align-items:center}
+.step-row input{flex:1}
+.remove-step{background:var(--red);color:#fff;border:none;border-radius:6px;width:28px;height:28px;cursor:pointer;font-size:0.9rem}
+
+/* Delete */
+.delete-wf{position:absolute;top:1rem;right:1rem;background:none;border:none;color:var(--muted);cursor:pointer;font-size:1rem;opacity:0.4;transition:opacity 0.2s}
+.delete-wf:hover{opacity:1;color:var(--red)}
+
+@media(max-width:768px){
+  .container{padding:1.5rem 0.75rem}
+  h1{font-size:1.4rem}
+  .stats-row{grid-template-columns:repeat(2,1fr)}
+  .step{gap:0.5rem}
+}
+@media(max-width:480px){
+  .container{padding:1rem 0.5rem}
+  .btn{width:100%;justify-content:center}
+  .actions{flex-direction:column}
+  .wf-header{flex-direction:column;gap:0.5rem}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <a href="nastroje.html">← Zpět na nástroje</a>
+  <span style="font-size:0.8rem;color:var(--muted)">Workflow & Automatizace</span>
+</div>
+
+<div class="container">
+  <h1>⚡ Workflow & <em>Automatizace</em></h1>
+  <p class="subtitle">Interní procesy, SOP a automatizační scénáře</p>
+
+  <div class="stats-row" id="stats"></div>
+
+  <div class="tabs" id="tabs"></div>
+
+  <div class="actions">
+    <button class="btn btn-primary" onclick="openModal()">+ Nový workflow</button>
+    <button class="btn btn-outline" onclick="exportAll()">📥 Export</button>
+  </div>
+
+  <div id="wfList"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h2 id="modalTitle">Nový workflow</h2>
+    <input type="hidden" id="editId">
+    <div class="form-group">
+      <label>Název procesu</label>
+      <input type="text" id="wName" placeholder="Např. Onboarding nového klienta">
+    </div>
+    <div class="form-group">
+      <label>Kategorie</label>
+      <select id="wCat">
+        <option value="sales">💼 Sales</option>
+        <option value="delivery">🚀 Delivery</option>
+        <option value="admin">📋 Admin</option>
+        <option value="marketing">📣 Marketing</option>
+        <option value="automation">⚡ Automatizace</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Typ spuštění</label>
+      <select id="wTrigger">
+        <option value="manual">Manuální</option>
+        <option value="event">Událost (nový klient, platba...)</option>
+        <option value="schedule">Pravidelný (denně, týdně...)</option>
+        <option value="auto">Plně automatizovaný</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label>Popis spuštění</label>
+      <input type="text" id="wTriggerDesc" placeholder="Např. Když klient podepíše smlouvu">
+    </div>
+    <div class="form-group">
+      <label>Kroky procesu</label>
+      <div class="step-inputs" id="stepInputs"></div>
+      <button class="btn btn-outline btn-sm" style="margin-top:0.5rem" onclick="addStepInput()">+ Přidat krok</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveWf()">Uložit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const CAT_MAP = {
+  sales:{label:'Sales',icon:'💼',color:'#2ecc71'},
+  delivery:{label:'Delivery',icon:'🚀',color:'#3498db'},
+  admin:{label:'Admin',icon:'📋',color:'#f39c12'},
+  marketing:{label:'Marketing',icon:'📣',color:'#e94560'},
+  automation:{label:'Automatizace',icon:'⚡',color:'#9b59b6'}
+};
+const TRIGGER_MAP = {
+  manual:{label:'Manuální',icon:'👆'},
+  event:{label:'Událost',icon:'🔔'},
+  schedule:{label:'Pravidelný',icon:'🕐'},
+  auto:{label:'Automatizovaný',icon:'⚡'}
+};
+
+function defaultWorkflows(){
+  return [
+    {id:1,name:'Onboarding nového klienta',cat:'sales',trigger:'event',triggerDesc:'Klient podepíše smlouvu',steps:[
+      {name:'Vytvořit složku v Google Drive',detail:'Šablona složky: /Klienti/[Název]/'},
+      {name:'Přidat klienta do CRM',detail:'crm.html — status: Aktivní, poznámky z briefu'},
+      {name:'Odeslat welcome email',detail:'Šablona: "Onboarding email — vítejte" ze sablony.html'},
+      {name:'Vystavit první fakturu',detail:'faktura.html — zálohová faktura dle smlouvy'},
+      {name:'Naplánovat kickoff schůzku',detail:'Google Calendar — 30 min, online'},
+      {name:'Připravit projektový plán',detail:'checklisty.html — šablona dle typu projektu'}
+    ]},
+    {id:2,name:'Měsíční fakturace',cat:'admin',trigger:'schedule',triggerDesc:'1. den v měsíci',steps:[
+      {name:'Zkontrolovat timesheet',detail:'timesheet.html — ověřit hodiny za minulý měsíc'},
+      {name:'Vystavit faktury všem retainer klientům',detail:'faktura.html — dle smluv v smlouvy.html'},
+      {name:'Odeslat faktury emailem',detail:'Příloha PDF + průvodní email'},
+      {name:'Zapsat do finance',detail:'finance.html — příjem, kategorie, klient'},
+      {name:'Zkontrolovat splatnosti',detail:'Upomínka po 14 dnech nesplacení'}
+    ]},
+    {id:3,name:'Příprava měsíčního reportu',cat:'delivery',trigger:'schedule',triggerDesc:'Poslední pracovní den v měsíci',steps:[
+      {name:'Stáhnout data z Analytics',detail:'Google Analytics — návštěvnost, konverze, zdroje'},
+      {name:'Stáhnout data z reklamních platforem',detail:'Google Ads, Meta Ads — výkon kampaní'},
+      {name:'Vyplnit šablonu reportu',detail:'report.html — generátor měsíčních reportů'},
+      {name:'Přidat komentáře a doporučení',detail:'Co fungovalo, co zlepšit, plán na další měsíc'},
+      {name:'Odeslat klientovi',detail:'Email + PDF příloha, nabídnout schůzku k probrání'}
+    ]},
+    {id:4,name:'Nový lead — zpracování',cat:'sales',trigger:'event',triggerDesc:'Přijde poptávka (email, formulář, doporučení)',steps:[
+      {name:'Zapsat do CRM jako Lead',detail:'crm.html — kontakt, zdroj, poznámky'},
+      {name:'Odpovědět do 4 hodin',detail:'Šablona: "Úvodní email" ze sablony.html'},
+      {name:'Naplánovat discovery call',detail:'20 min hovor — potřeby, rozpočet, termín'},
+      {name:'Připravit nabídku',detail:'generator-nabidek.html — na míru dle briefu'},
+      {name:'Follow-up po 3 dnech',detail:'Šablona: "Follow-up po nabídce" ze sablony.html'},
+      {name:'Vyhodnotit a rozhodnout',detail:'Přijato → onboarding / Odmítnuto → archiv v CRM'}
+    ]},
+    {id:5,name:'Týdenní content marketing',cat:'marketing',trigger:'schedule',triggerDesc:'Každé pondělí ráno',steps:[
+      {name:'Zkontrolovat content kalendář',detail:'social-planner.html — plán na tento týden'},
+      {name:'Napsat blog článek / post',detail:'1× blog nebo 3× social post dle plánu'},
+      {name:'Připravit grafiku',detail:'Canva / brand-assets.html pro konzistenci'},
+      {name:'Naplánovat publikaci',detail:'Social planner — datum a čas zveřejnění'},
+      {name:'Sledovat engagement',detail:'analytika.html — metriky po 48h od publikace'}
+    ]},
+    {id:6,name:'Automatizace: Nová poptávka → notifikace',cat:'automation',trigger:'auto',triggerDesc:'Odeslání kontaktního formuláře na webu',steps:[
+      {name:'Formulář odeslán na webu',detail:'HTML formulář → webhook'},
+      {name:'Make.com: zachytit webhook',detail:'Scénář: Nová poptávka'},
+      {name:'Odeslat notifikaci na email',detail:'Email s detaily poptávky'},
+      {name:'Vytvořit záznam v Google Sheets',detail:'Centrální tabulka poptávek'},
+      {name:'Odeslat auto-reply',detail:'Potvrzení přijetí poptávky klientovi'}
+    ]},
+    {id:7,name:'Ukončení projektu',cat:'delivery',trigger:'event',triggerDesc:'Projekt dokončen a předán klientovi',steps:[
+      {name:'Finální předání výstupů',detail:'Odkaz na hotový web/materiály, přístupy'},
+      {name:'Vystavit závěrečnou fakturu',detail:'faktura.html — dle smlouvy'},
+      {name:'Požádat o feedback',detail:'feedback.html — NPS + hodnocení'},
+      {name:'Požádat o referenci',detail:'Šablona: "Žádost o referenci" ze sablony.html'},
+      {name:'Archivovat projekt v CRM',detail:'crm.html — status: Dokončeno'},
+      {name:'Vyhodnotit profitabilitu',detail:'profitabilita.html — skutečné hodiny vs. cena'}
+    ]}
+  ];
+}
+
+let workflows = JSON.parse(sessionStorage.getItem('wf_data')) || defaultWorkflows();
+let nextId = Math.max(...workflows.map(w=>w.id),0)+1;
+let activeTab = 'all';
+
+function save(){sessionStorage.setItem('wf_data',JSON.stringify(workflows))}
+
+function renderStats(){
+  const total = workflows.length;
+  const totalSteps = workflows.reduce((a,w)=>a+w.steps.length,0);
+  const auto = workflows.filter(w=>w.trigger==='auto').length;
+  const cats = [...new Set(workflows.map(w=>w.cat))].length;
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card"><div class="num" style="color:var(--accent)">${total}</div><div class="lbl">Procesů</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--green)">${totalSteps}</div><div class="lbl">Celkem kroků</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--purple)">${auto}</div><div class="lbl">Automatizovaných</div></div>
+    <div class="stat-card"><div class="num" style="color:var(--blue)">${cats}</div><div class="lbl">Kategorií</div></div>
+  `;
+}
+
+function renderTabs(){
+  const tabs = ['all',...Object.keys(CAT_MAP)];
+  document.getElementById('tabs').innerHTML = tabs.map(t=>
+    `<div class="tab ${activeTab===t?'active':''}" onclick="setTab('${t}')">${t==='all'?'Vše':CAT_MAP[t].label}</div>`
+  ).join('');
+}
+
+function setTab(t){activeTab=t;render()}
+
+function renderList(){
+  let list = workflows;
+  if(activeTab!=='all') list = list.filter(w=>w.cat===activeTab);
+  if(!list.length){
+    document.getElementById('wfList').innerHTML = '<div style="text-align:center;color:var(--muted);padding:3rem">Žádné workflow v této kategorii.</div>';
+    return;
+  }
+  document.getElementById('wfList').innerHTML = list.map(w=>{
+    const c = CAT_MAP[w.cat]||{label:w.cat,icon:'📋',color:'#999'};
+    const tr = TRIGGER_MAP[w.trigger]||{label:w.trigger,icon:'▶️'};
+    return `
+    <div class="wf-card">
+      <button class="delete-wf" onclick="deleteWf(${w.id})" title="Smazat">✕</button>
+      <div class="wf-header">
+        <div class="wf-title-area">
+          <div class="wf-icon" style="background:${c.color}22">${c.icon}</div>
+          <div>
+            <div class="wf-title">${w.name}</div>
+            <div class="wf-desc">${w.steps.length} kroků</div>
+          </div>
+        </div>
+        <div class="wf-badges">
+          <span class="wf-badge" style="background:${c.color}22;color:${c.color}">${c.label}</span>
+          <span class="wf-badge" style="background:rgba(255,255,255,0.05);color:var(--muted)">${tr.icon} ${tr.label}</span>
+        </div>
+      </div>
+      <div class="steps">
+        ${w.steps.map((s,i)=>`
+          <div class="step">
+            <div class="step-line"></div>
+            <div class="step-num" style="background:${c.color}22;color:${c.color}">${i+1}</div>
+            <div class="step-content">
+              <div class="step-name">${s.name}</div>
+              <div class="step-detail">${s.detail}</div>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+      <div class="trigger-info">
+        <span class="trigger-icon">${tr.icon}</span>
+        <span><strong>Spouštěč:</strong> ${w.triggerDesc}</span>
+      </div>
+      <div style="margin-top:0.75rem">
+        <button class="btn btn-outline btn-sm" onclick="editWf(${w.id})">✏️ Upravit</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function render(){renderStats();renderTabs();renderList()}
+
+function deleteWf(id){
+  if(!confirm('Smazat tento workflow?')) return;
+  workflows = workflows.filter(w=>w.id!==id);
+  save();render();
+}
+
+function openModal(id){
+  document.getElementById('editId').value = id||'';
+  document.getElementById('modalTitle').textContent = id ? 'Upravit workflow' : 'Nový workflow';
+  if(id){
+    const w = workflows.find(x=>x.id===id);
+    document.getElementById('wName').value = w.name;
+    document.getElementById('wCat').value = w.cat;
+    document.getElementById('wTrigger').value = w.trigger;
+    document.getElementById('wTriggerDesc').value = w.triggerDesc;
+    renderStepInputs(w.steps);
+  } else {
+    document.getElementById('wName').value = '';
+    document.getElementById('wCat').value = 'sales';
+    document.getElementById('wTrigger').value = 'manual';
+    document.getElementById('wTriggerDesc').value = '';
+    renderStepInputs([{name:'',detail:''}]);
+  }
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal(){document.getElementById('modalOverlay').classList.remove('show')}
+
+function renderStepInputs(steps){
+  document.getElementById('stepInputs').innerHTML = steps.map((s,i)=>`
+    <div class="step-row">
+      <input type="text" placeholder="Název kroku" value="${s.name}" class="si-name">
+      <input type="text" placeholder="Detail" value="${s.detail}" class="si-detail">
+      <button class="remove-step" onclick="this.parentElement.remove()">✕</button>
+    </div>
+  `).join('');
+}
+
+function addStepInput(){
+  const wrap = document.getElementById('stepInputs');
+  const row = document.createElement('div');
+  row.className = 'step-row';
+  row.innerHTML = `
+    <input type="text" placeholder="Název kroku" class="si-name">
+    <input type="text" placeholder="Detail" class="si-detail">
+    <button class="remove-step" onclick="this.parentElement.remove()">✕</button>
+  `;
+  wrap.appendChild(row);
+}
+
+function saveWf(){
+  const name = document.getElementById('wName').value.trim();
+  if(!name) return alert('Vyplňte název');
+  const cat = document.getElementById('wCat').value;
+  const trigger = document.getElementById('wTrigger').value;
+  const triggerDesc = document.getElementById('wTriggerDesc').value.trim();
+  const rows = document.querySelectorAll('#stepInputs .step-row');
+  const steps = [];
+  rows.forEach(r=>{
+    const n = r.querySelector('.si-name').value.trim();
+    const d = r.querySelector('.si-detail').value.trim();
+    if(n) steps.push({name:n,detail:d});
+  });
+  const editId = document.getElementById('editId').value;
+  if(editId){
+    const w = workflows.find(x=>x.id===parseInt(editId));
+    w.name=name;w.cat=cat;w.trigger=trigger;w.triggerDesc=triggerDesc;w.steps=steps;
+  } else {
+    workflows.push({id:nextId++,name,cat,trigger,triggerDesc,steps});
+  }
+  save();closeModal();render();
+}
+
+function editWf(id){openModal(id)}
+
+function exportAll(){
+  let text = 'WORKFLOW & AUTOMATIZACE — Kudli. marketing\n';
+  text += '='.repeat(50)+'\n\n';
+  workflows.forEach(w=>{
+    const c = CAT_MAP[w.cat]||{label:w.cat};
+    const tr = TRIGGER_MAP[w.trigger]||{label:w.trigger};
+    text += `[${c.label}] ${w.name}\n`;
+    text += `Spouštěč: ${tr.label} — ${w.triggerDesc}\n`;
+    text += '-'.repeat(40)+'\n';
+    w.steps.forEach((s,i)=>{
+      text += `  ${i+1}. ${s.name}\n`;
+      if(s.detail) text += `     → ${s.detail}\n`;
+    });
+    text += '\n';
+  });
+  const blob = new Blob([text],{type:'text/plain;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'workflow-export.txt';
+  a.click();
+}
+
+render();
+</script>
+</body>
+</html>

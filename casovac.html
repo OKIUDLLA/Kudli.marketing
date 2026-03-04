@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Časovač projektů — Kudli. marketing</title>
+<meta name="description" content="Pomodoro časovač s logováním projektového času a denními statistikami.">
+<meta property="og:title" content="Časovač projektů — Kudli. marketing">
+<meta property="og:description" content="Pomodoro časovač s logováním projektového času a denními statistikami.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/casovac.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--green:#2ecc71;--blue:#3498db;--orange:#f39c12;--text:#fff;--muted:rgba(255,255,255,0.5)}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:1rem 2rem;border-bottom:1px solid rgba(255,255,255,0.06);flex-wrap:wrap;gap:1rem}
+.top-bar .logo{font-weight:800;font-size:1.2rem;text-decoration:none;color:var(--text)}
+.top-bar .logo span{color:var(--accent)}
+.top-bar .badge{background:rgba(233,69,96,0.15);color:var(--accent-light);padding:0.25rem 0.75rem;border-radius:15px;font-size:0.75rem;font-weight:600}
+
+.container{max-width:900px;margin:0 auto;padding:2rem 1.5rem}
+
+/* Timer Display */
+.timer-section{text-align:center;margin-bottom:2.5rem}
+.timer-display{font-size:5rem;font-weight:800;letter-spacing:4px;font-variant-numeric:tabular-nums;margin:1rem 0}
+.timer-display.work{color:var(--accent)}
+.timer-display.break{color:var(--green)}
+.timer-label{font-size:1rem;color:var(--muted);margin-bottom:1.5rem}
+.timer-label .mode{font-weight:700;color:var(--accent-light)}
+
+.timer-controls{display:flex;justify-content:center;gap:1rem;margin-bottom:1.5rem}
+.btn{padding:0.65rem 1.5rem;border:none;border-radius:10px;font-size:0.95rem;font-weight:700;cursor:pointer;transition:all 0.3s}
+.btn-start{background:var(--accent);color:#fff;min-width:120px}
+.btn-start:hover{background:var(--accent-light);transform:translateY(-2px);box-shadow:0 5px 20px rgba(233,69,96,0.3)}
+.btn-start.running{background:var(--orange)}
+.btn-ghost{background:rgba(255,255,255,0.06);color:var(--text)}
+.btn-ghost:hover{background:rgba(255,255,255,0.12)}
+.btn-sm{padding:0.4rem 0.85rem;font-size:0.8rem}
+
+/* Mode toggle */
+.modes{display:flex;justify-content:center;gap:0.5rem;margin-bottom:1.5rem}
+.mode-btn{padding:0.5rem 1.25rem;border:2px solid rgba(255,255,255,0.08);background:transparent;color:var(--muted);border-radius:10px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.3s}
+.mode-btn.active{border-color:var(--accent);background:rgba(233,69,96,0.1);color:var(--accent-light)}
+
+/* Project selector */
+.project-select{display:flex;justify-content:center;gap:0.75rem;margin-bottom:2rem;flex-wrap:wrap;align-items:center}
+.project-select select{padding:0.5rem 1rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text);font-size:0.9rem;min-width:200px}
+.project-select select:focus{outline:none;border-color:var(--accent)}
+.project-select input{padding:0.5rem 0.75rem;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:var(--text);font-size:0.9rem;width:180px}
+.project-select input:focus{outline:none;border-color:var(--accent)}
+
+/* Progress ring */
+.progress-ring{margin:0 auto 1rem;position:relative;width:200px;height:200px}
+.progress-ring svg{transform:rotate(-90deg)}
+.progress-ring .bg{stroke:rgba(255,255,255,0.06);fill:none;stroke-width:8}
+.progress-ring .fg{fill:none;stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s linear}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-time{font-size:2.5rem;font-weight:800;font-variant-numeric:tabular-nums}
+.ring-label{font-size:0.8rem;color:var(--muted)}
+
+/* Sessions grid */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:2rem}
+.stat-card{background:var(--card);border-radius:12px;padding:1rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.stat-card .val{font-size:1.6rem;font-weight:800}
+.stat-card .label{font-size:0.75rem;color:var(--muted);margin-top:0.2rem}
+
+/* Log table */
+.log-section{background:var(--card);border-radius:16px;padding:1.5rem;border:1px solid rgba(255,255,255,0.06)}
+.log-section h3{font-size:1rem;font-weight:700;margin-bottom:1rem;display:flex;justify-content:space-between;align-items:center}
+.log-table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.log-table th{text-align:left;padding:0.5rem;border-bottom:2px solid rgba(255,255,255,0.1);font-size:0.7rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted)}
+.log-table td{padding:0.5rem;border-bottom:1px solid rgba(255,255,255,0.04)}
+.log-table tr:hover td{background:rgba(255,255,255,0.02)}
+.project-badge{padding:0.15rem 0.5rem;border-radius:6px;font-size:0.7rem;font-weight:600;background:rgba(233,69,96,0.15);color:var(--accent-light)}
+
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--green);color:#fff;padding:0.7rem 1.5rem;border-radius:10px;font-weight:600;font-size:0.85rem;transform:translateY(100px);opacity:0;transition:all 0.4s;z-index:100}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:600px){
+ .timer-display{font-size:3rem}
+ .ring-time{font-size:1.8rem}
+ .progress-ring{width:160px;height:160px}
+}
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+ <div style="display:flex;align-items:center;gap:1.5rem">
+   <a href="index.html" class="logo">Kudli<span>.</span> marketing</a>
+   <span class="badge">ČASOVAČ</span>
+ </div>
+ <a href="index.html" style="color:var(--muted);text-decoration:none;font-size:0.85rem">← Zpět</a>
+</div>
+
+<div class="container">
+
+ <!-- Mode toggle -->
+ <div class="modes">
+   <button class="mode-btn active" onclick="setMode('pomodoro')">🍅 Pomodoro (25 min)</button>
+   <button class="mode-btn" onclick="setMode('short')">☕ Krátká pauza (5 min)</button>
+   <button class="mode-btn" onclick="setMode('long')">🌴 Dlouhá pauza (15 min)</button>
+   <button class="mode-btn" onclick="setMode('stopwatch')">⏱️ Stopky</button>
+ </div>
+
+ <!-- Project selector -->
+ <div class="project-select">
+   <select id="projectSelect">
+     <option value="Obecné">Obecné</option>
+     <option value="Web — klient">Web — klient</option>
+     <option value="E-shop">E-shop</option>
+     <option value="Chatbot">Chatbot</option>
+     <option value="Marketing">Marketing</option>
+     <option value="Admin">Admin</option>
+   </select>
+   <input type="text" id="taskDesc" placeholder="Popis úkolu...">
+ </div>
+
+ <!-- Timer -->
+ <div class="timer-section">
+   <div class="progress-ring">
+     <svg viewBox="0 0 200 200" width="200" height="200">
+       <circle class="bg" cx="100" cy="100" r="88"></circle>
+       <circle class="fg" id="ringFg" cx="100" cy="100" r="88" stroke="var(--accent)" stroke-dasharray="553" stroke-dashoffset="0"></circle>
+     </svg>
+     <div class="ring-center">
+       <div class="ring-time" id="timerDisplay">25:00</div>
+       <div class="ring-label" id="timerLabel">Pomodoro</div>
+     </div>
+   </div>
+
+   <div class="timer-controls">
+     <button class="btn btn-start" id="startBtn" onclick="toggleTimer()">▶ Start</button>
+     <button class="btn btn-ghost" onclick="resetTimer()">↺ Reset</button>
+     <button class="btn btn-ghost" onclick="skipTimer()">⏭ Přeskočit</button>
+   </div>
+ </div>
+
+ <!-- Today stats -->
+ <div class="stats-grid">
+   <div class="stat-card"><div class="val" id="statSessions">0</div><div class="label">Pomodora dnes</div></div>
+   <div class="stat-card"><div class="val" id="statTime">0:00</div><div class="label">Odpracováno</div></div>
+   <div class="stat-card"><div class="val" id="statStreak">0</div><div class="label">Série v řadě</div></div>
+   <div class="stat-card"><div class="val" id="statGoal">0%</div><div class="label">Denní cíl (8 pomodor)</div></div>
+ </div>
+
+ <!-- Log -->
+ <div class="log-section">
+   <h3>
+     <span>📋 Dnešní záznamy</span>
+     <div>
+       <button class="btn btn-ghost btn-sm" onclick="exportLog()">📥 Export</button>
+       <button class="btn btn-ghost btn-sm" onclick="clearLog()">🗑️ Smazat</button>
+     </div>
+   </h3>
+   <table class="log-table">
+     <thead><tr><th>Čas</th><th>Projekt</th><th>Úkol</th><th>Trvání</th><th>Typ</th></tr></thead>
+     <tbody id="logBody"></tbody>
+   </table>
+ </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MODES = {
+ pomodoro: { duration: 25*60, label: 'Pomodoro', color: 'var(--accent)', next: 'short' },
+ short: { duration: 5*60, label: 'Krátká pauza', color: 'var(--green)', next: 'pomodoro' },
+ long: { duration: 15*60, label: 'Dlouhá pauza', color: 'var(--green)', next: 'pomodoro' },
+ stopwatch: { duration: 0, label: 'Stopky', color: 'var(--blue)', next: 'pomodoro' }
+};
+
+let currentMode = 'pomodoro';
+let timeLeft = 25*60;
+let elapsed = 0;
+let isRunning = false;
+let interval = null;
+let sessions = [];
+let pomodoroCount = 0;
+let streak = 0;
+const CIRCUMFERENCE = 2 * Math.PI * 88;
+
+function setMode(mode) {
+ if (isRunning) stopTimer();
+ currentMode = mode;
+ timeLeft = MODES[mode].duration;
+ elapsed = 0;
+ document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+ event.target.classList.add('active');
+ updateDisplay();
+ updateRing();
+ document.getElementById('ringFg').style.stroke = MODES[mode].color;
+}
+
+function toggleTimer() {
+ if (isRunning) {
+   stopTimer();
+ } else {
+   startTimer();
+ }
+}
+
+function startTimer() {
+ isRunning = true;
+ const btn = document.getElementById('startBtn');
+ btn.textContent = '⏸ Pauza';
+ btn.classList.add('running');
+
+ if (currentMode === 'stopwatch') {
+   interval = setInterval(() => {
+     elapsed++;
+     updateDisplay();
+   }, 1000);
+ } else {
+   interval = setInterval(() => {
+     timeLeft--;
+     elapsed++;
+     updateDisplay();
+     updateRing();
+     if (timeLeft <= 0) {
+       completeSession();
+     }
+   }, 1000);
+ }
+}
+
+function stopTimer() {
+ isRunning = false;
+ clearInterval(interval);
+ const btn = document.getElementById('startBtn');
+ btn.textContent = '▶ Start';
+ btn.classList.remove('running');
+}
+
+function resetTimer() {
+ stopTimer();
+ timeLeft = MODES[currentMode].duration;
+ elapsed = 0;
+ updateDisplay();
+ updateRing();
+}
+
+function skipTimer() {
+ if (elapsed > 60) {
+   logSession(elapsed);
+ }
+ completeSession();
+}
+
+function completeSession() {
+ stopTimer();
+
+ if (currentMode !== 'stopwatch') {
+   const totalDuration = MODES[currentMode].duration;
+   logSession(totalDuration);
+
+   if (currentMode === 'pomodoro') {
+     pomodoroCount++;
+     streak++;
+     if (pomodoroCount % 4 === 0) {
+       setMode('long');
+       showToast('🌴 4 pomodora hotovo! Čas na dlouhou pauzu.');
+     } else {
+       setMode('short');
+       showToast('☕ Pomodoro dokončeno! Krátká pauza.');
+     }
+   } else {
+     setMode('pomodoro');
+     showToast('🍅 Pauza skončila, zpět do práce!');
+   }
+ } else {
+   if (elapsed > 0) logSession(elapsed);
+   elapsed = 0;
+   updateDisplay();
+   showToast('⏱️ Stopky zastaveny');
+ }
+
+ updateStats();
+ try { new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbsGczHjqIr9PYqnE9J0Z+mMbRtpJNMDVrkrjNxaFhQDFSeYury8ayb0g4T3GRsMnFu3pTO0hwi6nFxb59Wjw+ZIKhucLDg2VLOl14kq/Au4RoTzxbdYyjubuJcFU+WXSNo7q6jHRYQlpzjKO4u411W0VccoqhtrmNdltFXHKKoba5jnZcRVt0i6K3uo13XERccouitrqNd1xF').catch(()=>{}); } catch(e) {}
+}
+
+function logSession(duration) {
+ const project = document.getElementById('projectSelect').value;
+ const task = document.getElementById('taskDesc').value.trim() || '—';
+ sessions.push({
+   time: new Date().toLocaleTimeString('cs', {hour:'2-digit',minute:'2-digit'}),
+   project,
+   task,
+   duration,
+   type: currentMode === 'pomodoro' ? '🍅' : currentMode === 'stopwatch' ? '⏱️' : '☕',
+   date: new Date().toISOString().split('T')[0]
+ });
+ saveData();
+ renderLog();
+}
+
+function updateDisplay() {
+ let display;
+ if (currentMode === 'stopwatch') {
+   const m = Math.floor(elapsed / 60);
+   const s = elapsed % 60;
+   display = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+ } else {
+   const m = Math.floor(timeLeft / 60);
+   const s = timeLeft % 60;
+   display = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+ }
+ document.getElementById('timerDisplay').textContent = display;
+ document.getElementById('timerLabel').textContent = MODES[currentMode].label;
+
+ // Update page title
+ document.title = `${display} — ${MODES[currentMode].label}`;
+}
+
+function updateRing() {
+ const total = MODES[currentMode].duration;
+ if (total === 0) {
+   document.getElementById('ringFg').style.strokeDashoffset = 0;
+   return;
+ }
+ const progress = timeLeft / total;
+ const offset = CIRCUMFERENCE * (1 - progress);
+ document.getElementById('ringFg').style.strokeDashoffset = offset;
+}
+
+function updateStats() {
+ const today = new Date().toISOString().split('T')[0];
+ const todaySessions = sessions.filter(s => s.date === today);
+ const pomodoros = todaySessions.filter(s => s.type === '🍅');
+ const totalMinutes = todaySessions.reduce((s,x) => s + x.duration, 0) / 60;
+
+ document.getElementById('statSessions').textContent = pomodoros.length;
+ document.getElementById('statTime').textContent = `${Math.floor(totalMinutes/60)}:${String(Math.floor(totalMinutes%60)).padStart(2,'0')}`;
+ document.getElementById('statStreak').textContent = streak;
+ const goal = Math.min(Math.round((pomodoros.length / 8) * 100), 100);
+ document.getElementById('statGoal').textContent = goal + '%';
+}
+
+function renderLog() {
+ const today = new Date().toISOString().split('T')[0];
+ const todaySessions = sessions.filter(s => s.date === today).reverse();
+ document.getElementById('logBody').innerHTML = todaySessions.map(s => {
+   const mins = Math.floor(s.duration / 60);
+   const secs = s.duration % 60;
+   return `<tr>
+     <td>${s.time}</td>
+     <td><span class="project-badge">${s.project}</span></td>
+     <td>${s.task}</td>
+     <td>${mins}:${String(secs).padStart(2,'0')}</td>
+     <td>${s.type}</td>
+   </tr>`;
+ }).join('') || '<tr><td colspan="5" style="text-align:center;padding:1.5rem;color:var(--muted)">Žádné záznamy. Spusť první pomodoro!</td></tr>';
+}
+
+function exportLog() {
+ if (sessions.length === 0) { showToast('⚠️ Žádná data'); return; }
+ const h = 'Datum,Čas,Projekt,Úkol,Trvání (s),Typ\n';
+ const rows = sessions.map(s => `${s.date},${s.time},"${s.project}","${s.task}",${s.duration},${s.type}`).join('\n');
+ const blob = new Blob([h+rows], {type:'text/csv;charset=utf-8;'});
+ const a = document.createElement('a');
+ a.href = URL.createObjectURL(blob);
+ a.download = `kudli-casovac-${new Date().toISOString().split('T')[0]}.csv`;
+ a.click();
+ showToast('📥 Export hotový');
+}
+
+function clearLog() {
+ if (!confirm('Smazat všechny záznamy?')) return;
+ sessions = [];
+ pomodoroCount = 0;
+ streak = 0;
+ saveData();
+ renderLog();
+ updateStats();
+ showToast('🗑️ Záznamy smazány');
+}
+
+function saveData() {
+ try { sessionStorage.setItem('kudli_timer', JSON.stringify({sessions, pomodoroCount, streak})); } catch(e) {}
+}
+function loadData() {
+ try {
+   const d = sessionStorage.getItem('kudli_timer');
+   if (d) { const p = JSON.parse(d); sessions = p.sessions||[]; pomodoroCount = p.pomodoroCount||0; streak = p.streak||0; }
+ } catch(e) {}
+}
+
+function showToast(msg) {
+ const t = document.getElementById('toast');
+ t.textContent = msg;
+ t.classList.add('show');
+ setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// Init
+document.getElementById('ringFg').style.strokeDasharray = CIRCUMFERENCE;
+loadData();
+updateDisplay();
+updateRing();
+updateStats();
+renderLog();
+</script>
+</body>
+</html>

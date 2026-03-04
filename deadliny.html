@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deadliny & Milestones — Kudli. marketing</title>
+<meta name="description" content="Přehled termínů, deadlinů a milestones pro všechny projekty klientů.">
+<meta property="og:title" content="Deadliny & Milestones — Kudli. marketing">
+<meta property="og:description" content="Přehled termínů, deadlinů a milestones pro všechny projekty klientů.">
+<meta property="og:image" content="https://kudlimarketing.cz/og-image.png">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://kudlimarketing.cz/deadliny.html">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent-light:#ff6b81;--text:#fff;--muted:rgba(255,255,255,0.5);--green:#2ecc71;--orange:#f39c12;--red:#e74c3c;--blue:#3498db;--purple:#9b59b6}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:var(--accent-light);text-decoration:none}
+
+.header{background:var(--card);border-bottom:1px solid rgba(255,255,255,0.06);padding:1rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem}
+.header-left{display:flex;align-items:center;gap:1rem}
+.header h1{font-size:1.3rem;font-weight:700}
+.header h1 span{color:var(--accent)}
+.back-link{color:var(--muted);font-size:0.85rem}
+
+.btn{padding:0.55rem 1rem;border:none;border-radius:10px;font-size:0.82rem;cursor:pointer;font-weight:600;transition:all 0.3s;display:inline-flex;align-items:center;gap:0.4rem}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-light)}
+.btn-secondary{background:rgba(255,255,255,0.06);color:var(--text);border:1px solid rgba(255,255,255,0.1)}
+.btn-secondary:hover{border-color:var(--accent);color:var(--accent)}
+.btn-sm{padding:0.35rem 0.7rem;font-size:0.78rem}
+
+.main{max-width:1000px;margin:0 auto;padding:1.5rem 2rem}
+
+/* Stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.75rem;margin-bottom:1.5rem}
+.stat{background:var(--card);border-radius:12px;padding:0.85rem;text-align:center;border:1px solid rgba(255,255,255,0.06)}
+.stat .val{font-size:1.3rem;font-weight:800}
+.stat .lbl{font-size:0.7rem;color:var(--muted);margin-top:0.15rem}
+
+/* Filters */
+.filters{display:flex;gap:0.75rem;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center}
+.filters select,.filters input{padding:0.5rem 0.8rem;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:0.85rem}
+.filters select:focus,.filters input:focus{outline:none;border-color:var(--accent)}
+
+/* View toggle */
+.view-toggle{display:flex;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.1)}
+.view-btn{padding:0.45rem 0.8rem;background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:0.8rem;font-weight:600;transition:all 0.3s}
+.view-btn.active{background:var(--accent);color:#fff}
+
+/* Timeline view */
+.timeline{position:relative;padding-left:2rem;margin-bottom:2rem}
+.timeline::before{content:'';position:absolute;left:8px;top:0;bottom:0;width:2px;background:rgba(255,255,255,0.08)}
+.tl-group{margin-bottom:1.5rem}
+.tl-group-label{font-size:0.8rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:0.75rem;position:relative}
+.tl-group-label::before{content:'';position:absolute;left:-1.5rem;top:50%;width:10px;height:10px;border-radius:50%;background:var(--accent);transform:translateY(-50%)}
+
+.tl-item{background:var(--card);border-radius:12px;padding:1rem;margin-bottom:0.5rem;border:1px solid rgba(255,255,255,0.06);display:flex;align-items:flex-start;gap:0.75rem;transition:all 0.3s;cursor:pointer;position:relative}
+.tl-item:hover{border-color:rgba(255,255,255,0.15);transform:translateX(4px)}
+.tl-item::before{content:'';position:absolute;left:-1.65rem;top:1.2rem;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.2)}
+.tl-item.overdue::before{background:var(--red)}
+.tl-item.soon::before{background:var(--orange)}
+.tl-item.ok::before{background:var(--green)}
+.tl-item.done::before{background:var(--green)}
+.tl-item.done{opacity:0.5}
+
+.tl-check{width:22px;height:22px;border-radius:6px;border:2px solid rgba(255,255,255,0.2);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.3s;font-size:0.75rem}
+.tl-check.checked{background:var(--green);border-color:var(--green)}
+.tl-content{flex:1}
+.tl-title{font-weight:700;font-size:0.9rem;margin-bottom:0.2rem}
+.tl-item.done .tl-title{text-decoration:line-through;color:var(--muted)}
+.tl-meta{display:flex;gap:0.75rem;flex-wrap:wrap;font-size:0.75rem;color:var(--muted)}
+.tl-client{display:inline-flex;align-items:center;gap:0.3rem}
+.tl-client .dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+.tl-date{display:flex;align-items:center;gap:0.3rem}
+.tl-urgency{padding:0.1rem 0.4rem;border-radius:4px;font-size:0.65rem;font-weight:700}
+.urgency-overdue{background:rgba(231,76,60,0.15);color:var(--red)}
+.urgency-today{background:rgba(233,69,96,0.15);color:var(--accent-light)}
+.urgency-soon{background:rgba(243,156,18,0.15);color:var(--orange)}
+.urgency-ok{background:rgba(46,204,113,0.1);color:var(--green)}
+
+.tl-actions{display:flex;gap:0.3rem}
+.tl-action{width:26px;height:26px;border:none;border-radius:6px;background:rgba(255,255,255,0.05);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.75rem;transition:all 0.3s}
+.tl-action:hover{background:rgba(233,69,96,0.15);color:var(--accent)}
+
+/* List view */
+.list-view{display:none}
+.list-table{width:100%;border-collapse:collapse;font-size:0.85rem}
+.list-table th{text-align:left;padding:0.6rem;background:var(--card);border-bottom:1px solid rgba(255,255,255,0.06);font-size:0.75rem;color:var(--muted);font-weight:700}
+.list-table td{padding:0.55rem 0.6rem;border-bottom:1px solid rgba(255,255,255,0.03)}
+.list-table tr:hover td{background:rgba(255,255,255,0.02)}
+
+/* Modal */
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);display:none;align-items:center;justify-content:center;z-index:1000;padding:1rem}
+.modal-overlay.show{display:flex}
+.modal{background:var(--bg);border:1px solid rgba(255,255,255,0.1);border-radius:16px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid rgba(255,255,255,0.06)}
+.modal-header h3{font-size:1.1rem;font-weight:700}
+.modal-close{background:none;border:none;color:var(--muted);font-size:1.4rem;cursor:pointer}
+.modal-body{padding:1.5rem}
+.modal-footer{padding:1rem 1.5rem;border-top:1px solid rgba(255,255,255,0.06);display:flex;justify-content:flex-end;gap:0.75rem}
+.form-group{margin-bottom:0.85rem}
+.form-group label{display:block;font-size:0.78rem;color:var(--muted);margin-bottom:0.3rem;font-weight:600}
+.form-group input,.form-group select{width:100%;padding:0.55rem 0.8rem;background:var(--card);border:1px solid rgba(255,255,255,0.1);border-radius:8px;color:#fff;font-size:0.85rem}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--accent)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem}
+
+@media(max-width:600px){
+  .main{padding:1rem}
+  .stats{grid-template-columns:1fr 1fr}
+  .form-row{grid-template-columns:1fr}
+  .timeline{padding-left:1.5rem}
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <a href="nastroje.html" class="back-link">← Nástroje</a>
+    <h1>📅 Deadliny & <span>Milestones</span></h1>
+  </div>
+  <div style="display:flex;gap:0.75rem">
+    <button class="btn btn-secondary btn-sm" onclick="loadDemo()">🎯 Demo</button>
+    <button class="btn btn-primary" onclick="openModal()">+ Přidat</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="stats" id="stats"></div>
+
+  <div class="filters">
+    <select id="filterClient" onchange="render()">
+      <option value="all">Všichni klienti</option>
+    </select>
+    <select id="filterStatus" onchange="render()">
+      <option value="all">Vše</option>
+      <option value="active">Aktivní</option>
+      <option value="done">Dokončené</option>
+      <option value="overdue">Po termínu</option>
+    </select>
+    <div style="flex:1"></div>
+    <div class="view-toggle">
+      <button class="view-btn active" id="viewTimeline" onclick="setView('timeline')">📅 Timeline</button>
+      <button class="view-btn" id="viewList" onclick="setView('list')">📋 Seznam</button>
+    </div>
+  </div>
+
+  <div class="timeline" id="timelineView"></div>
+  <div class="list-view" id="listView"></div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="dlModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="dlModalTitle">Přidat deadline</h3>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="fId">
+      <div class="form-group">
+        <label>Název úkolu / milestone *</label>
+        <input type="text" id="fTitle" placeholder="Odevzdání wireframu">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Klient *</label>
+          <input type="text" id="fClient" placeholder="Klient" list="clientDL2">
+          <datalist id="clientDL2"></datalist>
+        </div>
+        <div class="form-group">
+          <label>Barva klienta</label>
+          <input type="color" id="fColor" value="#e94560" style="height:36px;padding:2px">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Deadline *</label>
+          <input type="date" id="fDate">
+        </div>
+        <div class="form-group">
+          <label>Priorita</label>
+          <select id="fPriority">
+            <option value="high">🔴 Vysoká</option>
+            <option value="mid" selected>🟡 Střední</option>
+            <option value="low">🔵 Nízká</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Typ</label>
+        <select id="fType">
+          <option value="deadline">📌 Deadline</option>
+          <option value="milestone">🏁 Milestone</option>
+          <option value="meeting">📞 Schůzka</option>
+          <option value="payment">💰 Platba</option>
+          <option value="launch">🚀 Launch</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Poznámka</label>
+        <input type="text" id="fNote" placeholder="Volitelná poznámka">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Zrušit</button>
+      <button class="btn btn-primary" onclick="saveDeadline()">💾 Uložit</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let deadlines = [];
+let currentView = 'timeline';
+let editingId = null;
+
+const typeIcons = {
+  deadline:'📌', milestone:'🏁', meeting:'📞', payment:'💰', launch:'🚀'
+};
+
+function init() {
+  const saved = sessionStorage.getItem('kudli_deadlines');
+  if (saved) {
+    deadlines = JSON.parse(saved);
+  } else {
+    loadDemo();
+    return;
+  }
+  render();
+}
+
+function save() {
+  sessionStorage.setItem('kudli_deadlines', JSON.stringify(deadlines));
+}
+
+function render() {
+  updateStats();
+  updateClientFilter();
+  renderTimeline();
+  renderList();
+}
+
+function updateStats() {
+  const now = new Date(); now.setHours(0,0,0,0);
+  const active = deadlines.filter(d => !d.done);
+  const overdue = active.filter(d => new Date(d.date) < now);
+  const thisWeek = active.filter(d => { const diff = (new Date(d.date) - now) / 86400000; return diff >= 0 && diff <= 7; });
+  const done = deadlines.filter(d => d.done);
+
+  document.getElementById('stats').innerHTML = `
+    <div class="stat"><div class="val" style="color:var(--accent)">${active.length}</div><div class="lbl">Aktivní</div></div>
+    <div class="stat"><div class="val" style="color:var(--red)">${overdue.length}</div><div class="lbl">Po termínu</div></div>
+    <div class="stat"><div class="val" style="color:var(--orange)">${thisWeek.length}</div><div class="lbl">Tento týden</div></div>
+    <div class="stat"><div class="val" style="color:var(--green)">${done.length}</div><div class="lbl">Dokončeno</div></div>
+  `;
+}
+
+function updateClientFilter() {
+  const clients = [...new Set(deadlines.map(d => d.client))].sort();
+  const sel = document.getElementById('filterClient');
+  const current = sel.value;
+  sel.innerHTML = '<option value="all">Všichni klienti</option>' + clients.map(c => `<option value="${c}">${c}</option>`).join('');
+  sel.value = current || 'all';
+
+  document.getElementById('clientDL2').innerHTML = clients.map(c => `<option value="${c}">`).join('');
+}
+
+function getFiltered() {
+  const client = document.getElementById('filterClient').value;
+  const status = document.getElementById('filterStatus').value;
+  const now = new Date(); now.setHours(0,0,0,0);
+
+  return deadlines.filter(d => {
+    if (client !== 'all' && d.client !== client) return false;
+    if (status === 'active' && d.done) return false;
+    if (status === 'done' && !d.done) return false;
+    if (status === 'overdue' && (d.done || new Date(d.date) >= now)) return false;
+    return true;
+  }).sort((a, b) => {
+    if (a.done !== b.done) return a.done ? 1 : -1;
+    return new Date(a.date) - new Date(b.date);
+  });
+}
+
+function getUrgency(d) {
+  if (d.done) return { cls: 'ok', label: '✅ Hotovo', tlCls: 'done' };
+  const now = new Date(); now.setHours(0,0,0,0);
+  const diff = Math.ceil((new Date(d.date) - now) / 86400000);
+  if (diff < 0) return { cls: 'overdue', label: `⚠️ ${Math.abs(diff)}d po termínu`, tlCls: 'overdue' };
+  if (diff === 0) return { cls: 'today', label: '🔥 DNES', tlCls: 'soon' };
+  if (diff <= 3) return { cls: 'soon', label: `⏰ Za ${diff}d`, tlCls: 'soon' };
+  if (diff <= 7) return { cls: 'soon', label: `📅 Za ${diff}d`, tlCls: 'ok' };
+  return { cls: 'ok', label: `${diff}d`, tlCls: 'ok' };
+}
+
+function renderTimeline() {
+  const items = getFiltered();
+  if (items.length === 0) {
+    document.getElementById('timelineView').innerHTML = '<div style="text-align:center;padding:3rem;color:var(--muted)"><div style="font-size:3rem;margin-bottom:1rem">📅</div><p>Žádné deadliny</p></div>';
+    return;
+  }
+
+  // Group by relative time
+  const now = new Date(); now.setHours(0,0,0,0);
+  const groups = {};
+  items.forEach(d => {
+    const diff = Math.ceil((new Date(d.date) - now) / 86400000);
+    let group;
+    if (d.done) group = '✅ Dokončené';
+    else if (diff < 0) group = '⚠️ Po termínu';
+    else if (diff === 0) group = '🔥 Dnes';
+    else if (diff <= 7) group = '📅 Tento týden';
+    else if (diff <= 30) group = '📆 Tento měsíc';
+    else group = '🗓️ Později';
+    if (!groups[group]) groups[group] = [];
+    groups[group].push(d);
+  });
+
+  let html = '';
+  for (const [label, items] of Object.entries(groups)) {
+    html += `<div class="tl-group"><div class="tl-group-label">${label}</div>`;
+    items.forEach(d => {
+      const urgency = getUrgency(d);
+      const icon = typeIcons[d.type] || '📌';
+      const dateStr = new Date(d.date).toLocaleDateString('cs', { day:'numeric', month:'short' });
+      html += `
+        <div class="tl-item ${urgency.tlCls}" onclick="editDeadline('${d.id}')">
+          <div class="tl-check ${d.done ? 'checked' : ''}" onclick="event.stopPropagation();toggleDone('${d.id}')">${d.done ? '✓' : ''}</div>
+          <div class="tl-content">
+            <div class="tl-title">${icon} ${d.title}</div>
+            <div class="tl-meta">
+              <span class="tl-client"><span class="dot" style="background:${d.color||'var(--accent)'}"></span>${d.client}</span>
+              <span class="tl-date">📅 ${dateStr}</span>
+              <span class="tl-urgency urgency-${urgency.cls}">${urgency.label}</span>
+            </div>
+            ${d.note ? `<div style="font-size:0.78rem;color:var(--muted);margin-top:0.3rem">💡 ${d.note}</div>` : ''}
+          </div>
+          <div class="tl-actions">
+            <button class="tl-action" onclick="event.stopPropagation();deleteDeadline('${d.id}')" title="Smazat">🗑️</button>
+          </div>
+        </div>
+      `;
+    });
+    html += '</div>';
+  }
+
+  document.getElementById('timelineView').innerHTML = html;
+}
+
+function renderList() {
+  const items = getFiltered();
+  let html = `<table class="list-table"><thead><tr>
+    <th></th><th>Úkol</th><th>Klient</th><th>Datum</th><th>Typ</th><th>Status</th>
+  </tr></thead><tbody>`;
+
+  items.forEach(d => {
+    const urgency = getUrgency(d);
+    const icon = typeIcons[d.type] || '📌';
+    const dateStr = new Date(d.date).toLocaleDateString('cs');
+    html += `<tr onclick="editDeadline('${d.id}')" style="cursor:pointer">
+      <td><div class="tl-check ${d.done ? 'checked' : ''}" style="width:18px;height:18px" onclick="event.stopPropagation();toggleDone('${d.id}')">${d.done ? '✓' : ''}</div></td>
+      <td style="${d.done ? 'text-decoration:line-through;color:var(--muted)' : ''}">${icon} ${d.title}</td>
+      <td><span class="tl-client"><span class="dot" style="background:${d.color||'var(--accent)'}"></span>${d.client}</span></td>
+      <td>${dateStr}</td>
+      <td style="font-size:0.8rem">${d.type}</td>
+      <td><span class="tl-urgency urgency-${urgency.cls}">${urgency.label}</span></td>
+    </tr>`;
+  });
+
+  html += '</tbody></table>';
+  document.getElementById('listView').innerHTML = html;
+}
+
+function setView(v) {
+  currentView = v;
+  document.getElementById('timelineView').style.display = v === 'timeline' ? 'block' : 'none';
+  document.getElementById('listView').style.display = v === 'list' ? 'block' : 'none';
+  document.getElementById('viewTimeline').classList.toggle('active', v === 'timeline');
+  document.getElementById('viewList').classList.toggle('active', v === 'list');
+}
+
+function toggleDone(id) {
+  const d = deadlines.find(x => x.id === id);
+  if (d) { d.done = !d.done; save(); render(); }
+}
+
+function deleteDeadline(id) {
+  if (!confirm('Smazat?')) return;
+  deadlines = deadlines.filter(d => d.id !== id);
+  save(); render();
+}
+
+// Modal
+function openModal() {
+  editingId = null;
+  document.getElementById('dlModalTitle').textContent = 'Přidat deadline';
+  document.getElementById('fId').value = '';
+  document.getElementById('fTitle').value = '';
+  document.getElementById('fClient').value = '';
+  document.getElementById('fColor').value = '#e94560';
+  document.getElementById('fDate').value = '';
+  document.getElementById('fPriority').value = 'mid';
+  document.getElementById('fType').value = 'deadline';
+  document.getElementById('fNote').value = '';
+  document.getElementById('dlModal').classList.add('show');
+}
+
+function editDeadline(id) {
+  const d = deadlines.find(x => x.id === id);
+  if (!d) return;
+  editingId = id;
+  document.getElementById('dlModalTitle').textContent = 'Upravit';
+  document.getElementById('fTitle').value = d.title;
+  document.getElementById('fClient').value = d.client;
+  document.getElementById('fColor').value = d.color || '#e94560';
+  document.getElementById('fDate').value = d.date;
+  document.getElementById('fPriority').value = d.priority || 'mid';
+  document.getElementById('fType').value = d.type || 'deadline';
+  document.getElementById('fNote').value = d.note || '';
+  document.getElementById('dlModal').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('dlModal').classList.remove('show');
+}
+
+function saveDeadline() {
+  const title = document.getElementById('fTitle').value.trim();
+  const client = document.getElementById('fClient').value.trim();
+  const date = document.getElementById('fDate').value;
+  if (!title || !client || !date) { alert('Vyplňte název, klienta a datum'); return; }
+
+  const data = {
+    title, client, date,
+    color: document.getElementById('fColor').value,
+    priority: document.getElementById('fPriority').value,
+    type: document.getElementById('fType').value,
+    note: document.getElementById('fNote').value.trim(),
+  };
+
+  if (editingId) {
+    const idx = deadlines.findIndex(d => d.id === editingId);
+    if (idx >= 0) deadlines[idx] = { ...deadlines[idx], ...data };
+  } else {
+    data.id = 'd' + Date.now();
+    data.done = false;
+    deadlines.push(data);
+  }
+  save(); closeModal(); render();
+}
+
+function loadDemo() {
+  deadlines = [
+    { id:'d1', title:'Wireframe homepage', client:'Kavárna U Mlýna', color:'#e94560', date:'2026-02-28', priority:'high', type:'milestone', done:true, note:'Schváleno klientem' },
+    { id:'d2', title:'Odevzdání grafického návrhu', client:'Kavárna U Mlýna', color:'#e94560', date:'2026-03-05', priority:'high', type:'deadline', done:false, note:'3 varianty k výběru' },
+    { id:'d3', title:'Schůzka nad designem', client:'Kavárna U Mlýna', color:'#e94560', date:'2026-03-07', priority:'mid', type:'meeting', done:false, note:'Online call, 30 min' },
+    { id:'d4', title:'Finální web k odevzdání', client:'Kavárna U Mlýna', color:'#e94560', date:'2026-03-20', priority:'high', type:'launch', done:false, note:'Včetně mobilní verze' },
+    { id:'d5', title:'Faktura za 1. fázi (10K)', client:'Kavárna U Mlýna', color:'#e94560', date:'2026-03-25', priority:'mid', type:'payment', done:false, note:'50% záloha' },
+    { id:'d6', title:'Soft launch e-shopu', client:'E-shop TechGear', color:'#3498db', date:'2026-03-05', priority:'high', type:'launch', done:false, note:'Jen pro stávající zákazníky' },
+    { id:'d7', title:'Shopify theme customizace', client:'E-shop TechGear', color:'#3498db', date:'2026-03-02', priority:'high', type:'deadline', done:true, note:'Hotovo, čeká na review' },
+    { id:'d8', title:'GoPay integrace - testing', client:'E-shop TechGear', color:'#3498db', date:'2026-03-03', priority:'high', type:'milestone', done:false },
+    { id:'d9', title:'Mailchimp pop-up setup', client:'E-shop TechGear', color:'#3498db', date:'2026-03-08', priority:'mid', type:'deadline', done:false },
+    { id:'d10', title:'Grand opening email', client:'E-shop TechGear', color:'#3498db', date:'2026-03-12', priority:'mid', type:'deadline', done:false, note:'Připravit v Mailchimp' },
+    { id:'d11', title:'Nabídka AI chatbot', client:'Reality Premium', color:'#2ecc71', date:'2026-03-07', priority:'high', type:'deadline', done:false, note:'Tidio vs custom řešení' },
+    { id:'d12', title:'Prezentace nabídky', client:'Reality Premium', color:'#2ecc71', date:'2026-03-10', priority:'mid', type:'meeting', done:false },
+    { id:'d13', title:'Registrace IČO', client:'Kudli. marketing', color:'#f39c12', date:'2026-04-01', priority:'high', type:'milestone', done:false, note:'Živnostenský úřad' },
+    { id:'d14', title:'Koupě domény', client:'Kudli. marketing', color:'#f39c12', date:'2026-04-15', priority:'mid', type:'milestone', done:false },
+  ];
+  save();
+  render();
+}
+
+init();
+</script>
+</body>
+</html>
