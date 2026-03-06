@@ -190,7 +190,9 @@
       opacity: 0; animation: fadeUp 0.8s ease-out 0.2s forwards;
     }
     .hero-logo img {
-      height: 320px;
+      width: 90vw;
+      max-width: 900px;
+      height: auto;
     }
     .hero-sub {
       font-family: var(--serif);
@@ -546,7 +548,7 @@
         border-bottom: 1px solid var(--border);
       }
       .hero { min-height: 75vh; }
-      .hero-logo img { height: 220px; }
+      .hero-logo img { width: 85vw; max-width: 700px; }
       .story, .gallery, .menu-section, .location, .reservation { padding: 80px 20px; }
       .gallery-grid { grid-template-columns: 1fr; grid-template-rows: repeat(4, 180px); }
       .gallery-item:nth-child(1), .gallery-item:nth-child(4) { grid-column: 1; }
@@ -560,7 +562,7 @@
     @media (max-width: 480px) {
       .logo img { height: 44px; }
       .hero { min-height: 65vh; }
-      .hero-logo img { height: 160px; }
+      .hero-logo img { width: 90vw; max-width: 500px; }
       .section-heading { font-size: 28px; }
     }
 
@@ -581,8 +583,7 @@
 
   <header role="banner">
     <nav aria-label="Hlavní navigace">
-      <a href="#" class="logo">
-        <span class="logo-text">Kudli Café</span>
+      <a href="#" class="logo" aria-label="Kudli Café">
       </a>
       <ul class="nav-links" id="navLinks">
         <li><a href="#story">O nás</a></li>
