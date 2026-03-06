@@ -168,20 +168,20 @@
     .hero {
       min-height: 92vh;
       display: flex; align-items: center; justify-content: center;
-      background: var(--dark);
+      background: var(--cream);
       position: relative;
       overflow: hidden;
     }
     .hero::before {
       content: ''; position: absolute; inset: 0;
       background:
-        radial-gradient(ellipse 70% 50% at 30% 60%, rgba(200,168,130,0.07) 0%, transparent 70%),
-        radial-gradient(ellipse 50% 70% at 70% 40%, rgba(254,249,241,0.04) 0%, transparent 70%);
+        radial-gradient(ellipse 70% 50% at 30% 60%, rgba(200,168,130,0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 70% at 70% 40%, rgba(32,32,32,0.02) 0%, transparent 70%);
     }
 
     .hero-content {
       position: relative; z-index: 1;
-      text-align: center; color: var(--cream);
+      text-align: center; color: var(--dark);
       padding: 60px 24px;
       max-width: 680px;
     }
@@ -197,14 +197,14 @@
       font-size: clamp(18px, 2.5vw, 24px);
       font-weight: 400;
       font-style: italic;
-      color: rgba(254,249,241,0.45);
+      color: rgba(32,32,32,0.45);
       margin-bottom: 48px;
       opacity: 0; animation: fadeUp 0.8s ease-out 0.5s forwards;
     }
     .hero-info {
       display: flex; justify-content: center;
       gap: 24px;
-      font-size: 12px; color: rgba(254,249,241,0.3);
+      font-size: 12px; color: rgba(32,32,32,0.35);
       letter-spacing: 0.5px;
       margin-bottom: 48px;
       opacity: 0; animation: fadeUp 0.8s ease-out 0.7s forwards;
@@ -231,7 +231,7 @@
     .hero-scroll {
       position: absolute; bottom: 32px; left: 50%;
       transform: translateX(-50%);
-      color: rgba(254,249,241,0.25);
+      color: rgba(32,32,32,0.25);
       font-size: 20px;
       animation: bounce 2s ease-in-out infinite;
       opacity: 0; animation: fadeUp 0.8s ease-out 1.1s forwards, bounce 2s ease-in-out 1.5s infinite;
@@ -602,7 +602,7 @@
     <section class="hero" aria-label="Úvodní sekce">
       <div class="hero-content">
         <div class="hero-logo">
-          <img src="kudli-cafe-logo-light.svg" alt="Kudli Café">
+          <img src="kudli-cafe-logo.svg" alt="Kudli Café">
         </div>
         <p class="hero-sub">Kde se čas zastaví a káva promluví</p>
         <div class="hero-info">
