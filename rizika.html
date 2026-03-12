@@ -184,6 +184,7 @@ label{font-size:0.75rem;color:var(--muted);display:block;margin-bottom:0.2rem}
 </div>
 
 <script>
+function escHTML(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
 const KEY = 'kudli_risks';
 let activeFilter = 'all';
 

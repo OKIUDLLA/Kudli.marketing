@@ -186,6 +186,7 @@ h1 em{color:var(--accent);font-style:normal}
 </div>
 
 <script>
+function escHTML(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
 const TYPE_MAP = {
  sod: { label: 'Smlouva o dílo', icon: '📝', color: '#3498db' },
  retainer: { label: 'Retainer', icon: '🔄', color: '#2ecc71' },

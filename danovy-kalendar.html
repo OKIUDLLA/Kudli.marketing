@@ -193,6 +193,11 @@ const months = ['Leden','Únor','Březen','Duben','Květen','Červen','Červenec
 
 function getKey(){ return 'kudli_tax_'+currentYear; }
 
+function escHTML(str) {
+  if (!str) return '';
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
 function getDefaultEvents(year){
  return [
   {id:1,title:'Přehled OSSZ za '+(year-1),desc:'Odevzdat přehled o příjmech a výdajích na OSSZ. Formulář na ePortálu ČSSZ.',date:year+'-05-02',cat:'soc',amount:'',done:false},
@@ -285,12 +290,12 @@ function render(){
    html += `<div class="event ${status} ${ev.done?'done':''}">
     <div class="event-check ${checked}" onclick="toggleDone(${ev.id})">${ev.done?'✓':''}</div>
     <div class="event-content">
-     <div class="event-title">${ev.title}</div>
-     <div class="event-desc">${ev.desc}</div>
+     <div class="event-title">${escHTML(ev.title)}</div>
+     <div class="event-desc">${escHTML(ev.desc)}</div>
      <div class="event-meta">
       <span class="event-date">📅 ${formatDate(ev.date)}</span>
       <span class="event-cat cat-${ev.cat}">${catLabels[ev.cat]}</span>
-      ${ev.amount ? `<span style="font-size:0.75rem;color:var(--green);font-weight:600">💰 ${ev.amount}</span>` : ''}
+      ${ev.amount ? `<span style="font-size:0.75rem;color:var(--green);font-weight:600">💰 ${escHTML(ev.amount)}</span>` : ''}
       <span style="font-size:0.7rem;color:var(--muted);cursor:pointer;margin-left:auto" onclick="deleteEvent(${ev.id})">🗑️</span>
      </div>
     </div>

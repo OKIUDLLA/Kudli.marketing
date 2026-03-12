@@ -228,6 +228,7 @@ a{color:var(--accent-light);text-decoration:none}
 </div>
 
 <script>
+function escHTML(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
 const CRITERIA = [
   { id:'web', label:'Kvalita webu', icon:'🌐' },
   { id:'seo', label:'SEO / viditelnost', icon:'🔍' },

@@ -170,6 +170,7 @@ h1 em{color:var(--accent);font-style:normal}
 </div>
 
 <script>
+function escHTML(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
 // Greeting
 function setGreeting(){
   const h = new Date().getHours();

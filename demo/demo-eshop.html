@@ -1963,6 +1963,7 @@
     </div>
 
     <script>
+        function escHTML(s){if(!s)return '';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');}
         const categoryEmojis = {keramika:'🏺', tekstil:'🧵', sperky:'💍', dekorace:'✨'};
         const products = [
             { id: 1, name: 'Keramická Miska s Glazurou', category: 'keramika', price: 450, description: 'Ručně soustružená a glazovaná',

@@ -171,6 +171,7 @@ h1 em{color:var(--accent);font-style:normal}
 <div class="toast" id="toast">Zkopírováno do schránky!</div>
 
 <script>
+function escHTML(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
 const CAT_MAP = {
   email:{label:'Email',icon:'📧',color:'#3498db'},
   nabidka:{label:'Nabídka',icon:'📄',color:'#2ecc71'},

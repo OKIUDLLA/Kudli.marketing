@@ -191,6 +191,7 @@ input:focus,select:focus{outline:none;border-color:var(--accent)}
 </div>
 
 <script>
+function escHTML(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
 const STORE_KEY = 'kudli_invoices';
 let currentFilter = 'all';
 let searchTerm = '';

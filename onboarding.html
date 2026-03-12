@@ -268,6 +268,7 @@ textarea{min-height:100px;resize:vertical}
 </div>
 
 <script>
+function escHTML(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
 let currentStep = 1;
 const totalSteps = 5;
 const selections = {};

@@ -142,6 +142,7 @@ h1 em{color:var(--accent);font-style:normal}
 </div>
 
 <script>
+function escHTML(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
 const DAYS_CS = ['Po','Út','St','Čt','Pá','So','Ne'];
 const MONTHS_CS = ['led','úno','bře','dub','kvě','čer','čec','srp','zář','říj','lis','pro'];
 

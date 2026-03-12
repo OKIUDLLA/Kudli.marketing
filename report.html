@@ -2,6 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Klientský report — Kudli. marketing</title>
@@ -333,6 +334,7 @@ a{color:var(--accent-light);text-decoration:none}
 </div>
 
 <script>
+function escHTML(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
 function updatePreview() {
   // Title & meta
   const client = document.getElementById('rClient').value || 'Klient';

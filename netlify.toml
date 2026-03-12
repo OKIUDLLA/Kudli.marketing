@@ -1,3 +1,4 @@
+# === Security Headers ===
 [[headers]]
   for = "/*"
   [headers.values]
@@ -8,3 +9,29 @@
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://www.google-analytics.com; frame-ancestors 'self'"
     Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+# === Block .git directory access ===
+[[redirects]]
+  from = "/.git/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/.env"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# === Force HTTPS + www ===
+[[redirects]]
+  from = "http://kudlimarketing.cz/*"
+  to = "https://www.kudlimarketing.cz/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "https://kudlimarketing.cz/*"
+  to = "https://www.kudlimarketing.cz/:splat"
+  status = 301
+  force = true
