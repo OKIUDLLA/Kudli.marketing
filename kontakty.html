@@ -186,7 +186,7 @@ function render() {
      <div class="cc-details">
        ${c.email ? `<div class="cc-detail">📧 <a href="mailto:${c.email}">${c.email}</a></div>` : ''}
        ${c.phone ? `<div class="cc-detail">📱 ${c.phone}</div>` : ''}
-       ${c.web ? `<div class="cc-detail">🌐 <a href="${c.web}" target="_blank">${c.web.replace(/https?:\/\//,'').slice(0,35)}</a></div>` : ''}
+       ${c.web ? `<div class="cc-detail">🌐 <a href="${c.web}" target="_blank" rel="noopener noreferrer">${c.web.replace(/https?:\/\//,'').slice(0,35)}</a></div>` : ''}
      </div>
      <div class="cc-tags">${c.tags.map(t => { const tag = TAGS.find(x=>x.id===t); return tag ? `<span class="tag ${tag.cls}">${tag.label}</span>` : ''; }).join('')}</div>
      ${c.note ? `<div class="cc-note">${c.note}</div>` : ''}

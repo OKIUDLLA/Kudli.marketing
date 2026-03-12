@@ -2,6 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Správa přístupů — Kudli. marketing</title>
@@ -177,9 +178,12 @@ a{color:var(--accent-light);text-decoration:none}
     <input type="password" class="pin-digit" maxlength="1" data-idx="1" inputmode="numeric">
     <input type="password" class="pin-digit" maxlength="1" data-idx="2" inputmode="numeric">
     <input type="password" class="pin-digit" maxlength="1" data-idx="3" inputmode="numeric">
+    <input type="password" class="pin-digit" maxlength="1" data-idx="4" inputmode="numeric">
+    <input type="password" class="pin-digit" maxlength="1" data-idx="5" inputmode="numeric">
   </div>
   <div id="pinError" class="pin-error">Nesprávný PIN. Zkuste to znovu.</div>
-  <div class="pin-hint">Výchozí PIN: 1234 (změňte v nastavení)</div>
+  <div id="pinLockout" class="pin-error" style="display:none">Příliš mnoho pokusů. Zkuste to za <span id="lockoutTimer"></span>s.</div>
+  <div class="pin-hint">Výchozí PIN: 123456 (změňte v nastavení)</div>
 </div>
 
 <!-- Main App -->
@@ -365,7 +369,9 @@ a{color:var(--accent-light);text-decoration:none}
 <script>
 // State
 let credentials = [];
-let pin = '1234';
+let pin = '123456';
+let failedAttempts = 0;
+let lockoutUntil = 0;
 let autoLockMinutes = 15;
 let currentFilter = 'all';
 let lockTimer = null;
@@ -382,18 +388,11 @@ const categories = {
   other:     { icon: '📎', label: 'Ostatní',          color: 'var(--muted)' }
 };
 
-// Demo data
+// Demo data — only placeholder examples, no real credentials
 const demoData = [
-  { id:1, client:'Kavárna U Mlýna', category:'hosting', service:'Netlify', url:'https://app.netlify.com', username:'kavarna@email.cz', password:'demo-Netlify#2026!', apiKey:'', expiry:'', notes:'Free tier, deploy přes Git', created:'2026-02-15' },
-  { id:2, client:'Kavárna U Mlýna', category:'domain', service:'Wedos', url:'https://client.wedos.com', username:'kavarna@email.cz', password:'W3dos_Kav@rna24', apiKey:'', expiry:'2027-02-15', notes:'Automatická obnova zapnutá', created:'2026-02-15' },
-  { id:3, client:'Kavárna U Mlýna', category:'cms', service:'WordPress Admin', url:'https://kavarnaumlyna.cz/wp-admin', username:'admin', password:'kUm!WP_2026#secure', apiKey:'', expiry:'', notes:'2FA přes Google Authenticator', created:'2026-02-15' },
-  { id:4, client:'Kavárna U Mlýna', category:'analytics', service:'Google Analytics 4', url:'https://analytics.google.com', username:'kavarna.analytics@gmail.com', password:'GA4_kavarna!2026', apiKey:'', expiry:'', notes:'Property ID: 123456789', created:'2026-02-15' },
-  { id:5, client:'E-shop TechGear', category:'hosting', service:'Vercel', url:'https://vercel.com/dashboard', username:'techgear@firma.cz', password:'V3rcel_TG!prod', apiKey:'vrcl_abc123def456', expiry:'', notes:'Pro plan, auto-deploy z main branch', created:'2026-02-20' },
-  { id:6, client:'E-shop TechGear', category:'cms', service:'Shopify Admin', url:'https://techgear.myshopify.com/admin', username:'admin@techgear.cz', password:'Sh0pify_TG#2026!', apiKey:'shpat_xyz789', expiry:'2026-08-20', notes:'Shopify Plus plan', created:'2026-02-20' },
-  { id:7, client:'E-shop TechGear', category:'email', service:'Mailchimp', url:'https://login.mailchimp.com', username:'marketing@techgear.cz', password:'MC_techg3ar!nl', apiKey:'mc-api-key-demo', expiry:'', notes:'Standard plan, 5000 kontaktů', created:'2026-02-20' },
-  { id:8, client:'Reality Premium', category:'hosting', service:'Wedos VPS', url:'https://client.wedos.com', username:'reality@premium.cz', password:'W3dos_RP_vps!2026', apiKey:'', expiry:'2026-12-01', notes:'VPS NoLimit, SSH port 2222', created:'2026-02-25' },
-  { id:9, client:'Reality Premium', category:'social', service:'Facebook Business', url:'https://business.facebook.com', username:'marketing@realitypremium.cz', password:'FB_Re@lity#2026', apiKey:'', expiry:'', notes:'Stránka + reklamní účet, pixel ID: 112233', created:'2026-02-25' },
-  { id:10, client:'Reality Premium', category:'analytics', service:'Google Search Console', url:'https://search.google.com/search-console', username:'seo@realitypremium.cz', password:'GSC_reality_pr0!', apiKey:'', expiry:'', notes:'Ověřeno přes DNS TXT záznam', created:'2026-02-25' },
+  { id:1, client:'Demo Klient', category:'hosting', service:'Netlify', url:'https://app.netlify.com', username:'demo@example.com', password:'••••••••', apiKey:'', expiry:'', notes:'Ukázkový záznam', created:'2026-02-15' },
+  { id:2, client:'Demo Klient', category:'domain', service:'Wedos', url:'https://client.wedos.com', username:'demo@example.com', password:'••••••••', apiKey:'', expiry:'2027-02-15', notes:'Ukázkový záznam', created:'2026-02-15' },
+  { id:3, client:'Demo Klient', category:'cms', service:'WordPress Admin', url:'https://example.com/wp-admin', username:'admin', password:'••••••••', apiKey:'', expiry:'', notes:'Ukázkový záznam', created:'2026-02-15' },
 ];
 
 // Init
@@ -402,7 +401,7 @@ function init() {
   if (saved) {
     const data = JSON.parse(saved);
     credentials = data.credentials || [];
-    pin = data.pin || '1234';
+    pin = data.pin || '123456';
     autoLockMinutes = data.autoLockMinutes || 15;
   } else {
     credentials = [...demoData];
@@ -429,10 +428,31 @@ function setupPinInputs() {
       e.target.classList.toggle('filled', !!val);
       // Check if all filled
       const fullPin = Array.from(inputs).map(x => x.value).join('');
-      if (fullPin.length === 4) {
+      if (fullPin.length === 6) {
+        // Brute-force protection
+        if (Date.now() < lockoutUntil) {
+          const remaining = Math.ceil((lockoutUntil - Date.now()) / 1000);
+          document.getElementById('pinLockout').style.display = 'block';
+          document.getElementById('lockoutTimer').textContent = remaining;
+          inputs.forEach(x => { x.value = ''; x.classList.remove('filled'); });
+          inputs[0].focus();
+          return;
+        }
         if (fullPin === pin) {
+          failedAttempts = 0;
           unlock();
         } else {
+          failedAttempts++;
+          if (failedAttempts >= 5) {
+            lockoutUntil = Date.now() + 60000; // 1 minute lockout
+            document.getElementById('pinLockout').style.display = 'block';
+            document.getElementById('lockoutTimer').textContent = '60';
+            const lockoutInterval = setInterval(() => {
+              const rem = Math.ceil((lockoutUntil - Date.now()) / 1000);
+              if (rem <= 0) { clearInterval(lockoutInterval); document.getElementById('pinLockout').style.display = 'none'; failedAttempts = 0; }
+              else document.getElementById('lockoutTimer').textContent = rem;
+            }, 1000);
+          }
           document.getElementById('pinError').style.display = 'block';
           inputs.forEach(x => { x.value = ''; x.classList.remove('filled'); });
           inputs[0].focus();
@@ -511,7 +531,7 @@ function renderCredentials() {
     html += `
     <div class="client-group">
       <div class="client-group-header" onclick="this.classList.toggle('collapsed');this.nextElementSibling.style.display=this.classList.contains('collapsed')?'none':'grid'">
-        <h3>${client} <span class="count">${creds.length}</span></h3>
+        <h3>${escHTML(client)} <span class="count">${creds.length}</span></h3>
         <span class="toggle">▼</span>
       </div>
       <div class="cred-grid">`;
@@ -525,8 +545,8 @@ function renderCredentials() {
             <div class="cred-service">
               <div class="icon" style="background:${cat.color}22;color:${cat.color}">${cat.icon}</div>
               <div>
-                <h4>${c.service}</h4>
-                <div class="type">${cat.label}${c.url ? ` · <a href="${c.url}" target="_blank" style="color:var(--accent-light);font-size:0.75rem">Otevřít ↗</a>` : ''}</div>
+                <h4>${escHTML(c.service)}</h4>
+                <div class="type">${escHTML(cat.label)}${c.url ? ` · <a href="${escHTML(c.url)}" target="_blank" rel="noopener noreferrer" style="color:var(--accent-light);font-size:0.75rem">Otevřít ↗</a>` : ''}</div>
               </div>
             </div>
             <div class="cred-actions">
@@ -538,7 +558,7 @@ function renderCredentials() {
             ${c.username ? `
             <div class="cred-field">
               <span class="cred-field-label">Login</span>
-              <span class="cred-field-value">${c.username}</span>
+              <span class="cred-field-value">${escHTML(c.username)}</span>
               <button class="cred-field-copy" onclick="copyText('${escJS(c.username)}',this)" title="Kopírovat">📋</button>
             </div>` : ''}
             ${c.password ? `
@@ -560,7 +580,7 @@ function renderCredentials() {
             <span class="tag tag-${c.category}">${cat.icon} ${cat.label}</span>
             ${c.expiry ? `<span class="tag" style="background:${expiryStatus.bg};color:${expiryStatus.color}"><span class="status-dot ${expiryStatus.cls}"></span>${expiryStatus.text}</span>` : ''}
           </div>
-          ${c.notes ? `<div style="margin-top:0.6rem;font-size:0.78rem;color:var(--muted);padding:0.4rem 0.6rem;background:rgba(0,0,0,0.02);border-radius:6px">💡 ${c.notes}</div>` : ''}
+          ${c.notes ? `<div style="margin-top:0.6rem;font-size:0.78rem;color:var(--muted);padding:0.4rem 0.6rem;background:rgba(0,0,0,0.02);border-radius:6px">💡 ${escHTML(c.notes)}</div>` : ''}
         </div>`;
     });
 
@@ -573,6 +593,11 @@ function renderCredentials() {
 
 function escJS(str) {
   return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+}
+
+function escHTML(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
 }
 
 function getExpiryStatus(expiry) {
@@ -602,7 +627,7 @@ function updateStats() {
 
   // Update client datalist
   const dl = document.getElementById('clientList');
-  dl.innerHTML = clients.map(c => `<option value="${c}">`).join('');
+  dl.innerHTML = clients.map(c => `<option value="${escHTML(c)}">`).join('');
 }
 
 function togglePw(id, pw) {

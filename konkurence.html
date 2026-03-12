@@ -321,7 +321,7 @@ function renderCompGrid(project) {
         <div class="comp-avatar" style="background:${c.color || '#e94560'}">${initial}</div>
         <div>
           <div class="comp-name">${c.name}</div>
-          <div class="comp-url">${c.url ? `<a href="${c.url}" target="_blank">${c.url.replace('https://','').replace('http://','')}</a>` : 'Bez URL'}</div>
+          <div class="comp-url">${c.url ? `<a href="${c.url}" target="_blank" rel="noopener noreferrer">${c.url.replace('https://','').replace('http://','')}</a>` : 'Bez URL'}</div>
         </div>
       </div>
       <div class="score-section">

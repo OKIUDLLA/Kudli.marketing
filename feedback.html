@@ -2,6 +2,7 @@
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
+  <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Klientský feedback — Kudli. marketing</title>
@@ -168,6 +169,11 @@ let modalStars = { communication:0, quality:0, deadlines:0, value:0 };
 
 function save() { sessionStorage.setItem('kudli_feedback', JSON.stringify(feedbacks)); }
 
+function escHTML(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');
+}
+
 function getNPSColor(score) {
  if (score >= 9) return 'var(--green)';
  if (score >= 7) return 'var(--orange)';
@@ -247,7 +253,7 @@ function render() {
  const clients = [...new Set(feedbacks.map(f => f.client))];
  const sel = document.getElementById('filterClient');
  const current = sel.value;
- sel.innerHTML = '<option value="">Všichni klienti</option>' + clients.map(c => `<option value="${c}" ${c===current?'selected':''}>${c}</option>`).join('');
+ sel.innerHTML = '<option value="">Všichni klienti</option>' + clients.map(c => `<option value="${escHTML(c)}" ${c===current?'selected':''}>${escHTML(c)}</option>`).join('');
 
  let filtered = filter ? feedbacks.filter(f => f.client === filter) : feedbacks;
  filtered.sort((a,b) => b.date.localeCompare(a.date));
@@ -264,8 +270,8 @@ function render() {
      <div style="position:absolute;top:0;left:0;width:4px;height:100%;background:${color}"></div>
      <div class="fb-header">
        <div>
-         <div class="fb-client">${f.client}</div>
-         <div class="fb-project">${f.project} · ${new Date(f.date).toLocaleDateString('cs-CZ')}</div>
+         <div class="fb-client">${escHTML(f.client)}</div>
+         <div class="fb-project">${escHTML(f.project)} · ${new Date(f.date).toLocaleDateString('cs-CZ')}</div>
        </div>
        <div class="fb-nps">
          <div class="fb-nps-score" style="background:${color}22;color:${color}">${f.nps}</div>
@@ -278,7 +284,7 @@ function render() {
          <div class="cat">${CAT_LABELS[cat]}</div>
        </div>`).join('')}
      </div>
-     ${f.comment ? `<div class="fb-comment">${f.comment}</div>` : ''}
+     ${f.comment ? `<div class="fb-comment">${escHTML(f.comment)}</div>` : ''}
      <div class="fb-actions">
        <button class="btn btn-outline" onclick="deleteFeedback(${f.id})">Smazat</button>
      </div>
