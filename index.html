@@ -101,21 +101,29 @@
         .service-card h3 { font-size:1rem; font-weight:700; margin-bottom:0.5rem; }
         .service-card p { color:var(--text-mid); font-size:0.88rem; line-height:1.7; }
 
-        /* PORTFOLIO */
-        .portfolio-grid { display:grid; grid-template-columns:repeat(3, 1fr); gap:1.5rem; }
-        .portfolio-card { border-radius:12px; overflow:hidden; border:1px solid var(--border); background:var(--white); transition:border-color 0.3s, transform 0.3s, box-shadow 0.3s; display:flex; flex-direction:column; text-decoration:none; color:inherit; }
-        .portfolio-card:hover { border-color:var(--dark); transform:translateY(-4px); box-shadow:0 12px 32px rgba(0,0,0,0.08); }
-        .portfolio-img { position:relative; width:100%; aspect-ratio:16/10; background:var(--bg-alt); display:flex; align-items:center; justify-content:center; overflow:hidden; border-bottom:1px solid var(--border); }
-        .portfolio-img img { width:100%; height:100%; object-fit:cover; }
-        .portfolio-img svg { opacity:0.3; }
-        .portfolio-preview { position:absolute; inset:0; overflow:hidden; background:var(--bg-alt); }
-        .portfolio-preview img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:top center; transition:transform 0.5s ease; }
-        .portfolio-card:hover .portfolio-preview img { transform:scale(1.04); }
-        .portfolio-preview::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.04) 100%); transition:background 0.3s; }
-        .portfolio-overlay { position:absolute; top:0.75rem; right:0.75rem; background:rgba(255,255,255,0.95); backdrop-filter:blur(8px); padding:0.3rem 0.7rem; border-radius:20px; font-size:0.7rem; font-weight:600; color:var(--dark); opacity:0; transform:translateY(-4px); transition:opacity 0.3s, transform 0.3s; z-index:2; }
-        .portfolio-card:hover .portfolio-overlay { opacity:1; transform:translateY(0); }
-        .portfolio-badge { position:absolute; top:0.75rem; left:0.75rem; background:rgba(26,26,26,0.9); color:var(--bg); padding:0.25rem 0.65rem; border-radius:20px; font-size:0.65rem; font-weight:600; letter-spacing:0.4px; text-transform:uppercase; z-index:2; }
-        .portfolio-card .content { padding:1.5rem; flex:1; display:flex; flex-direction:column; }
+        /* PORTFOLIO CAROUSEL */
+        #portfolio { padding-bottom:4rem; }
+        .carousel-wrap { position:relative; max-width:1100px; margin:0 auto; overflow:hidden; border-radius:16px; }
+        .carousel-track { display:flex; transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94); will-change:transform; }
+        .carousel-slide { min-width:100%; position:relative; }
+        .carousel-slide a { display:block; text-decoration:none; color:inherit; }
+        .carousel-img { position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; background:var(--bg-alt); }
+        .carousel-img img { width:100%; height:100%; object-fit:cover; object-position:top center; }
+        .carousel-info { position:absolute; bottom:0; left:0; right:0; padding:3rem 2.5rem 2rem; background:linear-gradient(0deg, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0.45) 60%, transparent 100%); color:#fff; }
+        .carousel-info h3 { font-size:1.3rem; font-weight:700; margin-bottom:0.35rem; letter-spacing:-0.01em; }
+        .carousel-info p { font-size:0.9rem; opacity:0.85; line-height:1.6; max-width:600px; }
+        .carousel-tags { display:flex; gap:0.4rem; margin-top:0.7rem; flex-wrap:wrap; }
+        .carousel-tags span { background:rgba(255,255,255,0.18); backdrop-filter:blur(6px); padding:0.2rem 0.6rem; border-radius:4px; font-size:0.72rem; color:rgba(255,255,255,0.9); font-weight:500; }
+        .carousel-visit { display:inline-block; margin-top:1rem; padding:0.5rem 1.4rem; background:#fff; color:var(--dark); border-radius:8px; font-size:0.82rem; font-weight:600; transition:transform 0.2s, box-shadow 0.2s; }
+        .carousel-visit:hover { transform:translateY(-1px); box-shadow:0 4px 16px rgba(0,0,0,0.2); }
+        .carousel-btn { position:absolute; top:50%; transform:translateY(-50%); width:48px; height:48px; border-radius:50%; border:none; background:rgba(255,255,255,0.92); backdrop-filter:blur(8px); color:var(--dark); font-size:1.1rem; cursor:pointer; z-index:3; display:flex; align-items:center; justify-content:center; transition:background 0.2s, transform 0.2s; box-shadow:0 2px 12px rgba(0,0,0,0.1); }
+        .carousel-btn:hover { background:#fff; transform:translateY(-50%) scale(1.08); }
+        .carousel-btn.prev { left:1rem; }
+        .carousel-btn.next { right:1rem; }
+        .carousel-dots { display:flex; justify-content:center; gap:0.5rem; margin-top:1.5rem; }
+        .carousel-dot { width:8px; height:8px; border-radius:50%; background:var(--border); border:none; cursor:pointer; transition:background 0.3s, transform 0.3s; padding:0; }
+        .carousel-dot.active { background:var(--dark); transform:scale(1.3); }
+        .carousel-counter { text-align:center; margin-top:0.75rem; font-size:0.78rem; color:var(--text-light); font-weight:500; letter-spacing:0.5px; }
         .portfolio-card h3 { font-size:0.95rem; font-weight:700; margin-bottom:0.4rem; }
         .portfolio-card p { color:var(--text-mid); font-size:0.85rem; line-height:1.7; }
         .portfolio-tags { display:flex; gap:0.4rem; margin-top:0.6rem; flex-wrap:wrap; }
@@ -177,7 +185,8 @@
         /* RESPONSIVE */
         @media(max-width:1024px) {
             .services-grid, .process-steps { grid-template-columns:repeat(2, 1fr); }
-            .portfolio-grid { grid-template-columns:repeat(2, 1fr); }
+            .carousel-btn { width:40px; height:40px; font-size:0.95rem; }
+            .carousel-info h3 { font-size:1.1rem; }
         }
         @media(max-width:768px) {
             .hamburger { display:block; }
@@ -189,7 +198,12 @@
             .stats-bar .stat h3 { font-size:1.5rem; }
             .services-grid, .process-steps { grid-template-columns:1fr; }
             .testimonials-grid { grid-template-columns:1fr; }
-            .portfolio-grid { grid-template-columns:1fr; }
+            .carousel-info { padding:2rem 1.5rem 1.5rem; }
+            .carousel-info h3 { font-size:1rem; }
+            .carousel-info p { font-size:0.82rem; }
+            .carousel-btn { width:36px; height:36px; font-size:0.85rem; }
+            .carousel-btn.prev { left:0.5rem; }
+            .carousel-btn.next { right:0.5rem; }
             .pricing-grid { grid-template-columns:1fr; }
             section { padding:4rem 1.5rem; }
             .cta-section .contact-grid { gap:2rem; }
@@ -272,185 +286,137 @@
     <div class="section-inner">
         <div class="section-label">Portfolio</div>
         <h2 class="section-title">Vybrané projekty</h2>
-        <p class="section-subtitle">Ukázky z mé práce pro klienty</p>
-        <div class="portfolio-grid">
-            <a class="portfolio-card" href="https://kudlazbrna.netlify.app" target="_blank" rel="noopener noreferrer">
-                <div class="portfolio-img">
-                    <div class="portfolio-preview"><img src="https://image.thum.io/get/width/900/crop/600/noanimate/https://kudlazbrna.netlify.app" alt="Náhled webu" loading="lazy"></div>
-                    <span class="portfolio-overlay">Otevřít &#8599;</span>
+        <p class="section-subtitle">Každý web je moderní, responzivní a na míru</p>
+
+        <div class="carousel-wrap" id="carousel">
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-slide" data-url="https://kudlazbrna.netlify.app">
+                    <a href="https://kudlazbrna.netlify.app" target="_blank" rel="noopener noreferrer">
+                        <div class="carousel-img"><img src="https://image.thum.io/get/width/1200/crop/675/noanimate/https://kudlazbrna.netlify.app" alt="Kudla z Brna"></div>
+                        <div class="carousel-info">
+                            <h3>Kudla z Brna — web pro hudebníka</h3>
+                            <p>Kompletní redesign webu brněnského písničkáře. Tmavý rockový styl, galerie, koncertní kalendář.</p>
+                            <div class="carousel-tags"><span>Hudebník</span><span>Redesign</span></div>
+                            <span class="carousel-visit">Navštívit web &#8599;</span>
+                        </div>
+                    </a>
                 </div>
-                <div class="content">
-                    <h3>Kudla z Brna — web pro hudebníka</h3>
-                    <p>Kompletní redesign webu brněnského písničkáře. Tmavý rockový styl, YouTube embed, galerie fotek, koncertní kalendář, CD shop.</p>
-                    <div class="portfolio-tags"><span class="tag">Web na míru</span><span class="tag">Hudebník</span><span class="tag">Redesign</span></div>
+                <div class="carousel-slide" data-url="https://kudlicoffee.netlify.app">
+                    <a href="https://kudlicoffee.netlify.app" target="_blank" rel="noopener noreferrer">
+                        <div class="carousel-img"><img src="https://image.thum.io/get/width/1200/crop/675/noanimate/https://kudlicoffee.netlify.app" alt="Kudli Café"></div>
+                        <div class="carousel-info">
+                            <h3>Kudli Café — kavárna v Brně</h3>
+                            <p>Kompletní web pro kavárnu. Online rezervace, menu s denní nabídkou, moderní design.</p>
+                            <div class="carousel-tags"><span>Kavárna</span><span>Rezervace</span><span>Moderní design</span></div>
+                            <span class="carousel-visit">Navštívit web &#8599;</span>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a class="portfolio-card" href="https://kudlicoffee.netlify.app" target="_blank" rel="noopener noreferrer">
-                <div class="portfolio-img">
-                    <div class="portfolio-preview"><img src="https://image.thum.io/get/width/900/crop/600/noanimate/https://kudlicoffee.netlify.app" alt="Náhled webu" loading="lazy"></div>
-                    <span class="portfolio-overlay">Otevřít &#8599;</span>
+                <div class="carousel-slide" data-url="https://ruzickastav.netlify.app">
+                    <a href="https://ruzickastav.netlify.app" target="_blank" rel="noopener noreferrer">
+                        <div class="carousel-img"><img src="https://image.thum.io/get/width/1200/crop/675/noanimate/https://ruzickastav.netlify.app" alt="Růžička stavby"></div>
+                        <div class="carousel-info">
+                            <h3>Jiří Růžička — stavební a zednické práce</h3>
+                            <p>Redesign webu rodinné stavební firmy na trhu od roku 1992. Certifikace HELUZ / POROTHERM / WEBER.</p>
+                            <div class="carousel-tags"><span>Stavebnictví</span><span>Redesign</span><span>Liberecký kraj</span></div>
+                            <span class="carousel-visit">Navštívit web &#8599;</span>
+                        </div>
+                    </a>
                 </div>
-                <div class="content">
-                    <h3>Kudli Café — kavárna v Brně</h3>
-                    <p>Kompletní web pro kavárnu. Online rezervace, menu s denní nabídkou, moderní design v teplých tónech.</p>
-                    <div class="portfolio-tags"><span class="tag">Web na míru</span><span class="tag">Rezervace</span><span class="tag">Moderní design</span></div>
+                <div class="carousel-slide" data-url="https://valme.netlify.app">
+                    <a href="https://valme.netlify.app" target="_blank" rel="noopener noreferrer">
+                        <div class="carousel-img"><img src="https://image.thum.io/get/width/1200/crop/675/noanimate/https://valme.netlify.app" alt="VALME"></div>
+                        <div class="carousel-info">
+                            <h3>VALME s.r.o. — železobetonové konstrukce</h3>
+                            <p>Moderní web pro firmu zpracovávající betonářskou ocel. 25+ let na trhu, zázemí 20 000 m².</p>
+                            <div class="carousel-tags"><span>Průmysl</span><span>B2B</span><span>Redesign</span></div>
+                            <span class="carousel-visit">Navštívit web &#8599;</span>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a class="portfolio-card" href="https://ruzickastav.netlify.app" target="_blank" rel="noopener noreferrer">
-                <div class="portfolio-img">
-                    <div class="portfolio-preview"><img src="https://image.thum.io/get/width/900/crop/600/noanimate/https://ruzickastav.netlify.app" alt="Náhled webu" loading="lazy"></div>
-                    <span class="portfolio-overlay">Otevřít &#8599;</span>
+                <div class="carousel-slide" data-url="https://icteisen.netlify.app">
+                    <a href="https://icteisen.netlify.app" target="_blank" rel="noopener noreferrer">
+                        <div class="carousel-img"><img src="https://image.thum.io/get/width/1200/crop/675/noanimate/https://icteisen.netlify.app" alt="ICT EISEN"></div>
+                        <div class="carousel-info">
+                            <h3>ICT EISEN — zemní a výkopové práce</h3>
+                            <p>Nový web pro výkopové práce, autodopravu a kontejnery. Transparentní ceník a jasné CTA.</p>
+                            <div class="carousel-tags"><span>Stavebnictví</span><span>Služby</span><span>Ceník</span></div>
+                            <span class="carousel-visit">Navštívit web &#8599;</span>
+                        </div>
+                    </a>
                 </div>
-                <div class="content">
-                    <h3>Stavební a zednické práce — Jiří Růžička</h3>
-                    <p>Redesign webu rodinné stavební firmy na trhu od roku 1992. Certifikace HELUZ / POROTHERM / WEBER, moderní prezentace realizací.</p>
-                    <div class="portfolio-tags"><span class="tag">Stavebnictví</span><span class="tag">Redesign</span><span class="tag">Liberecký kraj</span></div>
+                <div class="carousel-slide" data-url="https://aaabagr.netlify.app">
+                    <a href="https://aaabagr.netlify.app" target="_blank" rel="noopener noreferrer">
+                        <div class="carousel-img"><img src="https://image.thum.io/get/width/1200/crop/675/noanimate/https://aaabagr.netlify.app" alt="AAA Bagr"></div>
+                        <div class="carousel-info">
+                            <h3>AAA Bagr — pronájem bagrů a zemní práce</h3>
+                            <p>Web pro firmu ze severních Čech. Sklápěče, bagry Schaeff/Kubota/Doosan, vrtání a bourání.</p>
+                            <div class="carousel-tags"><span>Stavebnictví</span><span>Pronájem</span><span>Redesign</span></div>
+                            <span class="carousel-visit">Navštívit web &#8599;</span>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a class="portfolio-card" href="https://valme.netlify.app" target="_blank" rel="noopener noreferrer">
-                <div class="portfolio-img">
-                    <div class="portfolio-preview"><img src="https://image.thum.io/get/width/900/crop/600/noanimate/https://valme.netlify.app" alt="Náhled webu" loading="lazy"></div>
-                    <span class="portfolio-overlay">Otevřít &#8599;</span>
+                <div class="carousel-slide" data-url="https://pneuserviszlin.netlify.app">
+                    <a href="https://pneuserviszlin.netlify.app" target="_blank" rel="noopener noreferrer">
+                        <div class="carousel-img"><img src="https://image.thum.io/get/width/1200/crop/675/noanimate/https://pneuserviszlin.netlify.app" alt="Autoservis Schneider"></div>
+                        <div class="carousel-info">
+                            <h3>Autoservis Schneider — pneuservis Zlín</h3>
+                            <p>Modernizace webu z roku 2012. Autoservis, pneuservis, servis klimatizací, tažná zařízení.</p>
+                            <div class="carousel-tags"><span>Autoservis</span><span>Pneuservis</span><span>Redesign</span></div>
+                            <span class="carousel-visit">Navštívit web &#8599;</span>
+                        </div>
+                    </a>
                 </div>
-                <div class="content">
-                    <h3>VALME s.r.o. — železobetonové konstrukce</h3>
-                    <p>Moderní web pro firmu zpracovávající betonářskou ocel. 25+ let na trhu, nové zázemí 20 000 m², vlastní FVE.</p>
-                    <div class="portfolio-tags"><span class="tag">Průmysl</span><span class="tag">B2B</span><span class="tag">Redesign</span></div>
+                <div class="carousel-slide" data-url="https://hodinovymanzell.netlify.app">
+                    <a href="https://hodinovymanzell.netlify.app" target="_blank" rel="noopener noreferrer">
+                        <div class="carousel-img"><img src="https://image.thum.io/get/width/1200/crop/675/noanimate/https://hodinovymanzell.netlify.app" alt="Hodinový manžel Opava"></div>
+                        <div class="carousel-info">
+                            <h3>Hodinový manžel Opava</h3>
+                            <p>Nový web pro lokální službu. Drobné opravy, montáže, údržba domácností. Jasná nabídka, lidský tón.</p>
+                            <div class="carousel-tags"><span>Služby</span><span>Lokální</span><span>OSVČ</span></div>
+                            <span class="carousel-visit">Navštívit web &#8599;</span>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <a class="portfolio-card" href="https://icteisen.netlify.app" target="_blank" rel="noopener noreferrer">
-                <div class="portfolio-img">
-                    <div class="portfolio-preview"><img src="https://image.thum.io/get/width/900/crop/600/noanimate/https://icteisen.netlify.app" alt="Náhled webu" loading="lazy"></div>
-                    <span class="portfolio-overlay">Otevřít &#8599;</span>
+                <div class="carousel-slide" data-url="https://cameliad.netlify.app">
+                    <a href="https://cameliad.netlify.app" target="_blank" rel="noopener noreferrer">
+                        <div class="carousel-img"><img src="https://image.thum.io/get/width/1200/crop/675/noanimate/https://cameliad.netlify.app" alt="Camelia Zlín"></div>
+                        <div class="carousel-info">
+                            <h3>Camelia — dekorace a dárky Zlín</h3>
+                            <p>Nový web pro zlínský obchod s dárky. Vyzdvižení půjčovny dekorací na svatby a oslavy.</p>
+                            <div class="carousel-tags"><span>Maloobchod</span><span>Svatby</span><span>Redesign</span></div>
+                            <span class="carousel-visit">Navštívit web &#8599;</span>
+                        </div>
+                    </a>
                 </div>
-                <div class="content">
-                    <h3>ICT EISEN — zemní a výkopové práce Liberec</h3>
-                    <p>Nový web pro firmu nabízející zemní a výkopové práce, autodopravu a kontejnery. Transparentní ceník, vozový park, jasné CTA na poptávku.</p>
-                    <div class="portfolio-tags"><span class="tag">Stavebnictví</span><span class="tag">Služby</span><span class="tag">Ceník</span></div>
+                <div class="carousel-slide" data-url="https://prosterestaurace.netlify.app">
+                    <a href="https://prosterestaurace.netlify.app" target="_blank" rel="noopener noreferrer">
+                        <div class="carousel-img"><img src="https://image.thum.io/get/width/1200/crop/675/noanimate/https://prosterestaurace.netlify.app" alt="prostē Restaurace"></div>
+                        <div class="carousel-info">
+                            <h3>prostē Restaurace — polední menu Zlín</h3>
+                            <p>První vlastní web pro restauraci v Baťově areálu. Denní menu, otevírací doba, rezervace.</p>
+                            <div class="carousel-tags"><span>Gastro</span><span>Nový web</span><span>Menu</span></div>
+                            <span class="carousel-visit">Navštívit web &#8599;</span>
+                        </div>
+                    </a>
                 </div>
-            </a>
-            <div class="portfolio-card">
-                <div class="portfolio-img">
-                    <span class="portfolio-badge">Připravujeme</span>
-                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1"><path d="M5 17l4-8 4 5 3-3 3 6H5z"/><path d="M3 20h18"/></svg>
-                </div>
-                <div class="content">
-                    <h3>AAA Bagr — pronájem bagrů a zemní práce</h3>
-                    <p>Redesign webu pro firmu ze severních Čech. Sklápěče, pronájem bagrů (Schaeff, Kubota, Doosan), vrtání a bourání.</p>
-                    <div class="portfolio-tags"><span class="tag">Stavebnictví</span><span class="tag">Pronájem</span><span class="tag">Redesign</span></div>
-                </div>
-            </div>
-            <div class="portfolio-card">
-                <div class="portfolio-img">
-                    <span class="portfolio-badge">Připravujeme</span>
-                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1"><path d="M3 13l2-5h14l2 5v5H3v-5z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
-                </div>
-                <div class="content">
-                    <h3>Autoservis Karel Ekart — Vsetín</h3>
-                    <p>Redesign webu rodinného autoservisu. Kompletní servis všech značek, pneuservis, odtahová služba.</p>
-                    <div class="portfolio-tags"><span class="tag">Autoservis</span><span class="tag">Lokální</span><span class="tag">Redesign</span></div>
-                </div>
-            </div>
-            <div class="portfolio-card">
-                <div class="portfolio-img">
-                    <span class="portfolio-badge">Připravujeme</span>
-                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3"/></svg>
-                </div>
-                <div class="content">
-                    <h3>Autoservis Schneider — pneuservis Zlín</h3>
-                    <p>Modernizace webu z roku 2012. Autoservis, pneuservis, servis klimatizací, tažná zařízení.</p>
-                    <div class="portfolio-tags"><span class="tag">Autoservis</span><span class="tag">Pneuservis</span><span class="tag">Redesign</span></div>
-                </div>
-            </div>
-            <div class="portfolio-card">
-                <div class="portfolio-img">
-                    <span class="portfolio-badge">Připravujeme</span>
-                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1"><path d="M4 21V7l8-4 8 4v14"/><path d="M9 21v-6h6v6"/><path d="M4 11h16"/></svg>
-                </div>
-                <div class="content">
-                    <h3>Advokátní kancelář JUDr. Hana Levová</h3>
-                    <p>Redesign webu karlovarské advokátní kanceláře. Občanské, obchodní, rodinné i trestní právo.</p>
-                    <div class="portfolio-tags"><span class="tag">Právo</span><span class="tag">Redesign</span><span class="tag">Karlovy Vary</span></div>
-                </div>
-            </div>
-            <a class="portfolio-card" href="https://hodinovymanzell.netlify.app" target="_blank" rel="noopener noreferrer">
-                <div class="portfolio-img">
-                    <div class="portfolio-preview"><img src="https://image.thum.io/get/width/900/crop/600/noanimate/https://hodinovymanzell.netlify.app" alt="Náhled webu" loading="lazy"></div>
-                    <span class="portfolio-overlay">Otevřít &#8599;</span>
-                </div>
-                <div class="content">
-                    <h3>Hodinový manžel Opava</h3>
-                    <p>Nový web pro lokální službu „hodinového manžela". Drobné opravy, montáže, údržba domácností.</p>
-                    <div class="portfolio-tags"><span class="tag">Služby</span><span class="tag">Lokální</span><span class="tag">OSVČ</span></div>
-                </div>
-            </a>
-            <a class="portfolio-card" href="https://cameliad.netlify.app" target="_blank" rel="noopener noreferrer">
-                <div class="portfolio-img">
-                    <div class="portfolio-preview"><img src="https://image.thum.io/get/width/900/crop/600/noanimate/https://cameliad.netlify.app" alt="Náhled webu" loading="lazy"></div>
-                    <span class="portfolio-overlay">Otevřít &#8599;</span>
-                </div>
-                <div class="content">
-                    <h3>Camelia — dekorace a dárky Zlín</h3>
-                    <p>Nový web pro zlínský obchod s dárky a dekoracemi. Vyzdvižení půjčovny dekorací na svatby a oslavy.</p>
-                    <div class="portfolio-tags"><span class="tag">Maloobchod</span><span class="tag">Svatby</span><span class="tag">Redesign</span></div>
-                </div>
-            </a>
-            <a class="portfolio-card" href="https://prosterestaurace.netlify.app" target="_blank" rel="noopener noreferrer">
-                <div class="portfolio-img">
-                    <div class="portfolio-preview"><img src="https://image.thum.io/get/width/900/crop/600/noanimate/https://prosterestaurace.netlify.app" alt="Náhled webu" loading="lazy"></div>
-                    <span class="portfolio-overlay">Otevřít &#8599;</span>
-                </div>
-                <div class="content">
-                    <h3>prostē Restaurace — polední menu Zlín</h3>
-                    <p>První vlastní web pro polední restauraci v Baťově areálu. Denní menu, otevírací doba, rezervace.</p>
-                    <div class="portfolio-tags"><span class="tag">Gastro</span><span class="tag">Nový web</span><span class="tag">Menu</span></div>
-                </div>
-            </a>
-            <a class="portfolio-card" href="https://skolakavy.netlify.app" target="_blank" rel="noopener noreferrer">
-                <div class="portfolio-img">
-                    <div class="portfolio-preview"><img src="https://image.thum.io/get/width/900/crop/600/noanimate/https://skolakavy.netlify.app" alt="Náhled webu" loading="lazy"></div>
-                    <span class="portfolio-overlay">Otevřít &#8599;</span>
-                </div>
-                <div class="content">
-                    <h3>Škola kávy — baristické vzdělávání</h3>
-                    <p>Redesign webu pro tým Roberta a Štěpánky (vazba na Mistrovství baristů ČR). Přednášky, konzultace, zakázkové pražení.</p>
-                    <div class="portfolio-tags"><span class="tag">Vzdělávání</span><span class="tag">Káva</span><span class="tag">Redesign</span></div>
-                </div>
-            </a>
-            <a class="portfolio-card" href="demo/demo-eshop.html">
-                <div class="portfolio-img">
-                    <div class="portfolio-preview"><iframe src="demo/demo-eshop.html" loading="lazy" tabindex="-1" aria-hidden="true" style="position:absolute;top:0;left:0;width:1400px;height:933px;border:0;transform:scale(0.286);transform-origin:0 0;pointer-events:none;background:#fff;"></iframe></div>
-                    <span class="portfolio-overlay">Zobrazit demo &#8599;</span>
-                </div>
-                <div class="content">
-                    <h3>E-shop MadeByHand.cz</h3>
-                    <p>Multi-vendor e-commerce pro řemeslníky. Online platby, napojení na Zásilkovnu. 200+ objednávek za 3 měsíce.</p>
-                    <div class="portfolio-tags"><span class="tag">E-commerce</span><span class="tag">Multi-vendor</span><span class="tag">Platby</span></div>
-                </div>
-            </a>
-            <a class="portfolio-card" href="demo/demo-reality.html">
-                <div class="portfolio-img">
-                    <div class="portfolio-preview"><iframe src="demo/demo-reality.html" loading="lazy" tabindex="-1" aria-hidden="true" style="position:absolute;top:0;left:0;width:1400px;height:933px;border:0;transform:scale(0.286);transform-origin:0 0;pointer-events:none;background:#fff;"></iframe></div>
-                    <span class="portfolio-overlay">Zobrazit demo &#8599;</span>
-                </div>
-                <div class="content">
-                    <h3>AI asistent — BydlímTu Reality</h3>
-                    <p>Chatbot napojený na databázi nemovitostí. Odpovídá 24/7, kvalifikuje leady. Konverze +25%.</p>
-                    <div class="portfolio-tags"><span class="tag">AI / Chatbot</span><span class="tag">API</span><span class="tag">Lead gen</span></div>
-                </div>
-            </a>
-            <div class="portfolio-card">
-                <div class="portfolio-img">
-                    <span class="portfolio-badge">Case study</span>
-                    <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" stroke-width="1"><path d="M3 3v18h18"/><path d="M7 16l4-6 4 4 6-8"/></svg>
-                </div>
-                <div class="content">
-                    <h3>Automatizace fakturace — Účetní kancelář Novotný</h3>
-                    <p>Automatický systém: stahuje data, generuje faktury, odesílá klientům. Úspora 15h/měsíc.</p>
-                    <div class="portfolio-tags"><span class="tag">Automatizace</span><span class="tag">Python</span><span class="tag">Email</span></div>
+                <div class="carousel-slide" data-url="https://skolakavy.netlify.app">
+                    <a href="https://skolakavy.netlify.app" target="_blank" rel="noopener noreferrer">
+                        <div class="carousel-img"><img src="https://image.thum.io/get/width/1200/crop/675/noanimate/https://skolakavy.netlify.app" alt="Škola kávy"></div>
+                        <div class="carousel-info">
+                            <h3>Škola kávy — baristické vzdělávání</h3>
+                            <p>Redesign pro tým Roberta a Štěpánky. Přednášky, konzultace pro kavárny, zakázkové pražení.</p>
+                            <div class="carousel-tags"><span>Vzdělávání</span><span>Káva</span><span>Redesign</span></div>
+                            <span class="carousel-visit">Navštívit web &#8599;</span>
+                        </div>
+                    </a>
                 </div>
             </div>
+            <button class="carousel-btn prev" id="carouselPrev" aria-label="Předchozí">&#8249;</button>
+            <button class="carousel-btn next" id="carouselNext" aria-label="Další">&#8250;</button>
         </div>
+        <div class="carousel-dots" id="carouselDots"></div>
+        <div class="carousel-counter" id="carouselCounter"></div>
     </div>
 </section>
 
@@ -593,5 +559,61 @@
     </div>
 </footer>
 
+<script>
+(function(){
+    const track = document.getElementById('carouselTrack');
+    const slides = Array.from(track.children);
+    const total = slides.length;
+    const dotsWrap = document.getElementById('carouselDots');
+    const counter = document.getElementById('carouselCounter');
+    let idx = 0, auto, dragging = false, startX = 0, dragDelta = 0;
+
+    // Build dots
+    slides.forEach((_,i) => {
+        const d = document.createElement('button');
+        d.className = 'carousel-dot' + (i===0?' active':'');
+        d.setAttribute('aria-label','Slide '+(i+1));
+        d.onclick = () => go(i);
+        dotsWrap.appendChild(d);
+    });
+
+    function update(animate){
+        track.style.transition = animate ? 'transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94)' : 'none';
+        track.style.transform = 'translateX(-' + (idx * 100) + '%)';
+        dotsWrap.querySelectorAll('.carousel-dot').forEach((d,i) => d.classList.toggle('active', i===idx));
+        counter.textContent = (idx+1) + ' / ' + total;
+    }
+
+    function go(i){
+        idx = ((i % total) + total) % total;
+        update(true);
+        resetAuto();
+    }
+
+    document.getElementById('carouselPrev').onclick = () => go(idx - 1);
+    document.getElementById('carouselNext').onclick = () => go(idx + 1);
+
+    // Keyboard
+    document.getElementById('carousel').addEventListener('keydown', e => {
+        if(e.key==='ArrowLeft') go(idx-1);
+        if(e.key==='ArrowRight') go(idx+1);
+    });
+
+    // Touch / drag
+    track.addEventListener('touchstart', e => { dragging=true; startX=e.touches[0].clientX; }, {passive:true});
+    track.addEventListener('touchmove', e => { if(!dragging) return; dragDelta=e.touches[0].clientX - startX; track.style.transition='none'; track.style.transform='translateX(calc(-'+(idx*100)+'% + '+dragDelta+'px))'; }, {passive:true});
+    track.addEventListener('touchend', () => { if(!dragging) return; dragging=false; if(Math.abs(dragDelta)>50) go(idx + (dragDelta<0?1:-1)); else update(true); dragDelta=0; });
+
+    // Auto-play
+    function resetAuto(){ clearInterval(auto); auto = setInterval(() => go(idx+1), 5000); }
+    resetAuto();
+
+    // Pause on hover
+    document.getElementById('carousel').addEventListener('mouseenter', () => clearInterval(auto));
+    document.getElementById('carousel').addEventListener('mouseleave', resetAuto);
+
+    update(false);
+})();
+</script>
 </body>
 </html>
