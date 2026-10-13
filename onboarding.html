@@ -245,8 +245,10 @@ textarea{min-height:100px;resize:vertical}
       </div>
       <div class="btn-row">
         <button class="btn btn-back" onclick="prevStep(5)">← Zpět</button>
-        <button class="btn btn-next" onclick="submitForm()">Odeslat poptávku ✉️</button>
+        <button class="btn btn-next" id="sendBtn" onclick="submitForm()">Odeslat poptávku ✉️</button>
       </div>
+      <p id="sendError" role="alert" style="display:none;margin-top:1rem;color:#b42318;font-size:0.9rem"></p>
+      <p style="margin-top:1rem;font-size:0.8rem;color:var(--gray)">Údaje použiji jen k vyřízení vaší poptávky. Více v <a href="ochrana-udaju.html">zásadách ochrany osobních údajů</a>.</p>
     </div>
   </div>
 
@@ -266,6 +268,13 @@ textarea{min-height:100px;resize:vertical}
 
   <a href="index.html" class="back-link">← Zpět na hlavní stránku</a>
 </div>
+
+<!-- Netlify Forms: skrytá kopie polí, podle které Netlify formulář pozná při nasazení -->
+<form name="poptavka" data-netlify="true" netlify-honeypot="bot-field" hidden>
+  <input type="text" name="jmeno"><input type="text" name="firma"><input type="email" name="email"><input type="tel" name="telefon">
+  <input type="text" name="typ"><input type="text" name="rozpocet"><input type="text" name="termin"><input type="text" name="doplnky">
+  <input type="text" name="web"><textarea name="popis"></textarea><textarea name="poznamky"></textarea><input type="text" name="bot-field">
+</form>
 
 <script>
 function escHTML(s){if(!s)return"";return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
@@ -326,7 +335,7 @@ const deadlineNames = { asap:'Co nejdříve', mesic:'Do 1 měsíce', '3mesice':'
 function buildSummary() {
   const extras = [...document.querySelectorAll('.checkbox-group input:checked')].map(c => c.parentElement.textContent.trim());
   let html = '';
-  const row = (l,v) => `<div class="summary-row"><span class="summary-label">${l}</span><span class="summary-value">${v||'—'}</span></div>`;
+  const row = (l,v) => `<div class="summary-row"><span class="summary-label">${l}</span><span class="summary-value">${escHTML(v)||'—'}</span></div>`;
   html += row('Jméno', document.getElementById('name').value);
   html += row('Firma', document.getElementById('company').value);
   html += row('Email', document.getElementById('email').value);
@@ -336,37 +345,59 @@ function buildSummary() {
   html += row('Termín', deadlineNames[document.getElementById('deadline').value] || '—');
   if (extras.length) html += row('Doplňky', extras.join(', '));
   if (document.getElementById('currentWeb').value) html += row('Web', document.getElementById('currentWeb').value);
-  html += `<div style="margin-top:1rem;padding:1rem;background:var(--bg);border-radius:10px"><strong style="font-size:0.85rem;color:var(--primary)">Popis projektu:</strong><p style="font-size:0.9rem;color:var(--gray);margin-top:0.25rem">${document.getElementById('projectDesc').value}</p></div>`;
+  html += `<div style="margin-top:1rem;padding:1rem;background:var(--bg);border-radius:10px"><strong style="font-size:0.85rem;color:var(--primary)">Popis projektu:</strong><p style="font-size:0.9rem;color:var(--gray);margin-top:0.25rem">${escHTML(document.getElementById('projectDesc').value)}</p></div>`;
   if (document.getElementById('notes').value) {
-    html += `<div style="margin-top:0.5rem;padding:1rem;background:var(--bg);border-radius:10px"><strong style="font-size:0.85rem;color:var(--primary)">Poznámky:</strong><p style="font-size:0.9rem;color:var(--gray);margin-top:0.25rem">${document.getElementById('notes').value}</p></div>`;
+    html += `<div style="margin-top:0.5rem;padding:1rem;background:var(--bg);border-radius:10px"><strong style="font-size:0.85rem;color:var(--primary)">Poznámky:</strong><p style="font-size:0.9rem;color:var(--gray);margin-top:0.25rem">${escHTML(document.getElementById('notes').value)}</p></div>`;
   }
   document.getElementById('summaryContent').innerHTML = html;
 }
 
-function submitForm() {
-  const name = document.getElementById('name').value;
-  const email = document.getElementById('email').value;
-  const company = document.getElementById('company').value;
-  const phone = document.getElementById('phone').value;
-  const type = typeNames[selections.projectType] || '';
-  const budget = budgetNames[document.getElementById('budget').value] || '';
-  const deadline = deadlineNames[document.getElementById('deadline').value] || '';
-  const desc = document.getElementById('projectDesc').value;
-  const extras = [...document.querySelectorAll('.checkbox-group input:checked')].map(c => c.parentElement.textContent.trim()).join(', ');
-  const web = document.getElementById('currentWeb').value;
-  const notes = document.getElementById('notes').value;
-
-  const subject = encodeURIComponent(`Nová poptávka: ${type} — ${name}`);
-  const body = encodeURIComponent(
-    `NOVÁ POPTÁVKA\n\nJméno: ${name}\nFirma: ${company}\nEmail: ${email}\nTelefon: ${phone}\n\nTyp projektu: ${type}\nRozpočet: ${budget}\nTermín: ${deadline}\n\nPopis:\n${desc}\n\nDoplňky: ${extras}\nSoučasný web: ${web}\nPoznámky: ${notes}`
-  );
-
-  window.location.href = `mailto:o.kudlicka@gmail.com?subject=${subject}&body=${body}`;
-
-  currentStep = 6;
-  document.getElementById('progressBar').style.width = '100%';
-  document.getElementById('progressLabel').textContent = 'Hotovo!';
-  showStep(6);
+async function submitForm() {
+  const btn = document.getElementById('sendBtn');
+  const errBox = document.getElementById('sendError');
+  const val = id => document.getElementById(id).value.trim();
+  const data = {
+    'form-name': 'poptavka',
+    jmeno: val('name'),
+    firma: val('company'),
+    email: val('email'),
+    telefon: val('phone'),
+    typ: typeNames[selections.projectType] || '',
+    rozpocet: budgetNames[document.getElementById('budget').value] || '',
+    termin: deadlineNames[document.getElementById('deadline').value] || '',
+    doplnky: [...document.querySelectorAll('.checkbox-group input:checked')].map(c => c.parentElement.textContent.trim()).join(', '),
+    web: val('currentWeb'),
+    popis: val('projectDesc'),
+    poznamky: val('notes')
+  };
+  errBox.style.display = 'none';
+  btn.disabled = true;
+  btn.textContent = 'Odesílám…';
+  try {
+    const res = await fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(data).toString()
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    currentStep = 6;
+    document.getElementById('progressBar').style.width = '100%';
+    document.getElementById('progressLabel').textContent = 'Hotovo!';
+    showStep(6);
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = 'Odeslat poptávku ✉️';
+    const subject = encodeURIComponent(`Nová poptávka: ${data.typ} — ${data.jmeno}`);
+    const body = encodeURIComponent(
+      `NOVÁ POPTÁVKA\n\nJméno: ${data.jmeno}\nFirma: ${data.firma}\nEmail: ${data.email}\nTelefon: ${data.telefon}\n\nTyp projektu: ${data.typ}\nRozpočet: ${data.rozpocet}\nTermín: ${data.termin}\n\nPopis:\n${data.popis}\n\nDoplňky: ${data.doplnky}\nSoučasný web: ${data.web}\nPoznámky: ${data.poznamky}`
+    );
+    errBox.textContent = 'Poptávku se nepodařilo odeslat. Zkuste to prosím znovu, nebo mi ji pošlete e-mailem: ';
+    const link = document.createElement('a');
+    link.href = `mailto:o.kudlicka@gmail.com?subject=${subject}&body=${body}`;
+    link.textContent = 'o.kudlicka@gmail.com';
+    errBox.appendChild(link);
+    errBox.style.display = 'block';
+  }
 }
 </script>
 <footer style="text-align:center;padding:20px;font-size:12px;color:#666;border-top:1px solid #eee;margin-top:40px;">
