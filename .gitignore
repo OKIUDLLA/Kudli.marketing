@@ -9,3 +9,4 @@ _nastroje/ukazky/ostre/
 __pycache__/
 _nastroje/ukazky/data/*
 !_nastroje/ukazky/data/klic-a-kolo.json
+!_nastroje/ukazky/data/_vzor-skutecna-firma.json

@@ -4,19 +4,20 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Klíč a kolo – autoservis Brno-Líšeň</title>
-<meta name="description" content="Servis, pneuservis a diagnostika v Brně-Líšni. Telefon 123 456 789.">
+<title>Ukázka webu: Klíč a kolo – autoservis Brno-Líšeň</title>
+<meta name="description" content="Servis, pneuservis a diagnostika v Brně-Líšni. Telefon 123 456 789.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="cs_CZ">
-<meta property="og:title" content="Klíč a kolo – autoservis Brno-Líšeň">
-<meta property="og:description" content="Servis, pneuservis a diagnostika v Brně-Líšni. Telefon 123 456 789.">
+<meta property="og:title" content="Ukázka webu: Klíč a kolo – autoservis Brno-Líšeň">
+<meta property="og:description" content="Servis, pneuservis a diagnostika v Brně-Líšni. Telefon 123 456 789.">
 <meta name="theme-color" content="#0e1116">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=&#x27;http://www.w3.org/2000/svg&#x27; viewBox=&#x27;0 0 64 64&#x27;%3E%3Crect width=&#x27;64&#x27; height=&#x27;64&#x27; rx=&#x27;14&#x27; fill=&#x27;%23d0312d&#x27;/%3E%3Ctext x=&#x27;32&#x27; y=&#x27;42&#x27; font-family=&#x27;Arial,Helvetica,sans-serif&#x27; font-size=&#x27;28&#x27; font-weight=&#x27;700&#x27; text-anchor=&#x27;middle&#x27; fill=&#x27;%23ffffff&#x27;%3EKK%3C/text%3E%3C/svg%3E">
 <style>
 :root{
   --ink:#0e1116;--ink-line:rgba(255,255,255,.1);
   --bg:#f4f5f7;--card:#fff;--text:#16191f;--muted:#596170;--line:#e2e5ea;
-  --accent:#d0312d;--accent-ink:#ffffff;--accent-soft:rgba(208,49,45,.11);--accent-text:#d0312d;--accent-dark:#d7504c;--accent-glow:rgba(208,49,45,.30);
+  --accent-text:#d0312d;--accent-dark:#d74e4a;--accent-soft:rgba(208,49,45,.11);--accent-glow:rgba(208,49,45,.30);
+  --btn-d:#d0312d;--btn-d-ink:#ffffff;--btn-l:#d0312d;--btn-l-ink:#ffffff;
   --r:16px;--wrap:1140px;
 }
 *,*::before,*::after{box-sizing:border-box}
@@ -24,7 +25,6 @@ html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth;
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
 body{margin:0;font:400 16px/1.6 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;color:var(--text);background:var(--ink);-webkit-font-smoothing:antialiased}
 main{display:block;background:var(--bg)}
-.nw{white-space:nowrap}
 h1,h2,h3{text-wrap:balance}
 a{color:inherit}
 .wrap{width:min(var(--wrap),100% - 32px);margin-inline:auto}
@@ -36,7 +36,8 @@ a{color:inherit}
 /* Tlačítka */
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:.55em;min-height:48px;padding:.7em 1.25em;border-radius:999px;border:2px solid transparent;font:inherit;font-weight:700;line-height:1.2;text-decoration:none;cursor:pointer;transition:transform .15s,background-color .15s,border-color .15s,filter .15s}
 .btn:hover{transform:translateY(-1px)}
-.btn-accent{background:var(--accent);color:var(--accent-ink)}
+.btn-accent{background:var(--btn-l);color:var(--btn-l-ink)}
+.top .btn-accent,.hero .btn-accent{background:var(--btn-d);color:var(--btn-d-ink)}
 .btn-accent:hover{filter:brightness(1.08)}
 .btn-ghost{color:#fff;border-color:rgba(255,255,255,.3)}
 .btn-ghost:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.5)}
@@ -49,7 +50,7 @@ a{color:inherit}
 .top{position:sticky;top:0;z-index:20;background:rgba(14,17,22,.94);-webkit-backdrop-filter:saturate(1.4) blur(10px);backdrop-filter:saturate(1.4) blur(10px);border-bottom:1px solid var(--ink-line)}
 .top-in{display:flex;align-items:center;gap:16px;min-height:64px}
 .brand{display:flex;align-items:center;gap:10px;min-width:0;margin-right:auto;color:#fff;text-decoration:none;font-weight:800}
-.mark{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:10px;background:var(--accent);color:var(--accent-ink);font-size:.9rem;letter-spacing:.02em}
+.mark{display:grid;place-items:center;width:38px;height:38px;flex:none;border-radius:10px;background:var(--btn-d);color:var(--btn-d-ink);font-size:.9rem;letter-spacing:.02em}
 .brand-name{overflow:hidden;white-space:nowrap;text-overflow:ellipsis;font-size:1.05rem}
 .nav{display:none}
 .top-call{min-height:42px;padding:.5em .85em}
@@ -65,12 +66,12 @@ a{color:inherit}
 .hero{position:relative;isolation:isolate;overflow:hidden;background:var(--ink);color:#fff}
 .hero::before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(60% 70% at 88% 0%,var(--accent-glow),transparent 70%),radial-gradient(45% 55% at 0% 100%,rgba(255,255,255,.05),transparent 70%)}
 .hero::after{content:"";position:absolute;inset:0;z-index:-1;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:48px 48px;-webkit-mask-image:linear-gradient(#000 20%,transparent 85%);mask-image:linear-gradient(#000 20%,transparent 85%)}
-.hero-in{display:grid;gap:36px;padding:52px 0 60px}
+.hero-in{display:grid;grid-template-columns:minmax(0,1fr);gap:36px;padding:52px 0 60px}
 @media (min-width:900px){.hero-in{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);align-items:center;gap:56px;padding:96px 0 104px}}
 .eyebrow{display:inline-block;margin:0 0 18px;padding:6px 12px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(255,255,255,.05);color:#cfd6e0;font-size:.78rem;font-weight:600;letter-spacing:.07em;text-transform:uppercase}
 h1{margin:0 0 18px;font-size:clamp(2.3rem,7.2vw,4.3rem);line-height:1.04;letter-spacing:-.03em;font-weight:800;overflow-wrap:break-word}
 h1 .hl{color:var(--accent-dark)}
-.lead{max-width:34em;margin:0 0 28px;color:#c3cbd6;font-size:clamp(1.05rem,2.2vw,1.22rem)}
+.lead{max-width:34em;margin:0 0 28px;color:#c3cbd6;font-size:clamp(1.05rem,2.2vw,1.22rem);overflow-wrap:break-word}
 .live{display:inline-flex;align-items:center;gap:10px;margin:-6px 0 26px;padding:7px 15px 7px 13px;border:1px solid rgba(255,255,255,.14);border-radius:999px;background:rgba(255,255,255,.06);color:#e6ebf1;font-size:.95rem;font-weight:600}
 .live[hidden]{display:none}
 .dot{width:9px;height:9px;flex:none;border-radius:50%;background:#9aa4b1}
@@ -96,7 +97,7 @@ h1 .hl{color:var(--accent-dark)}
 .hours dd{display:flex;flex-wrap:wrap;justify-content:flex-end;column-gap:.35em;margin:0;text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
 .hours dd span{white-space:nowrap}
 .hours dd.closed{color:#8d97a5;font-weight:500}
-.today{margin-left:8px;padding:2px 8px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;vertical-align:1px}
+.today{margin-left:4px;padding:2px 8px;border-radius:999px;background:var(--btn-d);color:var(--btn-d-ink);font-size:.7rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;vertical-align:1px}
 .hours-note{margin:12px 12px 0;color:#9aa4b1;font-size:.88rem}
 
 /* Sekce */
@@ -121,21 +122,21 @@ h1 .hl{color:var(--accent-dark)}
 .brands li{padding:6px 13px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:.92rem;font-weight:600}
 
 /* Pruh s telefonem */
-.band{background:var(--accent);color:var(--accent-ink)}
+.band{background:var(--btn-l);color:var(--btn-l-ink)}
 .band-in{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px 24px;padding:40px 0}
 .band h2{margin:0 0 4px;font-size:clamp(1.5rem,3.6vw,2rem);line-height:1.2;letter-spacing:-.01em}
 .band p{margin:0;opacity:.92}
 
 /* Kontakt */
 .contact{border-top:1px solid var(--line);background:var(--card)}
-.contact-grid{display:grid;gap:20px}
+.contact-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
 @media (min-width:900px){.contact-grid{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:28px}}
 .place{overflow:hidden;border:1px solid var(--line);border-radius:20px;background:#fff}
 .place-map{position:relative;height:190px;background-color:#e7ebf0;background-image:linear-gradient(90deg,transparent 46%,#fff 46%,#fff 50%,transparent 50%),linear-gradient(0deg,transparent 57%,#fff 57%,#fff 62%,transparent 62%),linear-gradient(28deg,transparent 70%,rgba(255,255,255,.9) 70%,rgba(255,255,255,.9) 72.5%,transparent 72.5%),repeating-linear-gradient(90deg,transparent 0 62px,rgba(255,255,255,.65) 62px 65px),repeating-linear-gradient(0deg,transparent 0 46px,rgba(255,255,255,.65) 46px 49px),radial-gradient(30% 42% at 18% 26%,#d5e6d3 0 98%,transparent 100%)}
-.pin{position:absolute;left:48%;top:59.5%;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--accent);color:var(--accent-ink);box-shadow:0 0 0 10px var(--accent-soft),0 10px 24px rgba(0,0,0,.18);transform:translate(-50%,-50%)}
+.pin{position:absolute;left:48%;top:59.5%;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--btn-l);color:var(--btn-l-ink);box-shadow:0 0 0 10px var(--accent-soft),0 10px 24px rgba(0,0,0,.18);transform:translate(-50%,-50%)}
 .pin .i{width:26px;height:26px}
 .place-body{padding:22px}
-.addr{margin:0 0 16px;font-size:1.05rem;line-height:1.55}
+.addr{margin:0 0 16px;font-size:1.05rem;line-height:1.55;overflow-wrap:break-word}
 .place-links{display:flex;flex-wrap:wrap;gap:10px}
 .clist{display:grid;align-content:start;gap:12px;margin:0;padding:0;list-style:none}
 .clist li{display:flex;align-items:center;gap:14px;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:#fff}
@@ -150,10 +151,24 @@ a.cv:hover{color:var(--accent-text)}
 .foot p{margin:0 0 6px}
 .foot strong{color:#fff}
 .foot a{color:#d6dce4}
-@media print{#kudli-demo-banner{display:none!important}}
+/* Tisk: bez tmavých ploch */
+@media print{
+  *{color:#000!important;background:transparent!important;box-shadow:none!important}
+  .top{position:static}
+  .hero::before,.hero::after,.place-map,.ctas,.live,.skip,.top-call{display:none!important}
+  body{padding-bottom:0!important}
+}
+/* Ukázka: lišta dole, při tisku upozornění nahoře */
+#kudli-demo-banner a:focus-visible{outline:2px solid #fff!important;outline-offset:2px!important}
+.print-note{display:none}
+@media print{
+  #kudli-demo-banner{display:none!important}
+  .print-note{display:block;margin:0 0 12px;padding:8px 0;border-bottom:1px solid #000;font-size:12px}
+}
 </style>
 </head>
 <body>
+<p class="print-note">Ukázka šablony, firma je vymyšlená. Připravil Kudli. marketing.</p>
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none"><symbol id="i-activity" viewBox="0 0 24 24"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></symbol><symbol id="i-calendar-check" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/><path d="m9 16 2 2 4-4"/></symbol><symbol id="i-clipboard-check" viewBox="0 0 24 24"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/></symbol><symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></symbol><symbol id="i-crosshair" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="22" x2="18" y1="12" y2="12"/><line x1="6" x2="2" y1="12" y2="12"/><line x1="12" x2="12" y1="6" y2="2"/><line x1="12" x2="12" y1="22" y2="18"/></symbol><symbol id="i-disc-3" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M6 12c0-1.7.7-3.2 1.8-4.2"/><circle cx="12" cy="12" r="2"/><path d="M18 12c0 1.7-.7 3.2-1.8 4.2"/></symbol><symbol id="i-life-buoy" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m4.93 4.93 4.24 4.24"/><path d="m14.83 9.17 4.24-4.24"/><path d="m14.83 14.83 4.24 4.24"/><path d="m9.17 14.83-4.24 4.24"/><circle cx="12" cy="12" r="4"/></symbol><symbol id="i-mail" viewBox="0 0 24 24"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></symbol><symbol id="i-map-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"/><circle cx="12" cy="10" r="3"/></symbol><symbol id="i-navigation" viewBox="0 0 24 24"><polygon points="3 11 22 2 13 21 11 13 3 11"/></symbol><symbol id="i-phone" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></symbol><symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></symbol><symbol id="i-snowflake" viewBox="0 0 24 24"><line x1="2" x2="22" y1="12" y2="12"/><line x1="12" x2="12" y1="2" y2="22"/><path d="m20 16-4-4 4-4"/><path d="m4 8 4 4-4 4"/><path d="m16 4-4 4-4-4"/><path d="m8 20 4-4 4 4"/></symbol><symbol id="i-warehouse" viewBox="0 0 24 24"><path d="M22 8.35V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8.35A2 2 0 0 1 3.26 6.5l8-3.2a2 2 0 0 1 1.48 0l8 3.2A2 2 0 0 1 22 8.35Z"/><path d="M6 18h12"/><path d="M6 14h12"/><rect width="12" height="12" x="6" y="10"/></symbol><symbol id="i-wrench" viewBox="0 0 24 24"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></symbol></svg>
 <a class="skip" href="#obsah">Přeskočit na obsah</a>
 <header class="top">
@@ -177,18 +192,18 @@ a.cv:hover{color:var(--accent-text)}
     <div>
       <p class="eyebrow">Autoservis · Brno-Líšeň</p>
       <h1>Klíč a <span class="hl">kolo</span></h1>
-      <p class="lead">Servis, pneuservis a diagnostika <span class="nw">v Brně-Líšni</span>.</p>
+      <p class="lead">Servis, pneuservis a diagnostika v Brně‑Líšni.</p>
       <p class="live" hidden data-hodiny="[[[420,720],[750,990]],[[420,720],[750,990]],[[420,720],[750,990]],[[420,720],[750,990]],[[420,840]],[],[]]" data-svatky="zavreno"><span class="dot" aria-hidden="true"></span><span class="live-t"></span></p>
       <div class="ctas">
         <a class="btn btn-accent btn-lg" href="#kontakt"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg>Zavolat&nbsp;123 456 789</a>
         <a class="btn btn-ghost btn-lg" href="#kontakt"><svg class="i" aria-hidden="true"><use href="#i-navigation"/></svg>Navigovat</a>
       </div>
-      <ul class="chips"><li><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg>Po–Čt 7:00–16:30 s přestávkou</li><li><svg class="i" aria-hidden="true"><use href="#i-map-pin"/></svg>Brno-Líšeň</li><li><svg class="i" aria-hidden="true"><use href="#i-calendar-check"/></svg>Od roku 2009</li></ul>
+      <ul class="chips"><li><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg>Po–Čt 7:00–16:30 s přestávkou, Pá 7:00–14:00</li><li><svg class="i" aria-hidden="true"><use href="#i-map-pin"/></svg>Brno-Líšeň</li><li><svg class="i" aria-hidden="true"><use href="#i-calendar-check"/></svg>Od roku 2009</li></ul>
     </div>
     <section class="hours" id="hodiny" aria-labelledby="hodiny-h">
       <h2 id="hodiny-h"><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg>Otevírací doba</h2>
       <dl><div class="row" data-d="1"><dt>Pondělí</dt><dd><span>7:00–12:00,</span><span>12:30–16:30</span></dd></div><div class="row" data-d="2"><dt>Úterý</dt><dd><span>7:00–12:00,</span><span>12:30–16:30</span></dd></div><div class="row" data-d="3"><dt>Středa</dt><dd><span>7:00–12:00,</span><span>12:30–16:30</span></dd></div><div class="row" data-d="4"><dt>Čtvrtek</dt><dd><span>7:00–12:00,</span><span>12:30–16:30</span></dd></div><div class="row" data-d="5"><dt>Pátek</dt><dd><span>7:00–14:00</span></dd></div><div class="row" data-d="6"><dt>Sobota</dt><dd class="closed">zavřeno</dd></div><div class="row" data-d="7"><dt>Neděle</dt><dd class="closed">zavřeno</dd></div></dl>
-      <p class="hours-note">Ve státní svátky zavřeno.</p>
+      <p class="hours-note">Ve svátky zavřeno.</p>
           </section>
   </div>
 </section>
@@ -197,11 +212,11 @@ a.cv:hover{color:var(--accent-text)}
   <div class="wrap">
     <div class="head">
       <p class="kicker">Služby</p>
-      <h2>Co u nás zařídíte</h2>
+      <h2>S čím vám pomůžeme</h2>
     </div>
-    <ul class="services"><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-wrench"/></svg></span><div><h3>Servis a údržba</h3><p>Pravidelné prohlídky, výměna oleje a filtrů.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-life-buoy"/></svg></span><div><h3>Pneuservis</h3><p>Přezutí, vyvážení kol, oprava defektu.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-activity"/></svg></span><div><h3>Diagnostika</h3><p>Načtení a vymazání chybových kódů, kontrola řídicích jednotek.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-snowflake"/></svg></span><div><h3>Klimatizace</h3><p>Plnění, kontrola těsnosti, dezinfekce.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-disc-3"/></svg></span><div><h3>Brzdy</h3><p>Destičky, kotouče, brzdová kapalina.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-clipboard-check"/></svg></span><div><h3>Příprava na STK</h3><p>Prohlídka a opravy před technickou kontrolou.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-crosshair"/></svg></span><div><h3>Geometrie</h3><p>Měření a seřízení geometrie náprav.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-warehouse"/></svg></span><div><h3>Uskladnění pneumatik</h3><p>Sezónní sadu pneumatik uložíme do příštího přezutí.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-shield-check"/></svg></span><div><h3>Pojistné události</h3><p>Opravy vozů po nehodě hrazené pojišťovnou.</p></div></li></ul>
+    <ul class="services"><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-wrench"/></svg></span><div><h3>Servis a údržba</h3><p>Pravidelné servisní prohlídky a údržba vozu.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-life-buoy"/></svg></span><div><h3>Pneuservis</h3><p>Přezouvání a vyvažování kol.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-activity"/></svg></span><div><h3>Diagnostika</h3><p>Počítačová diagnostika závad.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-snowflake"/></svg></span><div><h3>Klimatizace</h3><p>Servis a plnění klimatizace.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-disc-3"/></svg></span><div><h3>Brzdy</h3><p>Kontrola a výměna brzdových dílů.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-clipboard-check"/></svg></span><div><h3>Příprava na STK</h3><p>Kontrola vozu před technickou prohlídkou.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-crosshair"/></svg></span><div><h3>Geometrie</h3><p>Měření a seřízení geometrie náprav.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-warehouse"/></svg></span><div><h3>Uskladnění pneumatik</h3><p>Uložení sezónní sady pneumatik.</p></div></li><li class="svc"><span class="svc-ico"><svg class="i" aria-hidden="true"><use href="#i-shield-check"/></svg></span><div><h3>Pojistné události</h3><p>Opravy vozů po pojistné události.</p></div></li></ul>
     <div class="brands">
-      <h3>Značky</h3>
+      <h3>Specializace</h3>
       <ul><li>Škoda</li><li>Volkswagen</li><li>Hyundai</li><li>Kia</li><li>Toyota</li></ul>
     </div>
       </div>
@@ -210,7 +225,7 @@ a.cv:hover{color:var(--accent-text)}
   <div class="wrap band-in">
     <div>
       <h2>Potřebujete termín?</h2>
-      <p>Domluvíme ho po telefonu.</p>
+      <p>Zavolejte nám.</p>
     </div>
     <a class="btn btn-light btn-lg" href="#kontakt"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg>123 456 789</a>
   </div>
@@ -232,7 +247,7 @@ a.cv:hover{color:var(--accent-text)}
           </div>
         </div>
       </div>
-      <ul class="clist"><li><span class="ci"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg></span><div><span class="cl">Telefon</span><a class="cv" href="#kontakt">+420 123 456 789</a></div></li><li><span class="ci"><svg class="i" aria-hidden="true"><use href="#i-mail"/></svg></span><div><span class="cl">E-mail</span><a class="cv" href="#kontakt">servis@example.com</a></div></li><li><span class="ci"><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg></span><div><span class="cl">Otevírací doba</span><a class="cv" href="#hodiny">Po–Čt 7:00–16:30 s přestávkou</a></div></li></ul>
+      <ul class="clist"><li><span class="ci"><svg class="i" aria-hidden="true"><use href="#i-phone"/></svg></span><div><span class="cl">Telefon</span><a class="cv" href="#kontakt">+420 123 456 789</a></div></li><li><span class="ci"><svg class="i" aria-hidden="true"><use href="#i-mail"/></svg></span><div><span class="cl">E-mail</span><a class="cv" href="#kontakt">servis@example.com</a></div></li><li><span class="ci"><svg class="i" aria-hidden="true"><use href="#i-clock"/></svg></span><div><span class="cl">Otevírací doba</span><a class="cv" href="#hodiny">Po–Čt 7:00–16:30 s přestávkou, Pá 7:00–14:00</a></div></li></ul>
     </div>
   </div>
 </section>
@@ -241,30 +256,47 @@ a.cv:hover{color:var(--accent-text)}
 <footer class="foot">
   <div class="wrap">
     <p><strong>Klíč a kolo s.r.o. (vymyšlená firma)</strong>, sídlo Ukázková 12, 628 00 Brno, IČO 12345678</p>
+    <p>Zapsaná v obchodním rejstříku vedeném Krajským soudem v Brně, oddíl C, vložka 00000 (vymyšlený údaj).</p>
     <p>Web: <a href="https://www.kudlimarketing.cz/">Kudli. marketing</a></p>
       </div>
 </footer>
 <script>(function(){try{
-var D=864e5,p={},F=function(m){return Math.floor(m/60)+':'+('0'+m%60).slice(-2)};
-new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Prague',year:'numeric',month:'numeric',day:'numeric',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value});
-var wd={Mon:0,Tue:1,Wed:2,Thu:3,Fri:4,Sat:5,Sun:6}[p.weekday],now=(+p.hour%24)*60+(+p.minute),t0=Date.UTC(+p.year,+p.month-1,+p.day);
-var row=document.querySelector('.hours .row[data-d="'+(wd+1)+'"]');
-if(row){row.classList.add('is-today');var b=document.createElement('span');b.className='today';b.textContent='dnes';row.querySelector('dt').appendChild(b)}
-var el=document.querySelector('.live');if(!el)return;
-var H=JSON.parse(el.getAttribute('data-hodiny')),S=el.getAttribute('data-svatky'),msg='',cls='',NA=['v pondělí','v úterý','ve středu','ve čtvrtek','v pátek','v sobotu','v neděli'];
+var D=864e5,el=document.querySelector('.live'),H=el?JSON.parse(el.getAttribute('data-hodiny')):null,S=el?el.getAttribute('data-svatky'):'';
+var NA=['v pondělí','v úterý','ve středu','ve čtvrtek','v pátek','v sobotu','v neděli'],AK=['pondělí','úterý','středu','čtvrtek','pátek','sobotu','neděli'];
+var F=function(m){return Math.floor(m/60)+':'+('0'+m%60).slice(-2)};
+var fm=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Prague',year:'numeric',month:'numeric',day:'numeric',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'});
 function easter(y){var a=y%19,b=Math.floor(y/100),c=y%100,d=Math.floor(b/4),e=b%4,f=Math.floor((b+8)/25),g=Math.floor((b-f+1)/3),h=(19*a+b-d-g+15)%30,i=Math.floor(c/4),k=c%4,l=(32+2*e+2*i-h-k)%7,m=Math.floor((a+11*h+22*l)/451),n=h+l-7*m+114;return Date.UTC(y,Math.floor(n/31)-1,n%31+1)}
 function hol(t){var x=new Date(t),md=(x.getUTCMonth()+1)+'-'+x.getUTCDate(),e=easter(x.getUTCFullYear());return ['1-1','5-1','5-8','7-5','7-6','9-28','10-28','11-17','12-24','12-25','12-26'].indexOf(md)>-1||t===e-2*D||t===e+D}
-function svatek(k){return S!=='otevreno'&&hol(t0+k*D)}
-if(svatek(0)&&S!=='zavreno'){msg='Dnes je svátek, otevírací doba se může lišit';cls='is-holiday'}
+function run(){
+var p={};fm.formatToParts(new Date()).forEach(function(x){p[x.type]=x.value});
+var wd={Mon:0,Tue:1,Wed:2,Thu:3,Fri:4,Sat:5,Sun:6}[p.weekday],now=(+p.hour%24)*60+(+p.minute),t0=Date.UTC(+p.year,+p.month-1,+p.day);
+var rows=document.querySelectorAll('.hours .row');
+for(var r=0;r<rows.length;r++){var row=rows[r],on=+row.getAttribute('data-d')===wd+1,dt=row.querySelector('dt'),b=dt.querySelector('.today');
+row.classList.toggle('is-today',on);
+if(on&&!b){b=document.createElement('span');b.className='today';b.textContent='dnes';dt.appendChild(document.createTextNode(' '));dt.appendChild(b)}
+else if(!on&&b){dt.removeChild(b.previousSibling);dt.removeChild(b)}}
+if(!el)return;
+function sv(k){return S!=='otevreno'&&hol(t0+k*D)}
+function den(k){return sv(k)&&S==='zavreno'?[]:H[(wd+k)%7]}
+var msg='',cls='',td=H[wd],i,k;
+if(sv(0)&&S!=='zavreno'&&td.length){msg='Dnes je svátek, otevírací doba se může lišit';cls='is-holiday'}
+else if(H.every(function(d){return d.length===1&&d[0][0]===0&&d[0][1]===1440})&&!sv(0)){msg='Otevřeno nonstop';cls='is-open'}
 else{
-var td=svatek(0)?[]:H[wd];
-for(var i=0;i<td.length&&!msg;i++){
-if(now>=td[i][0]&&now<td[i][1]){msg=td[i][0]===0&&td[i][1]===1440?'Otevřeno nonstop':'Otevřeno do '+F(td[i][1]);cls='is-open'}
+td=den(0);
+for(i=0;i<td.length&&!msg;i++){
+if(now>=td[i][0]&&now<td[i][1]){cls='is-open';var end=td[i][1],kk=0;
+while(end===1440&&kk<7){var nx=den(kk+1);if(nx.length&&nx[0][0]===0&&!(sv(kk+1)&&S!=='zavreno')){end=nx[0][1];kk++}else break}
+msg=kk===0?(end===1440?'Otevřeno do půlnoci':'Otevřeno do '+F(end)):'Otevřeno, zavíráme '+(kk===1?'zítra':NA[(wd+kk)%7])+' v '+F(end)}
 else if(now<td[i][0])msg='Zavřeno, otevíráme v '+F(td[i][0])}
-for(var k=1;k<8&&!msg;k++){
-if(svatek(k)){if(S==='zavreno')continue;msg='Zavřeno';break}
-var dn=H[(wd+k)%7];if(dn.length)msg='Zavřeno, otevíráme '+(k===1?'zítra':NA[(wd+k)%7])+' v '+F(dn[0][0])}}
-if(!msg)return;el.querySelector('.live-t').textContent=msg;if(cls)el.classList.add(cls);el.hidden=false;
+for(k=1;k<8&&!msg;k++){var dn=H[(wd+k)%7];
+if(sv(k)){if(S==='zavreno'||!dn.length)continue;msg='Zavřeno';break}
+if(dn.length)msg='Zavřeno, otevíráme '+(k===1?'zítra':k===7?'příští '+AK[(wd+k)%7]:NA[(wd+k)%7])+' v '+F(dn[0][0])}}
+el.className='live'+(cls?' '+cls:'');
+if(!msg){el.hidden=true;return}
+el.querySelector('.live-t').textContent=msg;el.hidden=false}
+run();setInterval(run,60000);
+document.addEventListener('visibilitychange',function(){if(!document.hidden)run()});
+window.addEventListener('pageshow',run);
 }catch(e){}})();</script>
 <!-- Ikony: Lucide (https://lucide.dev), ISC License:
 ISC License
@@ -284,7 +316,7 @@ ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 -->
 <!-- kudli-demo:start -->
-<div id="kudli-demo-banner" role="note" lang="cs" style="all:initial;box-sizing:border-box;display:block;position:fixed;left:0;right:0;bottom:0;z-index:2147483647;width:100%;margin:0;padding:9px 16px calc(9px + env(safe-area-inset-bottom, 0px));background:#14181c;color:#f3f4f6;font:500 13px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;text-align:center;border-top:1px solid rgba(255,255,255,.16);box-shadow:0 -2px 12px rgba(0,0,0,.25)">Ukázka šablony, firma je vymyšlená. Připravil <a href="https://www.kudlimarketing.cz/" target="_blank" rel="noopener" style="all:initial;font:inherit;color:#ffffff;text-decoration:underline;cursor:pointer">Kudli.&nbsp;marketing</a>.</div>
+<aside id="kudli-demo-banner" aria-label="Upozornění" lang="cs" style="all:initial;box-sizing:border-box;display:block;position:fixed;left:0;right:0;bottom:0;z-index:2147483647;width:100%;margin:0;padding:9px 16px calc(9px + env(safe-area-inset-bottom, 0px));background:#14181c;color:#f3f4f6;font:500 13px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;text-align:center;border-top:1px solid rgba(255,255,255,.16);box-shadow:0 -2px 12px rgba(0,0,0,.25)">Ukázka šablony, firma je vymyšlená. Připravil <a href="https://www.kudlimarketing.cz/" style="all:initial;font:inherit;color:#ffffff;text-decoration:underline;cursor:pointer">Kudli.&nbsp;marketing</a>.</aside>
 <script>(function(){try{var b=document.getElementById('kudli-demo-banner');if(!b)return;var d=document.body,t=0;function fit(){var h=b.offsetHeight||0,vh=window.innerHeight||0;d.style.removeProperty('padding-bottom');var base=parseFloat(getComputedStyle(d).paddingBottom)||0;d.style.setProperty('padding-bottom',(base+h)+'px','important');var els=d.getElementsByTagName('*');for(var i=0;i<els.length;i++){var el=els[i];if(el===b||b.contains(el))continue;var o=el.getAttribute('data-kudli-bottom');if(o===null){var cs=getComputedStyle(el);if(cs.position!=='fixed')continue;var r=el.getBoundingClientRect();if(!r.width||!r.height||r.top<vh*0.5||r.bottom<vh-160)continue;o=parseFloat(cs.bottom);if(isNaN(o))continue;el.setAttribute('data-kudli-bottom',String(o));}el.style.setProperty('bottom',(parseFloat(o)+h)+'px','important');}}function later(){clearTimeout(t);t=setTimeout(fit,150);}fit();window.addEventListener('load',fit);window.addEventListener('resize',later);window.addEventListener('scroll',later,{passive:true});setTimeout(fit,1200);setTimeout(fit,3500);}catch(e){}})();</script>
 <!-- kudli-demo:end -->
 </body>

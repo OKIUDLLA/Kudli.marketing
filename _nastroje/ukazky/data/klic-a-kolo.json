@@ -10,7 +10,8 @@
   "telefon": "+420 123 456 789",
   "email": "servis@example.com",
   "ico": "12345678",
-  "zalozeno": 2009,
+  "od_roku": 2009,
+  "rejstrik": "Zapsaná v obchodním rejstříku vedeném Krajským soudem v Brně, oddíl C, vložka 00000 (vymyšlený údaj).",
   "hodiny": {
     "po": ["7:00-12:00", "12:30-16:30"],
     "ut": ["7:00-12:00", "12:30-16:30"],

@@ -1,0 +1,19 @@
+{
+  "slug": "DOPLNIT (např. autoservis-novak)",
+  "nazev": "DOPLNIT (jak se firma sama jmenuje, bez s.r.o.)",
+  "firma": "DOPLNIT (obchodní firma přesně podle ARES)",
+  "pravni_forma": "sro",
+  "obor": "Autoservis",
+  "lokalita": "DOPLNIT (např. Brno-Židenice)",
+  "kde": "DOPLNIT (např. v Brně-Židenicích)",
+  "adresa": {"ulice": "DOPLNIT (provozovna)", "psc": "DOPLNIT", "obec": "DOPLNIT"},
+  "sidlo": "DOPLNIT (sídlo z ARES na jeden řádek; u OSVČ smazat)",
+  "telefon": "DOPLNIT nebo smazat",
+  "email": "DOPLNIT nebo smazat",
+  "ico": "DOPLNIT",
+  "rejstrik": "DOPLNIT (např. Zapsaná v obchodním rejstříku vedeném Krajským soudem v Brně, oddíl C, vložka 12345.)",
+  "hodiny": {"po": [], "ut": [], "st": [], "ct": [], "pa": [], "so": [], "ne": []},
+  "sluzby": [],
+  "zdroje": ["https://ares.gov.cz/ekonomicke-subjekty?ico=DOPLNIT", "DOPLNIT (odkaz na web nebo firmy.cz, odkud je telefon, doba a služby)"],
+  "overeno": "DOPLNIT (RRRR-MM-DD)"
+}
