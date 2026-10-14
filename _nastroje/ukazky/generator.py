@@ -467,6 +467,9 @@ def sestav(data, ostry=False):
                 raise Chyba("neznámá služba %r (povolené: %s)" % (s, ", ".join(SLUZBY)))
             nazev_s, popis, ico_s, veta = SLUZBY[s]
         elif isinstance(s, dict):
+            navic = set(s) - {"klic", "nazev", "popis", "ikona", "veta"}
+            if navic or not all(isinstance(v, str) for v in s.values()):
+                raise Chyba("vlastní služba smí mít jen texty klic, nazev, popis, ikona, veta: %r" % s)
             if s.get("klic") and s["klic"] not in SLUZBY:
                 raise Chyba("neznámý klíč služby %r" % s["klic"])
             zaklad = SLUZBY.get(s.get("klic", ""), (None, None, "wrench", None))
