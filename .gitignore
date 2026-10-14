@@ -4,3 +4,8 @@
 *~
 Kudli.marketing/
 push-to-github.sh
+_nastroje/ukazky/nahled/
+_nastroje/ukazky/ostre/
+__pycache__/
+_nastroje/ukazky/data/*
+!_nastroje/ukazky/data/klic-a-kolo.json

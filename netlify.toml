@@ -23,6 +23,25 @@
   status = 404
   force = true
 
+# === Ukázky webů pro firmy (/ukazky/<firma>/): nezobrazovat ve vyhledávačích ===
+[[headers]]
+  for = "/ukazky/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+# === Interní nástroje (generátor ukázek): na webu nejsou dostupné ===
+[[redirects]]
+  from = "/_nastroje/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/_nastroje"
+  to = "/404.html"
+  status = 404
+  force = true
+
 # === Force HTTPS + www ===
 [[redirects]]
   from = "http://kudlimarketing.cz/*"

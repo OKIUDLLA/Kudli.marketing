@@ -1,0 +1,27 @@
+{
+  "slug": "klic-a-kolo",
+  "fiktivni": true,
+  "nazev": "Klíč a kolo",
+  "firma": "Klíč a kolo s.r.o. (vymyšlená firma)",
+  "obor": "Autoservis",
+  "lokalita": "Brno-Líšeň",
+  "kde": "v Brně-Líšni",
+  "adresa": {"ulice": "Ukázková 12", "psc": "628 00", "obec": "Brno"},
+  "telefon": "+420 123 456 789",
+  "email": "servis@example.com",
+  "ico": "12345678",
+  "zalozeno": 2009,
+  "hodiny": {
+    "po": ["7:00-12:00", "12:30-16:30"],
+    "ut": ["7:00-12:00", "12:30-16:30"],
+    "st": ["7:00-12:00", "12:30-16:30"],
+    "ct": ["7:00-12:00", "12:30-16:30"],
+    "pa": ["7:00-14:00"],
+    "so": [],
+    "ne": []
+  },
+  "svatky": "zavreno",
+  "sluzby": ["servis", "pneuservis", "diagnostika", "klimatizace", "brzdy", "stk", "geometrie", "uskladneni", "pojistne"],
+  "znacky": ["Škoda", "Volkswagen", "Hyundai", "Kia", "Toyota"],
+  "barva": "#d0312d"
+}
