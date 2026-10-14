@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ukázka webu zdarma — Kudli. marketing</title>
+    <meta name="description" content="Pošlete odkaz na současný web nebo jen název firmy. Připravím nezávaznou ukázku nového webu zdarma. Platíte, jen pokud se rozhodnete web použít.">
+    <meta name="author" content="Kudli. marketing">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.kudlimarketing.cz/ukazka-zdarma">
+    <meta property="og:title" content="Ukázka webu zdarma — Kudli. marketing">
+    <meta property="og:description" content="Nezávazná ukázka nového webu pro vaši firmu. Platíte, jen pokud se rozhodnete web použít.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.kudlimarketing.cz/ukazka-zdarma">
+    <meta property="og:locale" content="cs_CZ">
+    <meta property="og:image" content="https://www.kudlimarketing.cz/og-image.png">
+    <style>
+        :root {
+            --bg: #F5F3EE;
+            --bg-alt: #EDEAE4;
+            --white: #FFFFFF;
+            --dark: #1A1A1A;
+            --text: #1A1A1A;
+            --text-mid: #555;
+            --text-light: #8a857c;
+            --border: #DDD9D0;
+            --error: #b42318;
+            --ok: #1d6b3f;
+        }
+        * { margin:0; padding:0; box-sizing:border-box; }
+        html { scroll-behavior:smooth; }
+        @media (prefers-reduced-motion: reduce) { html { scroll-behavior:auto; } }
+        body { font-family:-apple-system, 'Helvetica Neue', system-ui, sans-serif; color:var(--text); line-height:1.7; background:var(--bg); }
+        a { color:var(--dark); }
+        :focus-visible { outline:2px solid var(--dark); outline-offset:3px; }
+
+        .btn { display:inline-block; padding:0.85rem 2.2rem; border-radius:6px; text-decoration:none; font-weight:600; font-size:0.88rem; transition:all 0.3s; cursor:pointer; border:none; letter-spacing:0.02em; }
+        .btn-primary { background:var(--dark); color:var(--bg); }
+        .btn-primary:hover { background:#333; }
+        .btn-primary:disabled { opacity:0.6; cursor:default; }
+
+        .site-nav { position:sticky; top:0; width:100%; background:rgba(245,243,238,0.92); backdrop-filter:blur(20px); z-index:100; border-bottom:1px solid var(--border); }
+        .site-nav .inner { max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; align-items:center; gap:1rem; height:56px; padding:0 2rem; }
+        .site-nav .nav-logo { font-weight:800; font-size:0.95rem; color:var(--dark); text-decoration:none; letter-spacing:-0.02em; }
+        .site-nav .nav-logo span { color:var(--text-light); }
+        .site-nav ul { list-style:none; display:flex; gap:1.75rem; }
+        .site-nav ul a { color:var(--text-mid); text-decoration:none; font-size:0.82rem; font-weight:500; }
+        .site-nav ul a:hover { color:var(--dark); }
+
+        .wrap { max-width:760px; margin:0 auto; padding:0 2rem; }
+        .section-label { font-size:0.7rem; text-transform:uppercase; letter-spacing:3px; color:var(--text-light); margin-bottom:0.75rem; font-weight:600; }
+
+        .intro { padding:5rem 0 3rem; }
+        .intro h1 { font-size:clamp(1.9rem, 4.2vw, 2.8rem); line-height:1.15; letter-spacing:-0.03em; font-weight:800; margin-bottom:1.25rem; text-wrap:balance; }
+        .intro p { font-size:1.05rem; color:var(--text-mid); max-width:60ch; margin-bottom:2rem; }
+
+        .steps { padding:2rem 0 3rem; }
+        .steps h2, .faq h2, .request h2 { font-size:1.5rem; letter-spacing:-0.02em; margin-bottom:1.5rem; }
+        .steps ol { list-style:none; display:grid; gap:1rem; counter-reset:step; }
+        .steps li { counter-increment:step; display:grid; grid-template-columns:2.5rem 1fr; gap:0.25rem 1rem; background:var(--white); border:1px solid var(--border); border-radius:12px; padding:1.25rem 1.5rem; }
+        .steps li::before { content:counter(step); grid-row:span 2; width:2.25rem; height:2.25rem; border-radius:50%; background:var(--dark); color:var(--bg); display:grid; place-items:center; font-weight:700; font-size:0.9rem; }
+        .steps li strong { font-size:1rem; }
+        .steps li span { color:var(--text-mid); font-size:0.95rem; }
+
+        .request { padding:2rem 0 3rem; }
+        .request form { background:var(--white); border:1px solid var(--border); border-radius:12px; padding:2rem; display:grid; gap:1.1rem; }
+        .row2 { display:grid; grid-template-columns:1fr 1fr; gap:1.1rem; }
+        label { display:grid; gap:0.35rem; font-size:0.85rem; font-weight:600; }
+        label .opt { font-weight:400; color:var(--text-light); }
+        input[type=text], input[type=email], input[type=tel], textarea { width:100%; font:inherit; font-size:0.95rem; padding:0.7rem 0.85rem; border:1px solid var(--border); border-radius:8px; background:var(--bg); color:var(--text); }
+        textarea { min-height:90px; resize:vertical; }
+        input:focus, textarea:focus { outline:2px solid var(--dark); outline-offset:1px; border-color:var(--dark); }
+        .check { display:grid; grid-template-columns:auto 1fr; gap:0.6rem; align-items:start; font-weight:400; font-size:0.88rem; color:var(--text-mid); }
+        .check input { width:1.1rem; height:1.1rem; margin-top:0.25rem; accent-color:var(--dark); }
+        .hp { position:absolute; left:-9999px; width:1px; height:1px; overflow:hidden; }
+        .note { font-size:0.8rem; color:var(--text-light); }
+        .msg { font-size:0.95rem; display:none; }
+        .msg.err { color:var(--error); }
+        .done { display:none; background:var(--white); border:1px solid var(--border); border-radius:12px; padding:2rem; }
+        .done h3 { font-size:1.25rem; margin-bottom:0.5rem; }
+        .done p { color:var(--text-mid); }
+
+        .faq { padding:2rem 0 4rem; }
+        .faq dl { display:grid; gap:1.25rem; }
+        .faq dt { font-weight:700; }
+        .faq dd { color:var(--text-mid); max-width:62ch; }
+
+        footer { border-top:1px solid var(--border); padding:2rem; }
+        footer .inner { max-width:1100px; margin:0 auto; display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; font-size:0.8rem; color:var(--text-light); }
+        footer .links { display:flex; gap:1.25rem; flex-wrap:wrap; }
+        footer a { color:var(--text-mid); text-decoration:none; }
+
+        @media (max-width:768px) {
+            .site-nav ul { display:none; }
+            .wrap { padding:0 1.25rem; }
+            .intro { padding:3rem 0 2rem; }
+            .row2 { grid-template-columns:1fr; }
+            .request form, .done { padding:1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="site-nav">
+    <div class="inner">
+        <a href="index.html" class="nav-logo">Kudli<span>.</span> marketing</a>
+        <ul>
+            <li><a href="index.html#portfolio">Portfolio</a></li>
+            <li><a href="index.html#cenik">Ceník</a></li>
+            <li><a href="index.html#kontakt">Kontakt</a></li>
+        </ul>
+    </div>
+</nav>
+
+<main>
+    <section class="intro">
+        <div class="wrap">
+            <div class="section-label">Ukázka zdarma</div>
+            <h1>Podívejte se na nový web své firmy dřív, než za něj zaplatíte</h1>
+            <p>Pošlete mi odkaz na současný web, nebo jen název a obor firmy. Připravím ukázku nového webu a pošlu vám na ni odkaz. Když se vám nebude líbit, nic neplatíte a nic dalšího vám posílat nebudu.</p>
+            <a href="#zadost" class="btn btn-primary">Chci ukázku</a>
+        </div>
+    </section>
+
+    <section class="steps">
+        <div class="wrap">
+            <h2>Jak to probíhá</h2>
+            <ol>
+                <li><strong>Vyplníte krátký formulář</strong><span>Stačí název firmy a e-mail. Odkaz na současný web pomůže, ale není nutný.</span></li>
+                <li><strong>Připravím ukázku</strong><span>Moderní web, který funguje na mobilu i na počítači. Použiju údaje, které o firmě veřejně najdu, a vlastní texty.</span></li>
+                <li><strong>Rozhodnete se</strong><span>Pošlu vám odkaz na ukázku a cenu. Když web nechcete, ukázku smažu.</span></li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="request" id="zadost">
+        <div class="wrap">
+            <h2>Žádost o ukázku</h2>
+            <form name="ukazka" id="ukazkaForm" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+                <input type="hidden" name="form-name" value="ukazka">
+                <input type="hidden" name="zdroj" id="zdroj" value="">
+                <p class="hp"><label>Nevyplňujte <input type="text" name="bot-field" tabindex="-1" autocomplete="off"></label></p>
+                <div class="row2">
+                    <label for="firma"><span>Název firmy</span>
+                        <input type="text" id="firma" name="firma" required autocomplete="organization">
+                    </label>
+                    <label for="email"><span>E-mail</span>
+                        <input type="email" id="email" name="email" required autocomplete="email">
+                    </label>
+                </div>
+                <div class="row2">
+                    <label for="web"><span>Současný web <span class="opt">(nepovinné)</span></span>
+                        <input type="text" id="web" name="web" placeholder="www.vasefirma.cz" inputmode="url">
+                    </label>
+                    <label for="telefon"><span>Telefon <span class="opt">(nepovinné)</span></span>
+                        <input type="tel" id="telefon" name="telefon" autocomplete="tel">
+                    </label>
+                </div>
+                <label for="obor"><span>Obor a město <span class="opt">(nepovinné)</span></span>
+                    <input type="text" id="obor" name="obor" placeholder="např. autoservis, Brno">
+                </label>
+                <label for="poznamka"><span>Co by měl web umět <span class="opt">(nepovinné)</span></span>
+                    <textarea id="poznamka" name="poznamka" placeholder="Objednávky, ceník, fotogalerie, otevírací doba…"></textarea>
+                </label>
+                <label class="check" for="souhlas">
+                    <input type="checkbox" id="souhlas" name="souhlas" value="ano" required>
+                    <span>Chci ukázku a souhlasím, abyste mi ji poslal e-mailem i s cenou.</span>
+                </label>
+                <p class="msg err" id="formMsg" role="alert"></p>
+                <div><button type="submit" class="btn btn-primary" id="sendBtn">Odeslat žádost</button></div>
+                <p class="note">Údaje použiji jen k přípravě ukázky a domluvě. Více v <a href="ochrana-udaju.html">zásadách ochrany osobních údajů</a>.</p>
+            </form>
+            <div class="done" id="done" role="status">
+                <h3>Díky, žádost mám</h3>
+                <p id="doneText">Ukázku vám pošlu e-mailem.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="faq">
+        <div class="wrap">
+            <h2>Časté otázky</h2>
+            <dl>
+                <div><dt>Je ukázka opravdu zdarma?</dt><dd>Ano. Platíte jen tehdy, když se rozhodnete web použít. Cenu znáte předem.</dd></div>
+                <div><dt>Co když už web mám?</dt><dd>Pošlete na něj odkaz. Ukázka z něj bude vycházet a ukáže, jak by mohl vypadat dnes.</dd></div>
+                <div><dt>Jak rychle ukázku dostanu?</dt><dd>Obvykle do několika pracovních dnů. Když budu potřebovat něco doplnit, napíšu vám.</dd></div>
+                <div><dt>Co se stane s mými údaji?</dt><dd>Použiju je jen k přípravě ukázky a domluvě. Když web nechcete, ukázku i vaše údaje smažu.</dd></div>
+            </dl>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="inner">
+        <p>&copy; 2026 Ondřej Kudlička — Kudli. marketing &middot; IČO: 07271751</p>
+        <div class="links">
+            <a href="index.html">Hlavní stránka</a>
+            <a href="ochrana-udaju.html">Ochrana údajů</a>
+            <a href="obchodni-podminky.html">Podmínky</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+(function () {
+    var form = document.getElementById('ukazkaForm');
+    var msg = document.getElementById('formMsg');
+    var btn = document.getElementById('sendBtn');
+    try {
+        var z = new URLSearchParams(window.location.search).get('z');
+        if (z) document.getElementById('zdroj').value = z.slice(0, 40);
+    } catch (e) {}
+
+    function showError(text, withMail) {
+        msg.textContent = text;
+        if (withMail) {
+            msg.appendChild(document.createTextNode(' '));
+            var a = document.createElement('a');
+            a.href = 'mailto:o.kudlicka@gmail.com?subject=' + encodeURIComponent('Žádost o ukázku webu');
+            a.textContent = 'o.kudlicka@gmail.com';
+            msg.appendChild(a);
+        }
+        msg.style.display = 'block';
+    }
+
+    form.addEventListener('submit', async function (e) {
+        e.preventDefault();
+        msg.style.display = 'none';
+        var firma = form.firma.value.trim();
+        var email = form.email.value.trim();
+        if (!firma || !email) { showError('Vyplňte prosím název firmy a e-mail.'); return; }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showError('Zkontrolujte prosím e-mailovou adresu.'); return; }
+        if (!form.souhlas.checked) { showError('Zaškrtněte prosím, že chcete ukázku poslat e-mailem.'); return; }
+        btn.disabled = true;
+        btn.textContent = 'Odesílám…';
+        try {
+            var res = await fetch('/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: new URLSearchParams(new FormData(form)).toString()
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            form.style.display = 'none';
+            document.getElementById('doneText').textContent = 'Ukázku vám pošlu na ' + email + '. Když budu potřebovat něco doplnit, napíšu vám.';
+            document.getElementById('done').style.display = 'block';
+        } catch (err) {
+            btn.disabled = false;
+            btn.textContent = 'Odeslat žádost';
+            showError('Žádost se nepodařilo odeslat. Zkuste to prosím znovu, nebo mi napište:', true);
+        }
+    });
+})();
+</script>
+</body>
+</html>
