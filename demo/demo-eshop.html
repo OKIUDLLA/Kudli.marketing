@@ -11,7 +11,7 @@
     <meta property="og:image" content="https://www.kudlimarketing.cz/og-image.png">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://www.kudlimarketing.cz/demo/demo-eshop.html">
-    <meta name="robots" content="index, follow">
+    <meta name="robots" content="noindex, nofollow">
     <link rel="canonical" href="https://www.kudlimarketing.cz/demo/demo-eshop.html">
     <script type="application/ld+json">
     {
@@ -1669,6 +1669,7 @@
             .admin-toggle, .admin-overlay { display: none !important; }
         }
     </style>
+<style>@media print{#kudli-demo-banner{display:none!important}}#kudli-demo-banner a:focus-visible{outline:2px solid #fff!important;outline-offset:2px!important}</style>
 </head>
 <body>
     <a href="#main-content" class="skip-link">Přeskočit na obsah</a>
@@ -2562,5 +2563,9 @@
             tab.addEventListener('click', () => switchAdminTab(tab.dataset.adminTab));
         });
     </script>
+<!-- kudli-demo:start -->
+<aside id="kudli-demo-banner" aria-label="Upozornění" lang="cs" style="all:initial;box-sizing:border-box;display:block;position:fixed;left:0;right:0;bottom:0;z-index:2147483647;width:100%;margin:0;padding:9px 16px calc(9px + env(safe-area-inset-bottom, 0px));background:#14181c;color:#f3f4f6;font:500 13px/1.45 system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;text-align:center;border-top:1px solid rgba(255,255,255,.16);box-shadow:0 -2px 12px rgba(0,0,0,.25)">Ukázka šablony, firma je vymyšlená. Připravil <a href="https://www.kudlimarketing.cz/" style="all:initial;font:inherit;color:#ffffff;text-decoration:underline;cursor:pointer">Kudli.&nbsp;marketing</a>.</aside>
+<script>(function(){try{var b=document.getElementById('kudli-demo-banner');if(!b)return;var d=document.body,t=0;function fit(){var h=b.offsetHeight||0,vh=window.innerHeight||0;d.style.removeProperty('padding-bottom');var base=parseFloat(getComputedStyle(d).paddingBottom)||0;d.style.setProperty('padding-bottom',(base+h)+'px','important');var els=d.getElementsByTagName('*');for(var i=0;i<els.length;i++){var el=els[i];if(el===b||b.contains(el))continue;var o=el.getAttribute('data-kudli-bottom');if(o===null){var cs=getComputedStyle(el);if(cs.position!=='fixed')continue;var r=el.getBoundingClientRect();if(!r.width||!r.height||r.top<vh*0.5||r.bottom<vh-160)continue;o=parseFloat(cs.bottom);if(isNaN(o))continue;el.setAttribute('data-kudli-bottom',String(o));}el.style.setProperty('bottom',(parseFloat(o)+h)+'px','important');}}function later(){clearTimeout(t);t=setTimeout(fit,150);}fit();window.addEventListener('load',fit);window.addEventListener('resize',later);window.addEventListener('scroll',later,{passive:true});setTimeout(fit,1200);setTimeout(fit,3500);}catch(e){}})();</script>
+<!-- kudli-demo:end -->
 </body>
 </html>

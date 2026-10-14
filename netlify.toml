@@ -29,6 +29,12 @@
   [headers.values]
     X-Robots-Tag = "noindex, nofollow"
 
+# === Ukázkové projekty (/demo/): nezobrazovat ve vyhledávačích ===
+[[headers]]
+  for = "/demo/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
 # === Interní nástroje (generátor ukázek): na webu nejsou dostupné ===
 [[redirects]]
   from = "/_nastroje/*"
