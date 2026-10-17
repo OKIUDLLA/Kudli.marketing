@@ -212,8 +212,14 @@
     var msg = document.getElementById('formMsg');
     var btn = document.getElementById('sendBtn');
     try {
-        var z = new URLSearchParams(window.location.search).get('z');
+        /* ?z= odkud člověk přišel; z QR kódu v dopise navíc f= firma, w= současný web, o= obor (jen předvyplní, nic se nevkládá jako HTML) */
+        var q = new URLSearchParams(window.location.search);
+        var z = q.get('z');
         if (z) document.getElementById('zdroj').value = z.slice(0, 40);
+        [['f', 'firma'], ['w', 'web'], ['o', 'obor']].forEach(function (p) {
+            var v = q.get(p[0]);
+            if (v && !form[p[1]].value) form[p[1]].value = v.slice(0, 120);
+        });
     } catch (e) {}
 
     function showError(text, withMail) {
