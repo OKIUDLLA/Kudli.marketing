@@ -10,3 +10,10 @@ __pycache__/
 _nastroje/ukazky/data/*
 !_nastroje/ukazky/data/klic-a-kolo.json
 !_nastroje/ukazky/data/_vzor-skutecna-firma.json
+
+# dopisy: data firem a výstupy
+_nastroje/dopisy/firmy.json
+_nastroje/dopisy/html/
+_nastroje/dopisy/pdf/
+_nastroje/dopisy/fonty/
+_nastroje/dopisy/*.png
